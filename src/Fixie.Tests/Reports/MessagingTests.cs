@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Fixie.Reports;
+﻿using Fixie.Reports;
 using static Fixie.Tests.Utility;
 
 namespace Fixie.Tests.Reports;
@@ -31,17 +30,6 @@ public abstract class MessagingTests
         public string[] Console { get; }
     }
 
-    protected async Task Discover(IReport report)
-    {
-        var discovery = new SelfTestDiscovery();
-
-        using var console = new RedirectedConsole();
-
-        await Utility.Discover(report, discovery, candidateTypes);
-
-        console.Lines().ShouldBeEmpty();
-    }
-
     protected Task<Output> Run(IReport report)
     {
         return Run(_ => report);
@@ -61,11 +49,11 @@ public abstract class MessagingTests
     {
         var execution = new MessagingTestsExecution();
 
-        using var console = new RedirectedConsole();
+        await using var console = new StringWriter();
 
-        await Utility.Run(getReport(GetTestEnvironment()), discovery, execution, candidateTypes);
+        await Utility.Run(getReport(GetTestEnvironment(console)), discovery, execution, console, candidateTypes);
 
-        return new Output(console.Lines().ToArray());
+        return new Output(console.ToString().Lines().ToArray());
     }
 
     class MessagingTestsExecution : IExecution
@@ -90,24 +78,18 @@ public abstract class MessagingTests
     {
         public void Pass()
         {
-            WhereAmI();
         }
-
-        protected static void WhereAmI([CallerMemberName] string member = default!)
-            => System.Console.WriteLine("Standard Out: " + member);
     }
 
     class SampleTestClass : Base
     {
         public void Fail()
         {
-            WhereAmI();
             throw new FailureException();
         }
 
         public void FailByAssertion()
         {
-            WhereAmI();
             1.ShouldBe(2);
         }
 

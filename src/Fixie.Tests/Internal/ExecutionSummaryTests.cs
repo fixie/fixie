@@ -11,7 +11,8 @@ public class ExecutionSummaryTests
         var discovery = new SelfTestDiscovery();
         var execution = new CreateInstancePerCase();
 
-        await Run(report, discovery, execution, typeof(FirstSampleTestClass), typeof(SecondSampleTestClass));
+        await using var console = new StringWriter();
+        await Run(report, discovery, execution, console, typeof(FirstSampleTestClass), typeof(SecondSampleTestClass));
 
         report.ExecutionCompletions.Count.ShouldBe(1);
 

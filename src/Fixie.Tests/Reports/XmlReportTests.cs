@@ -14,13 +14,7 @@ public class XmlReportTests : MessagingTests
         XDocument? actual = null;
         var report = new XmlReport(environment, document => actual = document);
 
-        var output = await Run(report);
-
-        output.Console
-            .ShouldBe(
-                "Standard Out: Fail",
-                "Standard Out: FailByAssertion",
-                "Standard Out: Pass");
+        await Run(report);
 
         if (actual == null)
             throw new Exception("Expected non-null XML report.");

@@ -67,19 +67,11 @@ class VsExecutionRecorder
 
         customize(testResult);
 
-        AttachCapturedConsoleOutput(result.Output, testResult);
-
         log.RecordResult(testResult);
     }
 
     TestCase ToVsTestCase(string test)
     {
         return new TestCase(test, VsTestExecutor.Uri, assemblyPath);
-    }
-
-    static void AttachCapturedConsoleOutput(string output, TestResult testResult)
-    {
-        if (!string.IsNullOrEmpty(output))
-            testResult.Messages.Add(new TestResultMessage(TestResultMessage.StandardOutCategory, output));
     }
 }

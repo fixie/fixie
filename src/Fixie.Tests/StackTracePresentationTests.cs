@@ -140,13 +140,13 @@ public class StackTracePresentationTests
         var discovery = new SelfTestDiscovery();
         var execution = new TExecution();
 
-        using var console = new RedirectedConsole();
+        await using var console = new StringWriter();
 
-        var report = new ConsoleReport(GetTestEnvironment());
+        var report = new ConsoleReport(GetTestEnvironment(console));
         
-        await Utility.Run(report, discovery, execution, typeof(TSampleTestClass));
+        await Utility.Run(report, discovery, execution, console, typeof(TSampleTestClass));
 
-        return console.Lines()
+        return console.ToString().Lines()
             .NormalizeStackTraceLines()
             .CleanDuration();
     }

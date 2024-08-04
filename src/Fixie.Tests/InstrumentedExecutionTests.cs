@@ -6,6 +6,7 @@ public abstract class InstrumentedExecutionTests
 {
     static string? FailingMember;
     static int? FailingMemberOccurrence;
+    protected static TextWriter console = default!;
 
     protected InstrumentedExecutionTests()
     {
@@ -47,14 +48,14 @@ public abstract class InstrumentedExecutionTests
 
     protected static void WhereAmI(object parameter, [CallerMemberName] string member = default!)
     {
-        System.Console.WriteLine($"{member}({parameter})");
+        console.WriteLine($"{member}({parameter})");
 
         ProcessScriptedFailure(member);
     }
         
     protected static void WhereAmI([CallerMemberName] string member = default!)
     {
-        System.Console.WriteLine(member);
+        console.WriteLine(member);
 
         ProcessScriptedFailure(member);
     }
@@ -101,19 +102,21 @@ public abstract class InstrumentedExecutionTests
 
     async Task<Output> Run(Type testClass, IExecution execution)
     {
-        using var console = new RedirectedConsole();
+        await using (console = new StringWriter())
+        {
+            var results = await Utility.Run(testClass, execution, console);
 
-        var results = await Utility.Run(testClass, execution);
-
-        return new Output(GetType().FullName!, console.Lines().ToArray(), results.ToArray());
+            return new Output(GetType().FullName!, console.ToString().Lines().ToArray(), results.ToArray());
+        }
     }
 
     async Task<Output> Run(Type[] testClasses, IExecution execution)
     {
-        using var console = new RedirectedConsole();
+        await using (console = new StringWriter())
+        {
+            var results = await Utility.Run(testClasses, execution, console);
 
-        var results = await Utility.Run(testClasses, execution);
-
-        return new Output(GetType().FullName!, console.Lines().ToArray(), results.ToArray());
+            return new Output(GetType().FullName!, console.ToString().Lines().ToArray(), results.ToArray());
+        }
     }
 }

@@ -16,13 +16,7 @@ public class AppVeyorReportTests : MessagingTests
             return Task.CompletedTask;
         });
 
-        var output = await Run(report);
-
-        output.Console
-            .ShouldBe(
-                "Standard Out: Fail",
-                "Standard Out: FailByAssertion",
-                "Standard Out: Pass");
+        await Run(report);
 
         results.Count.ShouldBe(7);
 
@@ -48,7 +42,7 @@ public class AppVeyorReportTests : MessagingTests
             .Lines()
             .NormalizeStackTraceLines()
             .ShouldBe("Fixie.Tests.FailureException", At("Fail()"));
-        fail.StdOut.Lines().ShouldBe("Standard Out: Fail");
+        fail.StdOut.ShouldBe("");
 
         failByAssertion.TestName.ShouldBe(TestClass + ".FailByAssertion");
         failByAssertion.Outcome.ShouldBe("Failed");
@@ -60,14 +54,14 @@ public class AppVeyorReportTests : MessagingTests
             .Lines()
             .NormalizeStackTraceLines()
             .ShouldBe("Fixie.Tests.Assertions.AssertException", At("FailByAssertion()"));
-        failByAssertion.StdOut.Lines().ShouldBe("Standard Out: FailByAssertion");
+        failByAssertion.StdOut.ShouldBe("");
 
         pass.TestName.ShouldBe(TestClass + ".Pass");
         pass.Outcome.ShouldBe("Passed");
         int.Parse(pass.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
         pass.ErrorMessage.ShouldBe(null);
         pass.ErrorStackTrace.ShouldBe(null);
-        pass.StdOut.Lines().ShouldBe("Standard Out: Pass");
+        pass.StdOut.ShouldBe("");
 
         skip.TestName.ShouldBe(TestClass + ".Skip");
         skip.Outcome.ShouldBe("Skipped");

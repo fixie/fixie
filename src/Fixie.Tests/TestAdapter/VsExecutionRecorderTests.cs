@@ -66,9 +66,7 @@ public class VsExecutionRecorderTests : MessagingTests
             .NormalizeStackTraceLines()
             .ShouldBe("Fixie.Tests.FailureException", At("Fail()"));
         fail.DisplayName.ShouldBe(TestClass+".Fail");
-        fail.Messages.Count.ShouldBe(1);
-        fail.Messages[0].Category.ShouldBe(TestResultMessage.StandardOutCategory);
-        fail.Messages[0].Text.Lines().ShouldBe("Standard Out: Fail");
+        fail.Messages.ShouldBeEmpty();
         fail.Duration.ShouldBe(TimeSpan.FromMilliseconds(102));
 
         failByAssertionStart.ShouldBeExecutionTimeTest(TestClass + ".FailByAssertion", assemblyPath);
@@ -84,9 +82,7 @@ public class VsExecutionRecorderTests : MessagingTests
             .NormalizeStackTraceLines()
             .ShouldBe("Fixie.Tests.Assertions.AssertException", At("FailByAssertion()"));
         failByAssertion.DisplayName.ShouldBe(TestClass+".FailByAssertion");
-        failByAssertion.Messages.Count.ShouldBe(1);
-        failByAssertion.Messages[0].Category.ShouldBe(TestResultMessage.StandardOutCategory);
-        failByAssertion.Messages[0].Text.Lines().ShouldBe("Standard Out: FailByAssertion");
+        failByAssertion.Messages.ShouldBeEmpty();
         failByAssertion.Duration.ShouldBe(TimeSpan.FromMilliseconds(103));
 
         passStart.ShouldBeExecutionTimeTest(TestClass + ".Pass", assemblyPath);
@@ -97,9 +93,7 @@ public class VsExecutionRecorderTests : MessagingTests
         pass.ErrorMessage.ShouldBe(null);
         pass.ErrorStackTrace.ShouldBe(null);
         pass.DisplayName.ShouldBe(TestClass+".Pass");
-        pass.Messages.Count.ShouldBe(1);
-        pass.Messages[0].Category.ShouldBe(TestResultMessage.StandardOutCategory);
-        pass.Messages[0].Text.Lines().ShouldBe("Standard Out: Pass");
+        pass.Messages.ShouldBeEmpty();
         pass.Duration.ShouldBe(TimeSpan.FromMilliseconds(104));
 
         skip.TestCase.ShouldBeExecutionTimeTest(TestClass+".Skip", assemblyPath);
@@ -165,7 +159,6 @@ public class VsExecutionRecorderTests : MessagingTests
             Test = TestClass + ".Fail",
             TestCase = TestClass + ".Fail",
             DurationInMilliseconds = 102,
-            Output = "Standard Out: Fail",
             Reason = new PipeMessage.Exception
             {
                 Type = "Fixie.Tests.FailureException",
@@ -184,7 +177,6 @@ public class VsExecutionRecorderTests : MessagingTests
             Test = TestClass + ".FailByAssertion",
             TestCase = TestClass + ".FailByAssertion",
             DurationInMilliseconds = 103,
-            Output = "Standard Out: FailByAssertion",
             Reason = new PipeMessage.Exception
             {
                 Type = "Fixie.Tests.Assertions.AssertException",
@@ -202,8 +194,7 @@ public class VsExecutionRecorderTests : MessagingTests
         {
             Test = TestClass+".Pass",
             TestCase = TestClass+".Pass",
-            DurationInMilliseconds = 104,
-            Output = "Standard Out: Pass"
+            DurationInMilliseconds = 104
         }));
 
         vsExecutionRecorder.Record(Deserialized(new PipeMessage.TestSkipped
@@ -211,7 +202,6 @@ public class VsExecutionRecorderTests : MessagingTests
             Test =TestClass+".Skip",
             TestCase = TestClass+".Skip",
             DurationInMilliseconds = 0,
-            Output = "",
             Reason = "⚠ Skipped with attribute."
         }));
         
@@ -224,8 +214,7 @@ public class VsExecutionRecorderTests : MessagingTests
         {
             Test = GenericTestClass+".ShouldBeString",
             TestCase = GenericTestClass+".ShouldBeString<System.String>(\"A\")",
-            DurationInMilliseconds = 105,
-            Output = ""
+            DurationInMilliseconds = 105
         }));
         
         vsExecutionRecorder.Record(Deserialized(new PipeMessage.TestStarted
@@ -237,8 +226,7 @@ public class VsExecutionRecorderTests : MessagingTests
         {
             Test = GenericTestClass+".ShouldBeString",
             TestCase = GenericTestClass+".ShouldBeString<System.String>(\"B\")",
-            DurationInMilliseconds = 106,
-            Output = ""
+            DurationInMilliseconds = 106
         }));
         
         vsExecutionRecorder.Record(Deserialized(new PipeMessage.TestStarted
@@ -251,7 +239,6 @@ public class VsExecutionRecorderTests : MessagingTests
             Test = GenericTestClass+".ShouldBeString",
             TestCase = GenericTestClass+".ShouldBeString<System.Int32>(123)",
             DurationInMilliseconds = 107,
-            Output = "",
             Reason = new PipeMessage.Exception
             {
                 Type = "Fixie.Tests.Assertions.AssertException",

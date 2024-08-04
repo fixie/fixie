@@ -43,7 +43,6 @@ static class PipeMessage
         public required string Test { get; init; }
         public required string TestCase { get; init; }
         public required double DurationInMilliseconds { get; init; }
-        public required string Output { get; init; }
     }
 
     public class TestSkipped : TestCompleted

@@ -42,10 +42,9 @@ public class PipeMessageSerializationTests : MessagingTests
                 Reason = "⚠ Skipped!",
                 Test = GenericTestClass + ".ShouldBeString",
                 TestCase = GenericTestClass + ".ShouldBeString<System.Int32>(123)",
-                DurationInMilliseconds = 123.456d,
-                Output = "Line 1\r\nLine 2"
+                DurationInMilliseconds = 123.456d
             },
-            "{\"Reason\":\"\\u26A0 Skipped!\",\"Test\":\"Fixie.Tests.Reports.MessagingTests\\u002BSampleGenericTestClass.ShouldBeString\",\"TestCase\":\"Fixie.Tests.Reports.MessagingTests\\u002BSampleGenericTestClass.ShouldBeString\\u003CSystem.Int32\\u003E(123)\",\"DurationInMilliseconds\":123.456,\"Output\":\"Line 1\\r\\nLine 2\"}");
+            "{\"Reason\":\"\\u26A0 Skipped!\",\"Test\":\"Fixie.Tests.Reports.MessagingTests\\u002BSampleGenericTestClass.ShouldBeString\",\"TestCase\":\"Fixie.Tests.Reports.MessagingTests\\u002BSampleGenericTestClass.ShouldBeString\\u003CSystem.Int32\\u003E(123)\",\"DurationInMilliseconds\":123.456}");
     }
 
     public void ShouldSerializeTestPassedMessage()
@@ -54,10 +53,9 @@ public class PipeMessageSerializationTests : MessagingTests
             {
                 Test = GenericTestClass + ".ShouldBeString",
                 TestCase = GenericTestClass + ".ShouldBeString<System.Int32>(123)",
-                DurationInMilliseconds = 123.456d,
-                Output = "Line 1\rLine 2"
+                DurationInMilliseconds = 123.456d
             },
-            "{\"Test\":\"Fixie.Tests.Reports.MessagingTests\\u002BSampleGenericTestClass.ShouldBeString\",\"TestCase\":\"Fixie.Tests.Reports.MessagingTests\\u002BSampleGenericTestClass.ShouldBeString\\u003CSystem.Int32\\u003E(123)\",\"DurationInMilliseconds\":123.456,\"Output\":\"Line 1\\rLine 2\"}");
+            "{\"Test\":\"Fixie.Tests.Reports.MessagingTests\\u002BSampleGenericTestClass.ShouldBeString\",\"TestCase\":\"Fixie.Tests.Reports.MessagingTests\\u002BSampleGenericTestClass.ShouldBeString\\u003CSystem.Int32\\u003E(123)\",\"DurationInMilliseconds\":123.456}");
     }
 
     public void ShouldSerializeTestFailedMessage()
@@ -74,10 +72,9 @@ public class PipeMessageSerializationTests : MessagingTests
                 },
                 Test = GenericTestClass + ".ShouldBeString",
                 TestCase = GenericTestClass + ".ShouldBeString<System.Int32>(123)",
-                DurationInMilliseconds = 123.456d,
-                Output = "Line 1\nLine 2"
+                DurationInMilliseconds = 123.456d
             },
-            "{\"Reason\":{\"Type\":\"Fixie.Tests.Assertions.AssertException\",\"Message\":\"Expected: System.String\\nActual:   System.Int32\",\"StackTrace\":\"" + at + "\"},\"Test\":\"Fixie.Tests.Reports.MessagingTests\\u002BSampleGenericTestClass.ShouldBeString\",\"TestCase\":\"Fixie.Tests.Reports.MessagingTests\\u002BSampleGenericTestClass.ShouldBeString\\u003CSystem.Int32\\u003E(123)\",\"DurationInMilliseconds\":123.456,\"Output\":\"Line 1\\nLine 2\"}");
+            "{\"Reason\":{\"Type\":\"Fixie.Tests.Assertions.AssertException\",\"Message\":\"Expected: System.String\\nActual:   System.Int32\",\"StackTrace\":\"" + at + "\"},\"Test\":\"Fixie.Tests.Reports.MessagingTests\\u002BSampleGenericTestClass.ShouldBeString\",\"TestCase\":\"Fixie.Tests.Reports.MessagingTests\\u002BSampleGenericTestClass.ShouldBeString\\u003CSystem.Int32\\u003E(123)\",\"DurationInMilliseconds\":123.456}");
     }
 
     public void ShouldSerializeExceptionMessage()

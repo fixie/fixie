@@ -65,17 +65,6 @@ public static class Utility
         return report.Entries;
     }
 
-    public static async Task Discover(IReport report, IDiscovery discovery, params Type[] candidateTypes)
-    {
-        if (candidateTypes.Length == 0)
-            throw new InvalidOperationException("At least one type must be specified.");
-
-        var environment = new TestEnvironment(candidateTypes[0].Assembly, System.Console.Out, Directory.GetCurrentDirectory());
-        var runner = new Runner(environment, report);
-
-        await runner.Discover(candidateTypes, discovery);
-    }
-
     internal static async Task Run(IReport report, IDiscovery discovery, IExecution execution, params Type[] candidateTypes)
     {
         if (candidateTypes.Length == 0)

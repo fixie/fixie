@@ -197,8 +197,11 @@ public class CaseNameTests
         }
     }
 
-    static Task<IEnumerable<string>> RunScript<TSampleTestClass>(Func<Test, Task> scriptAsync)
-        => Utility.Run(typeof(TSampleTestClass), new ScriptedExecution(scriptAsync));
+    static async Task<IEnumerable<string>> RunScript<TSampleTestClass>(Func<Test, Task> scriptAsync)
+    {
+        await using var console = new StringWriter();
+        return await Utility.Run(typeof(TSampleTestClass), new ScriptedExecution(scriptAsync), console);
+    }
 
     static async Task Run(Test test, params object?[] parameters)
     {

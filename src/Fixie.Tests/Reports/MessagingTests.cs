@@ -51,7 +51,7 @@ public abstract class MessagingTests
 
         await using var console = new StringWriter();
 
-        await Utility.Run(getReport(GetTestEnvironment(console)), discovery, execution, candidateTypes);
+        await Utility.Run(getReport(GetTestEnvironment(console)), discovery, execution, console, candidateTypes);
 
         return new Output(console.ToString().Lines().ToArray());
     }

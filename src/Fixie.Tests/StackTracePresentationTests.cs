@@ -144,7 +144,7 @@ public class StackTracePresentationTests
 
         var report = new ConsoleReport(GetTestEnvironment(console));
         
-        await Utility.Run(report, discovery, execution, typeof(TSampleTestClass));
+        await Utility.Run(report, discovery, execution, console, typeof(TSampleTestClass));
 
         return console.ToString().Lines()
             .NormalizeStackTraceLines()

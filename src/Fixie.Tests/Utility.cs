@@ -47,25 +47,25 @@ public static class Utility
             @".+([\\/])src([\\/])Fixie(.+)\.cs",
             "...$1src$2Fixie$3.cs");
 
-    public static async Task<IEnumerable<string>> Run(Type testClass, IExecution execution)
+    public static async Task<IEnumerable<string>> Run(Type testClass, IExecution execution, TextWriter console)
     {
         var report = new StubReport();
         var discovery = new SelfTestDiscovery();
 
-        await Run(report, discovery, execution, testClass);
+        await Run(report, discovery, execution, console, testClass);
         return report.Entries;
     }
 
-    public static async Task<IEnumerable<string>> Run(Type[] testClasses, IExecution execution)
+    public static async Task<IEnumerable<string>> Run(Type[] testClasses, IExecution execution, TextWriter console)
     {
         var report = new StubReport();
         var discovery = new SelfTestDiscovery();
 
-        await Run(report, discovery, execution, testClasses);
+        await Run(report, discovery, execution, console, testClasses);
         return report.Entries;
     }
 
-    internal static async Task Run(IReport report, IDiscovery discovery, IExecution execution, params Type[] candidateTypes)
+    internal static async Task Run(IReport report, IDiscovery discovery, IExecution execution, TextWriter console, params Type[] candidateTypes)
     {
         if (candidateTypes.Length == 0)
             throw new InvalidOperationException("At least one type must be specified.");

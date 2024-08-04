@@ -41,7 +41,7 @@ class ExecutionRecorder
         var duration = caseStopwatch.Elapsed;
         recordingConsole.StopRecording(out var output);
 
-        var message = new TestSkipped(test.Name, name, duration, output, reason);
+        var message = new TestSkipped(test.Name, name, duration, reason);
         assemblySummary.Add(message);
         await bus.Publish(message);
 
@@ -54,7 +54,7 @@ class ExecutionRecorder
         var duration = caseStopwatch.Elapsed;
         recordingConsole.StopRecording(out var output);
 
-        var message = new TestPassed(test.Name, name, duration, output);
+        var message = new TestPassed(test.Name, name, duration);
         assemblySummary.Add(message);
         await bus.Publish(message);
 
@@ -67,7 +67,7 @@ class ExecutionRecorder
         var duration = caseStopwatch.Elapsed;
         recordingConsole.StopRecording(out var output);
 
-        var message = new TestFailed(test.Name, name, duration, output, reason);
+        var message = new TestFailed(test.Name, name, duration, reason);
         assemblySummary.Add(message);
         await bus.Publish(message);
 

@@ -36,7 +36,7 @@ class TestAdapterReport(TestAdapterPipe pipe) :
             Test = message.Test,
             TestCase = message.TestCase,
             DurationInMilliseconds = message.Duration.TotalMilliseconds,
-            Output = message.Output,
+            Output = "",
             Reason = message.Reason
         });
 
@@ -50,7 +50,7 @@ class TestAdapterReport(TestAdapterPipe pipe) :
             Test = message.Test,
             TestCase = message.TestCase,
             DurationInMilliseconds = message.Duration.TotalMilliseconds,
-            Output = message.Output
+            Output = ""
         });
 
         return Task.CompletedTask;
@@ -63,7 +63,7 @@ class TestAdapterReport(TestAdapterPipe pipe) :
             Test = message.Test,
             TestCase = message.TestCase,
             DurationInMilliseconds = message.Duration.TotalMilliseconds,
-            Output = message.Output,
+            Output = "",
             Reason = new PipeMessage.Exception(message.Reason)
         });
 

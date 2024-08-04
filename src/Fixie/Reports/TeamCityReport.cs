@@ -34,7 +34,6 @@ class TeamCityReport :
     public Task Handle(TestSkipped message)
     {
         TestStarted(message);
-        Output(message);
         Message("testIgnored name='{0}' message='{1}'", message.TestCase, message.Reason);
         TestFinished(message);
         return Task.CompletedTask;
@@ -43,7 +42,6 @@ class TeamCityReport :
     public Task Handle(TestPassed message)
     {
         TestStarted(message);
-        Output(message);
         TestFinished(message);
         return Task.CompletedTask;
     }
@@ -56,7 +54,6 @@ class TeamCityReport :
             message.Reason.StackTraceSummary();
 
         TestStarted(message);
-        Output(message);
         Message("testFailed name='{0}' message='{1}' details='{2}'", message.TestCase, message.Reason.Message, details);
         TestFinished(message);
         return Task.CompletedTask;
@@ -82,12 +79,6 @@ class TeamCityReport :
     {
         var encodedArgs = args.Select(Encode).Cast<object>().ToArray();
         environment.Console.WriteLine("##teamcity[" + format + "]", encodedArgs);
-    }
-
-    void Output(TestCompleted message)
-    {
-        if (!string.IsNullOrEmpty(message.Output))
-            Message("testStdOut name='{0}' out='{1}'", message.TestCase, message.Output);
     }
 
     static string Encode(string? value)

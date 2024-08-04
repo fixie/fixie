@@ -104,7 +104,7 @@ class AppVeyorReport :
             TestName = message.TestCase;
             Outcome = outcome;
             DurationMilliseconds = $"{message.Duration.TotalMilliseconds:0}";
-            StdOut = message.Output;
+            StdOut = "";
         }
 
         public string TestFramework { get; set; }

@@ -2,12 +2,11 @@ namespace Fixie.Reports;
 
 public abstract class TestCompleted : IMessage
 {
-    internal TestCompleted(string test, string testCase, TimeSpan duration, string output)
+    internal TestCompleted(string test, string testCase, TimeSpan duration)
     {
         Test = test;
         TestCase = testCase;
         Duration = duration;
-        Output = output;
     }
 
     /// <summary>
@@ -28,9 +27,4 @@ public abstract class TestCompleted : IMessage
     /// The duration of the test execution.
     /// </summary>
     public TimeSpan Duration { get; }
-        
-    /// <summary>
-    /// Console output captured during test execution.
-    /// </summary>
-    public string Output { get; }
 }

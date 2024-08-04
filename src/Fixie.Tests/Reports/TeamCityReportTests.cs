@@ -19,19 +19,16 @@ public class TeamCityReportTests : MessagingTests
 
                 "Standard Out: Fail",
                 $"##teamcity[testStarted name='{TestClass}.Fail']",
-                $"##teamcity[testStdOut name='{TestClass}.Fail' out='Standard Out: Fail{eol}']",
                 $"##teamcity[testFailed name='{TestClass}.Fail' message='|'Fail|' failed!' details='Fixie.Tests.FailureException{eol}{At("Fail()")}']",
                 $"##teamcity[testFinished name='{TestClass}.Fail' duration='#']",
 
                 "Standard Out: FailByAssertion",
                 $"##teamcity[testStarted name='{TestClass}.FailByAssertion']",
-                $"##teamcity[testStdOut name='{TestClass}.FailByAssertion' out='Standard Out: FailByAssertion{eol}']",
                 $"##teamcity[testFailed name='{TestClass}.FailByAssertion' message='Expected: 2{eol}Actual:   1' details='Fixie.Tests.Assertions.AssertException{eol}{At("FailByAssertion()")}']",
                 $"##teamcity[testFinished name='{TestClass}.FailByAssertion' duration='#']",
 
                 "Standard Out: Pass",
                 $"##teamcity[testStarted name='{TestClass}.Pass']",
-                $"##teamcity[testStdOut name='{TestClass}.Pass' out='Standard Out: Pass{eol}']",
                 $"##teamcity[testFinished name='{TestClass}.Pass' duration='#']",
                 
                 $"##teamcity[testStarted name='{TestClass}.Skip']",

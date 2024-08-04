@@ -70,7 +70,7 @@ public static class Utility
         if (candidateTypes.Length == 0)
             throw new InvalidOperationException("At least one type must be specified.");
 
-        var environment = new TestEnvironment(candidateTypes[0].Assembly, System.Console.Out, Directory.GetCurrentDirectory());
+        var environment = new TestEnvironment(candidateTypes[0].Assembly, console, Directory.GetCurrentDirectory());
         var runner = new Runner(environment, report);
         var configuration = new TestConfiguration();
         configuration.Conventions.Add(discovery, execution);

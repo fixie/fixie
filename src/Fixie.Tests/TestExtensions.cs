@@ -23,11 +23,6 @@ static class TestExtensions
         return type.GetMethods(InstanceMethods);
     }
 
-    public static IEnumerable<string> Lines(this RedirectedConsole console)
-    {
-        return console.Output.Lines();
-    }
-
     public static IEnumerable<string> Lines(this string? multiline)
     {
         if (multiline == null)

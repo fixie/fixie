@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Fixie.Reports;
+﻿using Fixie.Reports;
 using static Fixie.Tests.Utility;
 
 namespace Fixie.Tests.Reports;
@@ -90,24 +89,18 @@ public abstract class MessagingTests
     {
         public void Pass()
         {
-            WhereAmI();
         }
-
-        protected static void WhereAmI([CallerMemberName] string member = default!)
-            => System.Console.WriteLine("Standard Out: " + member);
     }
 
     class SampleTestClass : Base
     {
         public void Fail()
         {
-            WhereAmI();
             throw new FailureException();
         }
 
         public void FailByAssertion()
         {
-            WhereAmI();
             1.ShouldBe(2);
         }
 

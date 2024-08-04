@@ -16,13 +16,7 @@ public class AppVeyorReportTests : MessagingTests
             return Task.CompletedTask;
         });
 
-        var output = await Run(report);
-
-        output.Console
-            .ShouldBe(
-                "Standard Out: Fail",
-                "Standard Out: FailByAssertion",
-                "Standard Out: Pass");
+        await Run(report);
 
         results.Count.ShouldBe(7);
 

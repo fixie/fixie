@@ -13,7 +13,6 @@ public class ConsoleReportTests : MessagingTests
             .NormalizeStackTraceLines()
             .CleanDuration()
             .ShouldBe(
-                "Standard Out: Fail",
                 "Test '" + TestClass + ".Fail' failed:",
                 "",
                 "'Fail' failed!",
@@ -22,7 +21,6 @@ public class ConsoleReportTests : MessagingTests
                 At("Fail()"),
                 "",
 
-                "Standard Out: FailByAssertion",
                 "Test '" + TestClass + ".FailByAssertion' failed:",
                 "",
                 "Expected: 2",
@@ -31,8 +29,6 @@ public class ConsoleReportTests : MessagingTests
                 "Fixie.Tests.Assertions.AssertException",
                 At("FailByAssertion()"),
                 "",
-
-                "Standard Out: Pass",
 
                 "Test '" + TestClass + ".Skip' skipped:",
                 "⚠ Skipped with attribute.",
@@ -58,7 +54,6 @@ public class ConsoleReportTests : MessagingTests
             .NormalizeStackTraceLines()
             .CleanDuration()
             .ShouldBe(
-                "Standard Out: Fail",
                 "Test '" + TestClass + ".Fail' failed:",
                 "",
                 "'Fail' failed!",
@@ -67,7 +62,6 @@ public class ConsoleReportTests : MessagingTests
                 At("Fail()"),
                 "",
 
-                "Standard Out: FailByAssertion",
                 "Test '" + TestClass + ".FailByAssertion' failed:",
                 "",
                 "Expected: 2",
@@ -77,7 +71,6 @@ public class ConsoleReportTests : MessagingTests
                 At("FailByAssertion()"),
                 "",
 
-                "Standard Out: Pass",
                 "Test '" + TestClass + ".Pass' passed",
                 "",
 

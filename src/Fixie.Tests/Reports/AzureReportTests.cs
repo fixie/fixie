@@ -40,7 +40,7 @@ public class AzureReportTests : MessagingTests
             actualAuthorization.Parameter.ShouldBe(accessToken);
         };
 
-        var output = await Run(environment =>
+        await Run(environment =>
             new AzureReport(environment, "http://localhost:4567", project, accessToken, buildId,
                 (client, method, uri, content) =>
                 {
@@ -60,12 +60,6 @@ public class AzureReportTests : MessagingTests
                     requests.Add(new Request<AzureReport.CompleteRun>(method, uri, content));
                     return Task.FromResult("");
                 }, batchSize));
-
-        output.Console
-            .ShouldBe(
-                "Standard Out: Fail",
-                "Standard Out: FailByAssertion",
-                "Standard Out: Pass");
 
         var firstRequest = (Request<AzureReport.CreateRun>)requests.First();
         firstRequest.Method.ShouldBe(HttpMethod.Post);

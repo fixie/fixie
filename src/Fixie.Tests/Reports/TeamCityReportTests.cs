@@ -17,17 +17,14 @@ public class TeamCityReportTests : MessagingTests
             .ShouldBe(
                 "##teamcity[testSuiteStarted name='Fixie.Tests']",
 
-                "Standard Out: Fail",
                 $"##teamcity[testStarted name='{TestClass}.Fail']",
                 $"##teamcity[testFailed name='{TestClass}.Fail' message='|'Fail|' failed!' details='Fixie.Tests.FailureException{eol}{At("Fail()")}']",
                 $"##teamcity[testFinished name='{TestClass}.Fail' duration='#']",
 
-                "Standard Out: FailByAssertion",
                 $"##teamcity[testStarted name='{TestClass}.FailByAssertion']",
                 $"##teamcity[testFailed name='{TestClass}.FailByAssertion' message='Expected: 2{eol}Actual:   1' details='Fixie.Tests.Assertions.AssertException{eol}{At("FailByAssertion()")}']",
                 $"##teamcity[testFinished name='{TestClass}.FailByAssertion' duration='#']",
 
-                "Standard Out: Pass",
                 $"##teamcity[testStarted name='{TestClass}.Pass']",
                 $"##teamcity[testFinished name='{TestClass}.Pass' duration='#']",
                 

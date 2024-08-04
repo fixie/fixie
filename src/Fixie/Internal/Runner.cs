@@ -66,12 +66,10 @@ class Runner
         var conventions = configuration.Conventions.Items;
         var bus = new Bus(console, defaultReports.Concat(configuration.Reports.Items).ToArray());
 
-        var recordingConsole = new RecordingWriter(console);
-        var recorder = new ExecutionRecorder(recordingConsole, bus);
+        var recorder = new ExecutionRecorder(bus);
             
         using (new ConsoleRedirectionBoundary())
         {
-            Console.SetOut(recordingConsole);
             await recorder.StartExecution();
 
             foreach (var convention in conventions)

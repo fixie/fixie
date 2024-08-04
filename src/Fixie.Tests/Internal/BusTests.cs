@@ -8,21 +8,21 @@ public class BusTests
 {
     public async Task ShouldPublishEventsToAllReports()
     {
+        await using var console = new StringWriter();
+
         IReport[] reports =
         [
-            new EventHandler(),
-            new AnotherEventHandler(),
-            new CombinationEventHandler()
+            new EventHandler(console),
+            new AnotherEventHandler(console),
+            new CombinationEventHandler(console)
         ];
 
-        using var console = new RedirectedConsole();
-
-        var bus = new Bus(System.Console.Out, reports);
+        var bus = new Bus(console, reports);
         await bus.Publish(new Event(1));
         await bus.Publish(new AnotherEvent(2));
         await bus.Publish(new Event(3));
 
-        console.Lines()
+        console.ToString().Lines()
             .ShouldBe(
                 FullName<EventHandler>() + " handled Event 1",
                 FullName<CombinationEventHandler>() + " handled Event 1",
@@ -34,20 +34,20 @@ public class BusTests
 
     public async Task ShouldCatchAndLogExceptionsThrowByProblematicReportsRatherThanInterruptExecution()
     {
+        await using var console = new StringWriter();
+        
         IReport[] reports =
         [
-            new EventHandler(),
+            new EventHandler(console),
             new FailingEventHandler()
         ];
 
-        using var console = new RedirectedConsole();
-
-        var bus = new Bus(System.Console.Out, reports);
+        var bus = new Bus(console, reports);
         await bus.Publish(new Event(1));
         await bus.Publish(new AnotherEvent(2));
         await bus.Publish(new Event(3));
 
-        console.Lines()
+        console.ToString().Lines()
             .ShouldBe(
                 FullName<EventHandler>() + " handled Event 1",
                 FullName<FailingEventHandler>() + $" threw an exception while attempting to handle a message of type {FullName<Event>()}:",
@@ -74,35 +74,35 @@ public class BusTests
         public int Id { get; }
     }
 
-    class EventHandler : IHandler<Event>
+    class EventHandler(StringWriter console) : IHandler<Event>
     {
         public Task Handle(Event message)
         {
-            Log<EventHandler, Event>(message.Id);
+            Log<EventHandler, Event>(console, message.Id);
             return Task.CompletedTask;
         }
     }
 
-    class AnotherEventHandler : IHandler<AnotherEvent>
+    class AnotherEventHandler(StringWriter console) : IHandler<AnotherEvent>
     {
         public Task Handle(AnotherEvent message)
         {
-            Log<AnotherEventHandler, AnotherEvent>(message.Id);
+            Log<AnotherEventHandler, AnotherEvent>(console, message.Id);
             return Task.CompletedTask;
         }
     }
 
-    class CombinationEventHandler : IHandler<Event>, IHandler<AnotherEvent>
+    class CombinationEventHandler(StringWriter console) : IHandler<Event>, IHandler<AnotherEvent>
     {
         public Task Handle(Event message)
         {
-            Log<CombinationEventHandler, Event>(message.Id);
+            Log<CombinationEventHandler, Event>(console, message.Id);
             return Task.CompletedTask;
         }
 
         public Task Handle(AnotherEvent message)
         {
-            Log<CombinationEventHandler, AnotherEvent>(message.Id);
+            Log<CombinationEventHandler, AnotherEvent>(console, message.Id);
             return Task.CompletedTask;
         }
     }
@@ -113,8 +113,8 @@ public class BusTests
             => throw new StubException($"Could not handle {nameof(Event)} {message.Id}");
     }
 
-    static void Log<THandler, TEvent>(int id)
-        => System.Console.WriteLine($"{typeof(THandler).FullName} handled {typeof(TEvent).Name} {id}");
+    static void Log<THandler, TEvent>(StringWriter console, int id)
+        => console.WriteLine($"{typeof(THandler).FullName} handled {typeof(TEvent).Name} {id}");
 
     class StubException : Exception
     {

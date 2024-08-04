@@ -172,8 +172,7 @@ public class VsTestExecutor : ITestExecutor
                             Test = lastTestStarted.Test,
                             TestCase = lastTestStarted.Test,
                             Reason = new PipeMessage.Exception(exception),
-                            DurationInMilliseconds = 0,
-                            Output = ""
+                            DurationInMilliseconds = 0
                         });
                     }
 
@@ -199,8 +198,7 @@ public class VsTestExecutor : ITestExecutor
                         Test = selectedTest,
                         TestCase = selectedTest,
                         Reason = reason,
-                        DurationInMilliseconds = 0,
-                        Output = ""
+                        DurationInMilliseconds = 0
                     });
                 }
             }

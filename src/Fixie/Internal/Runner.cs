@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Threading.Channels;
 using Fixie.Reports;
 
 namespace Fixie.Internal;
@@ -66,10 +67,28 @@ class Runner
         var conventions = configuration.Conventions.Items;
         var bus = new Bus(console, defaultReports.Concat(configuration.Reports.Items).ToArray());
 
-        var recorder = new ExecutionRecorder(bus);
-            
         using (new ConsoleRedirectionBoundary())
         {
+            var channel = Channel.CreateUnbounded<IMessage>();
+
+            var recorder = new ExecutionRecorder(channel);
+
+            var consumer = Task.Run(async () =>
+            {
+                await foreach (var message in channel.Reader.ReadAllAsync())
+                {
+                    switch (message)
+                    {
+                        case ExecutionStarted x: await bus.Publish(x); break;
+                        case TestStarted x: await bus.Publish(x); break;
+                        case TestSkipped x: await bus.Publish(x); break;
+                        case TestPassed x: await bus.Publish(x); break;
+                        case TestFailed x: await bus.Publish(x); break;
+                        case ExecutionCompleted x: await bus.Publish(x); break;
+                    }
+                }
+            });
+
             await recorder.StartExecution();
 
             foreach (var convention in conventions)
@@ -78,7 +97,13 @@ class Runner
                 await Run(testSuite, convention.Execution);
             }
 
-            return await recorder.CompleteExecution();
+            var assemblySummary = await recorder.CompleteExecution();
+
+            channel.Writer.Complete();
+
+            await consumer;
+
+            return assemblySummary;
         }
     }
 

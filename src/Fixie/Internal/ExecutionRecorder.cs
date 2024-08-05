@@ -1,19 +1,20 @@
 ﻿using System.Diagnostics;
+using System.Threading.Channels;
 using Fixie.Reports;
 
 namespace Fixie.Internal;
 
 class ExecutionRecorder
 {
-    readonly Bus bus;
+    readonly Channel<IMessage> channel;
 
     readonly ExecutionSummary assemblySummary;
     readonly Stopwatch assemblyStopwatch;
     readonly Stopwatch caseStopwatch;
 
-    public ExecutionRecorder(Bus bus)
+    public ExecutionRecorder(Channel<IMessage> channel)
     {
-        this.bus = bus;
+        this.channel = channel;
 
         assemblySummary = new ExecutionSummary();
 
@@ -23,14 +24,16 @@ class ExecutionRecorder
 
     public async Task StartExecution()
     {
-        await bus.Publish(new ExecutionStarted());
+        var message = new ExecutionStarted();
+        await channel.Writer.WriteAsync(message);
         assemblyStopwatch.Restart();
         caseStopwatch.Restart();
     }
 
     public async Task Start(Test test)
     {
-        await bus.Publish(new TestStarted(test));
+        var message = new TestStarted(test);
+        await channel.Writer.WriteAsync(message);
     }
 
     public async Task Skip(Test test, string name, string reason)
@@ -39,7 +42,7 @@ class ExecutionRecorder
 
         var message = new TestSkipped(test.Name, name, duration, reason);
         assemblySummary.Add(message);
-        await bus.Publish(message);
+        await channel.Writer.WriteAsync(message);
 
         caseStopwatch.Restart();
     }
@@ -50,7 +53,7 @@ class ExecutionRecorder
 
         var message = new TestPassed(test.Name, name, duration);
         assemblySummary.Add(message);
-        await bus.Publish(message);
+        await channel.Writer.WriteAsync(message);
 
         caseStopwatch.Restart();
     }
@@ -61,7 +64,7 @@ class ExecutionRecorder
 
         var message = new TestFailed(test.Name, name, duration, reason);
         assemblySummary.Add(message);
-        await bus.Publish(message);
+        await channel.Writer.WriteAsync(message);
 
         caseStopwatch.Restart();
     }
@@ -72,7 +75,8 @@ class ExecutionRecorder
         caseStopwatch.Stop();
         assemblyStopwatch.Stop();
 
-        await bus.Publish(new ExecutionCompleted(assemblySummary, duration));
+        var message = new ExecutionCompleted(assemblySummary, duration);
+        await channel.Writer.WriteAsync(message);
 
         return assemblySummary;
     }

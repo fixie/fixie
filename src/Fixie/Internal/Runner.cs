@@ -69,7 +69,14 @@ class Runner
 
         using (new ConsoleRedirectionBoundary())
         {
-            var channel = Channel.CreateUnbounded<IMessage>();
+            var channel = Channel.CreateUnbounded<IMessage>(
+                new UnboundedChannelOptions
+                {
+                    AllowSynchronousContinuations = false,
+                    SingleReader = true,
+                    SingleWriter = false
+                }
+            );
 
             var recorder = new ExecutionRecorder(channel);
 

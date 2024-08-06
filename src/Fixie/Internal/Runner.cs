@@ -78,11 +78,13 @@ class Runner
                 }
             );
 
-            var recorder = new ExecutionRecorder(channel);
+            var channelReader = channel.Reader;
+
+            var recorder = new ExecutionRecorder(channel.Writer);
 
             var consumer = Task.Run(async () =>
             {
-                await foreach (var message in channel.Reader.ReadAllAsync())
+                await foreach (var message in channelReader.ReadAllAsync())
                 {
                     switch (message)
                     {

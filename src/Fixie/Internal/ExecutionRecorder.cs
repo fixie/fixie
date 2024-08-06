@@ -6,15 +6,15 @@ namespace Fixie.Internal;
 
 class ExecutionRecorder
 {
-    readonly Channel<IMessage> channel;
+    readonly ChannelWriter<IMessage> channelWriter;
 
     readonly ExecutionSummary assemblySummary;
     readonly Stopwatch assemblyStopwatch;
     readonly Stopwatch caseStopwatch;
 
-    public ExecutionRecorder(Channel<IMessage> channel)
+    public ExecutionRecorder(ChannelWriter<IMessage> channelWriter)
     {
-        this.channel = channel;
+        this.channelWriter = channelWriter;
 
         assemblySummary = new ExecutionSummary();
 
@@ -25,7 +25,7 @@ class ExecutionRecorder
     public async Task StartExecution()
     {
         var message = new ExecutionStarted();
-        await channel.Writer.WriteAsync(message);
+        await channelWriter.WriteAsync(message);
         assemblyStopwatch.Restart();
         caseStopwatch.Restart();
     }
@@ -33,7 +33,7 @@ class ExecutionRecorder
     public async Task Start(Test test)
     {
         var message = new TestStarted(test);
-        await channel.Writer.WriteAsync(message);
+        await channelWriter.WriteAsync(message);
     }
 
     public async Task Skip(Test test, string name, string reason)
@@ -42,7 +42,7 @@ class ExecutionRecorder
 
         var message = new TestSkipped(test.Name, name, duration, reason);
         assemblySummary.Add(message);
-        await channel.Writer.WriteAsync(message);
+        await channelWriter.WriteAsync(message);
 
         caseStopwatch.Restart();
     }
@@ -53,7 +53,7 @@ class ExecutionRecorder
 
         var message = new TestPassed(test.Name, name, duration);
         assemblySummary.Add(message);
-        await channel.Writer.WriteAsync(message);
+        await channelWriter.WriteAsync(message);
 
         caseStopwatch.Restart();
     }
@@ -64,7 +64,7 @@ class ExecutionRecorder
 
         var message = new TestFailed(test.Name, name, duration, reason);
         assemblySummary.Add(message);
-        await channel.Writer.WriteAsync(message);
+        await channelWriter.WriteAsync(message);
 
         caseStopwatch.Restart();
     }
@@ -76,7 +76,7 @@ class ExecutionRecorder
         assemblyStopwatch.Stop();
 
         var message = new ExecutionCompleted(assemblySummary, duration);
-        await channel.Writer.WriteAsync(message);
+        await channelWriter.WriteAsync(message);
 
         return assemblySummary;
     }

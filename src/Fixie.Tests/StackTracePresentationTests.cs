@@ -1,4 +1,5 @@
-﻿using Fixie.Reports;
+﻿using System.Diagnostics;
+using Fixie.Reports;
 using static Fixie.Tests.Utility;
 
 namespace Fixie.Tests;
@@ -168,17 +169,19 @@ public class StackTracePresentationTests
             {
                 foreach (var test in testClass.Tests)
                 {
+                    var startTime = Stopwatch.GetTimestamp();
+
                     try
                     {
                         var instance = testClass.Construct();
 
                         await test.Method.Call(instance);
 
-                        await test.Pass();
+                        await test.Pass(Stopwatch.GetElapsedTime(startTime));
                     }
                     catch (Exception exception)
                     {
-                        await test.Fail(exception);
+                        await test.Fail(exception, Stopwatch.GetElapsedTime(startTime));
                     }
                 }
             }

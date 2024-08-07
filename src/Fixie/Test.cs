@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
@@ -109,19 +110,20 @@ public class Test
     /// <summary>
     /// Emits a pass result for this test.
     /// </summary>
-    public async Task Pass()
+    /// <param name="duration"></param>
+    public async Task Pass(TimeSpan? duration = null)
     {
-        await Pass(EmptyParameters);
+        await Pass(EmptyParameters, duration);
     }
 
     /// <summary>
     /// Emits a pass result for this test case.
     /// </summary>
-    public async Task Pass(object?[] parameters)
+    public async Task Pass(object?[] parameters, TimeSpan? duration = null)
     {
         var name = GetName(Method, parameters);
 
-        await recorder.Pass(this, name);
+        await recorder.Pass(this, name, duration ?? TimeSpan.Zero);
 
         RecordedResult = true;
     }
@@ -129,22 +131,22 @@ public class Test
     /// <summary>
     /// Emits a skip result for this test, with the given reason.
     /// </summary>
-    public async Task Skip(string reason)
+    public async Task Skip(string reason, TimeSpan? duration = null)
     {
-        await Skip(EmptyParameters, reason);
+        await Skip(EmptyParameters, reason, duration);
     }
 
     /// <summary>
     /// Emits a skip result for this test case, with the given reason.
     /// </summary>
-    public async Task Skip(object?[] parameters, string reason)
+    public async Task Skip(object?[] parameters, string reason, TimeSpan? duration = null)
     {
         var name = GetName(Method, parameters);
 
         if (string.IsNullOrWhiteSpace(reason))
             reason = "This test was explicitly skipped, but no reason was provided.";
 
-        await recorder.Skip(this, name, reason);
+        await recorder.Skip(this, name, reason, duration ?? TimeSpan.Zero);
 
         RecordedResult = true;
     }
@@ -152,22 +154,22 @@ public class Test
     /// <summary>
     /// Emits a failure result for this test, with the given reason.
     /// </summary>
-    public async Task Fail(Exception reason)
+    public async Task Fail(Exception reason, TimeSpan? duration = null)
     {
-        await Fail(EmptyParameters, reason);
+        await Fail(EmptyParameters, reason, duration);
     }
 
     /// <summary>
     /// Emits a failure result for this test case, with the given reason.
     /// </summary>
-    public async Task Fail(object?[] parameters, Exception reason)
+    public async Task Fail(object?[] parameters, Exception reason, TimeSpan? duration = null)
     {
         if (reason == null)
             throw new ArgumentNullException(nameof(reason));
 
         var name = GetName(Method, parameters);
 
-        await recorder.Fail(this, name, reason);
+        await recorder.Fail(this, name, reason, duration ?? TimeSpan.Zero);
 
         RecordedResult = true;
     }
@@ -179,6 +181,8 @@ public class Test
 
         await recorder.Start(this);
 
+        var startTime = Stopwatch.GetTimestamp();
+
         try
         {
             if (instance == null && !resolvedMethod.IsStatic)
@@ -188,12 +192,12 @@ public class Test
         }
         catch (Exception failureReason)
         {
-            await recorder.Fail(this, name, failureReason);
+            await recorder.Fail(this, name, failureReason, Stopwatch.GetElapsedTime(startTime));
             RecordedResult = true;
             return TestResult.Failed(failureReason);
         }
 
-        await recorder.Pass(this, name);
+        await recorder.Pass(this, name, Stopwatch.GetElapsedTime(startTime));
         RecordedResult = true;
         return TestResult.Passed;
     }

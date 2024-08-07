@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Microsoft.FSharp.Control;
 using static System.Environment;
 using static Fixie.Tests.Utility;
@@ -15,6 +16,8 @@ public class MethodInfoExtensionsTests : InstrumentedExecutionTests
                 foreach (var test in testClass.Tests)
                     foreach (var parameters in FromInputAttributes(test))
                     {
+                        var startTime = Stopwatch.GetTimestamp();
+
                         try
                         {
                             var instance = testClass.Construct();
@@ -28,11 +31,11 @@ public class MethodInfoExtensionsTests : InstrumentedExecutionTests
                                      test.Method.ReturnType != typeof(ValueTask))
                                 console.WriteLine($"{test.Method.Name} resulted in null");
 
-                            await test.Pass(parameters);
+                            await test.Pass(parameters, Stopwatch.GetElapsedTime(startTime));
                         }
                         catch (Exception exception)
                         {
-                            await test.Fail(parameters, exception);
+                            await test.Fail(parameters, exception, Stopwatch.GetElapsedTime(startTime));
                         }
                     }
         }

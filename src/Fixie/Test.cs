@@ -2,7 +2,9 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
+using System.Threading.Channels;
 using Fixie.Internal;
+using Fixie.Reports;
 
 namespace Fixie;
 
@@ -10,11 +12,11 @@ public class Test
 {
     static readonly object[] EmptyParameters = [];
 
-    readonly ExecutionRecorder recorder;
+    readonly ChannelWriter<IMessage> channelWriter;
 
-    internal Test(ExecutionRecorder recorder, MethodInfo method)
+    internal Test(ChannelWriter<IMessage> channelWriter, MethodInfo method)
     {
-        this.recorder = recorder;
+        this.channelWriter = channelWriter;
         Name = method.TestName();
         Method = method;
         RecordedResult = false;
@@ -104,7 +106,7 @@ public class Test
     /// </summary>
     public async Task Start()
     {
-        await recorder.Start(this);
+        await ReportStart(this);
     }
 
     /// <summary>
@@ -123,7 +125,7 @@ public class Test
     {
         var name = GetName(Method, parameters);
 
-        await recorder.Pass(this, name, duration ?? TimeSpan.Zero);
+        await ReportPass(this, name, duration ?? TimeSpan.Zero);
 
         RecordedResult = true;
     }
@@ -146,7 +148,7 @@ public class Test
         if (string.IsNullOrWhiteSpace(reason))
             reason = "This test was explicitly skipped, but no reason was provided.";
 
-        await recorder.Skip(this, name, reason, duration ?? TimeSpan.Zero);
+        await ReportSkip(this, name, reason, duration ?? TimeSpan.Zero);
 
         RecordedResult = true;
     }
@@ -169,7 +171,7 @@ public class Test
 
         var name = GetName(Method, parameters);
 
-        await recorder.Fail(this, name, reason, duration ?? TimeSpan.Zero);
+        await ReportFail(this, name, reason, duration ?? TimeSpan.Zero);
 
         RecordedResult = true;
     }
@@ -179,7 +181,7 @@ public class Test
         var resolvedMethod = Method.TryResolveTypeArguments(parameters);
         var name = CaseNameBuilder.GetName(resolvedMethod, parameters);
 
-        await recorder.Start(this);
+        await ReportStart(this);
 
         var startTime = Stopwatch.GetTimestamp();
 
@@ -192,12 +194,12 @@ public class Test
         }
         catch (Exception failureReason)
         {
-            await recorder.Fail(this, name, failureReason, Stopwatch.GetElapsedTime(startTime));
+            await ReportFail(this, name, failureReason, Stopwatch.GetElapsedTime(startTime));
             RecordedResult = true;
             return TestResult.Failed(failureReason);
         }
 
-        await recorder.Pass(this, name, Stopwatch.GetElapsedTime(startTime));
+        await ReportPass(this, name, Stopwatch.GetElapsedTime(startTime));
         RecordedResult = true;
         return TestResult.Passed;
     }
@@ -217,4 +219,28 @@ public class Test
 
     static string GetName(MethodInfo method, object?[] parameters)
         => CaseNameBuilder.GetName(method.TryResolveTypeArguments(parameters), parameters);
+
+    async Task ReportStart(Test test)
+    {
+        var message = new TestStarted(test);
+        await channelWriter.WriteAsync(message);
+    }
+
+    async Task ReportSkip(Test test, string name, string reason, TimeSpan duration)
+    {
+        var message = new TestSkipped(test.Name, name, duration, reason);
+        await channelWriter.WriteAsync(message);
+    }
+
+    async Task ReportPass(Test test, string name, TimeSpan duration)
+    {
+        var message = new TestPassed(test.Name, name, duration);
+        await channelWriter.WriteAsync(message);
+    }
+
+    async Task ReportFail(Test test, string name, Exception reason, TimeSpan duration)
+    {
+        var message = new TestFailed(test.Name, name, duration, reason);
+        await channelWriter.WriteAsync(message);
+    }
 }

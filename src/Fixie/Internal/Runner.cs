@@ -80,8 +80,8 @@ class Runner
             );
 
             var channelReader = channel.Reader;
+            var channelWriter = channel.Writer;
 
-            var recorder = new ExecutionRecorder(channel.Writer);
             var assemblySummary = new ExecutionSummary();
 
             var consumer = Task.Run(async () =>
@@ -106,11 +106,11 @@ class Runner
 
             foreach (var convention in conventions)
             {
-                var testSuite = BuildTestSuite(candidateTypes, convention.Discovery, selectedTests, testPattern, recorder);
+                var testSuite = BuildTestSuite(candidateTypes, convention.Discovery, selectedTests, testPattern, channelWriter);
                 await Run(testSuite, convention.Execution);
             }
 
-            channel.Writer.Complete();
+            channelWriter.Complete();
 
             await consumer;
 
@@ -118,7 +118,7 @@ class Runner
         }
     }
 
-    static TestSuite BuildTestSuite(IReadOnlyList<Type> candidateTypes, IDiscovery discovery, HashSet<string> selectedTests, TestPattern? testPattern, ExecutionRecorder recorder)
+    static TestSuite BuildTestSuite(IReadOnlyList<Type> candidateTypes, IDiscovery discovery, HashSet<string> selectedTests, TestPattern? testPattern, ChannelWriter<IMessage> channelWriter)
     {
         var classDiscoverer = new ClassDiscoverer(discovery);
         var classes = classDiscoverer.TestClasses(candidateTypes);
@@ -152,7 +152,7 @@ class Runner
             if (methods.Count > 0)
             {
                 var testMethods = methods
-                    .Select(method => new Test(recorder, method))
+                    .Select(method => new Test(channelWriter, method))
                     .ToList();
 
                 testClasses.Add(new TestClass(@class, testMethods));

@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Reflection;
 using System.Threading.Channels;
 using Fixie.Reports;
 
@@ -81,32 +82,33 @@ class Runner
             var channelReader = channel.Reader;
 
             var recorder = new ExecutionRecorder(channel.Writer);
+            var assemblySummary = new ExecutionSummary();
 
             var consumer = Task.Run(async () =>
             {
+                var startTime = Stopwatch.GetTimestamp();
+                
+                await bus.Publish(new ExecutionStarted());
+
                 await foreach (var message in channelReader.ReadAllAsync())
                 {
                     switch (message)
                     {
-                        case ExecutionStarted x: await bus.Publish(x); break;
                         case TestStarted x: await bus.Publish(x); break;
-                        case TestSkipped x: await bus.Publish(x); break;
-                        case TestPassed x: await bus.Publish(x); break;
-                        case TestFailed x: await bus.Publish(x); break;
-                        case ExecutionCompleted x: await bus.Publish(x); break;
+                        case TestSkipped x: assemblySummary.Add(x); await bus.Publish(x); break;
+                        case TestPassed x: assemblySummary.Add(x); await bus.Publish(x); break;
+                        case TestFailed x: assemblySummary.Add(x); await bus.Publish(x); break;
                     }
                 }
-            });
 
-            await recorder.StartExecution();
+                await bus.Publish(new ExecutionCompleted(assemblySummary, Stopwatch.GetElapsedTime(startTime)));
+            });
 
             foreach (var convention in conventions)
             {
                 var testSuite = BuildTestSuite(candidateTypes, convention.Discovery, selectedTests, testPattern, recorder);
                 await Run(testSuite, convention.Execution);
             }
-
-            var assemblySummary = await recorder.CompleteExecution();
 
             channel.Writer.Complete();
 

@@ -8,25 +8,13 @@ class ExecutionRecorder
 {
     readonly ChannelWriter<IMessage> channelWriter;
 
-    readonly ExecutionSummary assemblySummary;
-    readonly Stopwatch assemblyStopwatch;
     readonly Stopwatch caseStopwatch;
 
     public ExecutionRecorder(ChannelWriter<IMessage> channelWriter)
     {
         this.channelWriter = channelWriter;
 
-        assemblySummary = new ExecutionSummary();
-
-        assemblyStopwatch = new Stopwatch();
         caseStopwatch = new Stopwatch();
-    }
-
-    public async Task StartExecution()
-    {
-        var message = new ExecutionStarted();
-        await channelWriter.WriteAsync(message);
-        assemblyStopwatch.Restart();
         caseStopwatch.Restart();
     }
 
@@ -41,7 +29,6 @@ class ExecutionRecorder
         var duration = caseStopwatch.Elapsed;
 
         var message = new TestSkipped(test.Name, name, duration, reason);
-        assemblySummary.Add(message);
         await channelWriter.WriteAsync(message);
 
         caseStopwatch.Restart();
@@ -52,7 +39,6 @@ class ExecutionRecorder
         var duration = caseStopwatch.Elapsed;
 
         var message = new TestPassed(test.Name, name, duration);
-        assemblySummary.Add(message);
         await channelWriter.WriteAsync(message);
 
         caseStopwatch.Restart();
@@ -63,21 +49,8 @@ class ExecutionRecorder
         var duration = caseStopwatch.Elapsed;
 
         var message = new TestFailed(test.Name, name, duration, reason);
-        assemblySummary.Add(message);
         await channelWriter.WriteAsync(message);
 
         caseStopwatch.Restart();
-    }
-
-    public async Task<ExecutionSummary> CompleteExecution()
-    {
-        var duration = assemblyStopwatch.Elapsed;
-        caseStopwatch.Stop();
-        assemblyStopwatch.Stop();
-
-        var message = new ExecutionCompleted(assemblySummary, duration);
-        await channelWriter.WriteAsync(message);
-
-        return assemblySummary;
     }
 }

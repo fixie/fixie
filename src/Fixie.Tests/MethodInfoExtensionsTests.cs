@@ -25,11 +25,11 @@ public class MethodInfoExtensionsTests : InstrumentedExecutionTests
                             var result = await test.Method.Call(instance, parameters);
 
                             if (result != null)
-                                console.WriteLine($"{test.Method.Name} resulted in {result.GetType().FullName} with value {result}");
+                                ConsoleWriteLine($"{test.Method.Name} resulted in {result.GetType().FullName} with value {result}");
                             else if (test.Method.ReturnType != typeof(void) &&
                                      test.Method.ReturnType != typeof(Task) &&
                                      test.Method.ReturnType != typeof(ValueTask))
-                                console.WriteLine($"{test.Method.Name} resulted in null");
+                                ConsoleWriteLine($"{test.Method.Name} resulted in null");
 
                             await test.Pass(parameters, Stopwatch.GetElapsedTime(startTime));
                         }

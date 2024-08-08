@@ -9,7 +9,9 @@ public class AppVeyorReportTests : MessagingTests
     {
         List<AppVeyorReport.Result> results = [];
 
-        var report = new AppVeyorReport(GetTestEnvironment(), "http://localhost:4567", (uri, content) =>
+        await using var console = new StringWriter();
+        
+        var report = new AppVeyorReport(GetTestEnvironment(console), "http://localhost:4567", (uri, content) =>
         {
             uri.ShouldBe("http://localhost:4567/api/tests");
             results.Add(content);
@@ -17,6 +19,8 @@ public class AppVeyorReportTests : MessagingTests
         });
 
         await Run(report);
+
+        console.ToString().ShouldBeEmpty();
 
         results.Count.ShouldBe(7);
 

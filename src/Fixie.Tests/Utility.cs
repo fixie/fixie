@@ -14,14 +14,6 @@ public static class Utility
             console,
             Directory.GetCurrentDirectory());
     }
-    
-    public static TestEnvironment GetTestEnvironment()
-    {
-        return new TestEnvironment(
-            typeof(TestProject).Assembly,
-            System.Console.Out,
-            Directory.GetCurrentDirectory());
-    }
 
     public static string TargetFrameworkVersion => "8.0";
 

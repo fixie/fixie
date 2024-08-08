@@ -4,7 +4,7 @@ class TestProject : ITestProject
 {
     public void Configure(TestConfiguration configuration, TestEnvironment environment)
     {
-        bool enableParallelism = false;
+        bool enableParallelism = true;
 
         if (enableParallelism)
             configuration.Conventions.Add<DefaultDiscovery, ParallelExecution>();

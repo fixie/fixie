@@ -112,7 +112,6 @@ public class Test
     /// <summary>
     /// Emits a pass result for this test.
     /// </summary>
-    /// <param name="duration"></param>
     public async Task Pass(TimeSpan? duration = null)
     {
         await Pass(EmptyParameters, duration);

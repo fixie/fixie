@@ -4,20 +4,32 @@ namespace Fixie.Tests;
 
 public abstract class InstrumentedExecutionTests
 {
-    static string? FailingMember;
-    static int? FailingMemberOccurrence;
-    protected static TextWriter console = default!;
+    class ScenarioState
+    {
+        public string? FailingMember { get; set; }
+        public int? FailingMemberOccurrence { get; set; }
+        public TextWriter? Console { get; set; }
+    }
+
+    static readonly AsyncLocal<ScenarioState> State = new();
 
     protected InstrumentedExecutionTests()
     {
-        FailingMember = null;
-        FailingMemberOccurrence = null;
+        State.Value = new ScenarioState();
     }
 
     protected static void FailDuring(string failingMemberName, int? occurrence = null)
     {
-        FailingMember = failingMemberName;
-        FailingMemberOccurrence = occurrence;
+        State.Value.ShouldNotBeNull();
+        State.Value.FailingMember = failingMemberName;
+        State.Value.FailingMemberOccurrence = occurrence;
+    }
+
+    protected static void ConsoleWriteLine(string text)
+    {
+        State.Value.ShouldNotBeNull();
+        State.Value.Console.ShouldNotBeNull();
+        State.Value.Console.WriteLine(text);
     }
 
     protected class Output
@@ -48,30 +60,33 @@ public abstract class InstrumentedExecutionTests
 
     protected static void WhereAmI(object parameter, [CallerMemberName] string member = default!)
     {
-        console.WriteLine($"{member}({parameter})");
+        ConsoleWriteLine($"{member}({parameter})");
 
         ProcessScriptedFailure(member);
     }
         
     protected static void WhereAmI([CallerMemberName] string member = default!)
     {
-        console.WriteLine(member);
+        ConsoleWriteLine(member);
 
         ProcessScriptedFailure(member);
     }
 
     protected static void ProcessScriptedFailure([CallerMemberName] string member = default!)
     {
-        if (FailingMember == member)
+        var state = State.Value;
+        state.ShouldNotBeNull();
+
+        if (state.FailingMember == member)
         {
-            if (FailingMemberOccurrence == null)
+            if (state.FailingMemberOccurrence == null)
                 throw new FailureException(member);
 
-            if (FailingMemberOccurrence > 0)
+            if (state.FailingMemberOccurrence > 0)
             {
-                FailingMemberOccurrence--;
+                state.FailingMemberOccurrence--;
 
-                if (FailingMemberOccurrence == 0)
+                if (state.FailingMemberOccurrence == 0)
                     throw new FailureException(member);
             }
         }
@@ -102,21 +117,27 @@ public abstract class InstrumentedExecutionTests
 
     async Task<Output> Run(Type testClass, IExecution execution)
     {
-        await using (console = new StringWriter())
-        {
-            var results = await Utility.Run(testClass, execution, console);
+        var state = State.Value;
+        state.ShouldNotBeNull();
 
-            return new Output(GetType().FullName!, console.ToString().Lines().ToArray(), results.ToArray());
+        await using (state.Console = new StringWriter())
+        {
+            var results = await Utility.Run(testClass, execution, state.Console);
+
+            return new Output(GetType().FullName!, state.Console.ToString().Lines().ToArray(), results.ToArray());
         }
     }
 
     async Task<Output> Run(Type[] testClasses, IExecution execution)
     {
-        await using (console = new StringWriter())
-        {
-            var results = await Utility.Run(testClasses, execution, console);
+        var state = State.Value;
+        state.ShouldNotBeNull();
 
-            return new Output(GetType().FullName!, console.ToString().Lines().ToArray(), results.ToArray());
+        await using (state.Console = new StringWriter())
+        {
+            var results = await Utility.Run(testClasses, execution, state.Console);
+
+            return new Output(GetType().FullName!, state.Console.ToString().Lines().ToArray(), results.ToArray());
         }
     }
 }

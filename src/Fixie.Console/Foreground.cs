@@ -2,15 +2,9 @@
 
 class Foreground : IDisposable
 {
-    readonly ConsoleColor before;
+    public Foreground(ConsoleColor color) => System.Console.ForegroundColor = color;
 
-    public Foreground(ConsoleColor color)
-    {
-        before = System.Console.ForegroundColor;
-        System.Console.ForegroundColor = color;
-    }
-
-    public void Dispose() => System.Console.ForegroundColor = before;
+    public void Dispose() => System.Console.ResetColor();
 
     public static Foreground Red => new(ConsoleColor.Red);
 

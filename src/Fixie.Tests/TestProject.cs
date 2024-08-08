@@ -4,12 +4,7 @@ class TestProject : ITestProject
 {
     public void Configure(TestConfiguration configuration, TestEnvironment environment)
     {
-        bool enableParallelism = true;
-
-        if (enableParallelism)
-            configuration.Conventions.Add<DefaultDiscovery, ParallelExecution>();
-        else
-            configuration.Conventions.Add<DefaultDiscovery, DefaultExecution>();
+        configuration.Conventions.Add<DefaultDiscovery, ParallelExecution>();
 
         if (environment.IsDevelopment())
             configuration.Reports.Add<DiffToolReport>();

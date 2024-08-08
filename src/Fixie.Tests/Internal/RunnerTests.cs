@@ -18,10 +18,14 @@ public class RunnerTests
         ];
         var discovery = new SelfTestDiscovery();
         
-        var environment = new TestEnvironment(GetType().Assembly, System.Console.Out, Directory.GetCurrentDirectory());
+        await using var console = new StringWriter();
+        
+        var environment = GetTestEnvironment(console);
         var runner = new Runner(environment, report);
 
         await runner.Discover(candidateTypes, discovery);
+
+        console.ToString().ShouldBeEmpty();
 
         report.Entries.ShouldBe(
             Self + "+PassTestClass.PassA discovered",
@@ -44,12 +48,16 @@ public class RunnerTests
         var discovery = new SelfTestDiscovery();
         var execution = new CreateInstancePerCase();
 
-        var environment = new TestEnvironment(GetType().Assembly, System.Console.Out, Directory.GetCurrentDirectory());
+        await using var console = new StringWriter();
+        
+        var environment = GetTestEnvironment(console);
         var runner = new Runner(environment, report);
         var configuration = new TestConfiguration();
         configuration.Conventions.Add(discovery, execution);
 
         await runner.Run(candidateTypes, configuration, []);
+
+        console.ToString().ShouldBeEmpty();
 
         report.Entries.ShouldBe(
             Self + "+PassTestClass.PassA passed",

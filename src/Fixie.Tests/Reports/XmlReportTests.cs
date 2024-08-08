@@ -9,13 +9,17 @@ public class XmlReportTests : MessagingTests
 {
     public async Task ShouldProduceValidXmlDocument()
     {
-        var environment = GetTestEnvironment();
+        await using var console = new StringWriter();
+
+        var environment = GetTestEnvironment(console);
 
         XDocument? actual = null;
         var report = new XmlReport(environment, document => actual = document);
 
         await Run(report);
 
+        console.ToString().ShouldBeEmpty();
+        
         if (actual == null)
             throw new Exception("Expected non-null XML report.");
 

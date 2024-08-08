@@ -21,11 +21,7 @@ class TestProject : ITestProject
     {
         public async Task Run(TestSuite testSuite)
         {
-            await Parallel.ForEachAsync(testSuite.TestClasses, async (testClass, cancellationToken) =>
-            {
-                foreach (var test in testClass.Tests)
-                    await test.Run();
-            });
+            await Parallel.ForEachAsync(testSuite.Tests, async (test, _) => await test.Run());
         }
     }
 }

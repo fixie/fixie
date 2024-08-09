@@ -10,6 +10,7 @@ public class StackTracePresentationTests
     {
         (await Run<ConstructionFailureTestClass, ImplicitExceptionHandling>())
             .ShouldBe(
+                "",
                 "Test '" + FullName<ConstructionFailureTestClass>() + ".UnreachableTest' failed:",
                 "",
                 "'.ctor' failed!",
@@ -25,6 +26,7 @@ public class StackTracePresentationTests
     {
         (await Run<ConstructionFailureTestClass, ExplicitExceptionHandling>())
             .ShouldBe(
+                "",
                 "Test '" + FullName<ConstructionFailureTestClass>() + ".UnreachableTest' failed:",
                 "",
                 "'.ctor' failed!",
@@ -43,6 +45,7 @@ public class StackTracePresentationTests
     {
         (await Run<FailureTestClass, ImplicitExceptionHandling>())
             .ShouldBe(
+                "",
                 "Test '" + FullName<FailureTestClass>() + ".Asynchronous' failed:",
                 "",
                 "'Asynchronous' failed!",
@@ -69,6 +72,7 @@ public class StackTracePresentationTests
 
         output
             .ShouldBe(
+                "",
                 "Test '" + FullName<FailureTestClass>() + ".Asynchronous' failed:",
                 "",
                 "'Asynchronous' failed!",
@@ -101,6 +105,7 @@ public class StackTracePresentationTests
     {
         (await Run<NestedFailureTestClass, ImplicitExceptionHandling>())
             .ShouldBe(
+                "",
                 "Test '" + FullName<NestedFailureTestClass>() + ".Asynchronous' failed:",
                 "",
                 "Primary Exception!",

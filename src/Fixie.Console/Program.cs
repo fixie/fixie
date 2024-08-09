@@ -129,7 +129,6 @@ static int RunTests(Options options, string testProject, string targetFramework,
             : "";
 
     Heading($"Running {assemblyName}{context}");
-    WriteLine();
 
     var workingDirectory = Path.Combine(
         new FileInfo(testProject).Directory!.FullName,

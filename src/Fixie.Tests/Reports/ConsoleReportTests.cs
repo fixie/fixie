@@ -13,6 +13,8 @@ public class ConsoleReportTests : MessagingTests
             .NormalizeStackTraceLines()
             .CleanDuration()
             .ShouldBe(
+                "",
+
                 "Test '" + TestClass + ".Fail' failed:",
                 "",
                 "'Fail' failed!",
@@ -54,6 +56,8 @@ public class ConsoleReportTests : MessagingTests
             .NormalizeStackTraceLines()
             .CleanDuration()
             .ShouldBe(
+                "",
+
                 "Test '" + TestClass + ".Fail' failed:",
                 "",
                 "'Fail' failed!",

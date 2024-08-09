@@ -22,6 +22,7 @@ class ConsoleReport :
         console = environment.Console;
         this.testPattern = testPattern;
         this.outputTestPassed = testPattern != null;
+        paddingWouldRequireOpeningBlankLine = true;
     }
 
     public Task Handle(TestSkipped message)
@@ -43,8 +44,7 @@ class ConsoleReport :
         {
             WithoutPadding(() =>
             {
-                using (Foreground.Green)
-                    console.WriteLine($"Test '{message.TestCase}' passed");
+                console.WriteLine($"Test '{message.TestCase}' passed");
             });
         }
 

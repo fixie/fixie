@@ -33,10 +33,9 @@ try
             
         var targetFrameworks = GetTargetFrameworks(options, testProject);
             
-        bool runningForMultipleFrameworks = targetFrameworks.Length > 1;
         foreach (var targetFramework in targetFrameworks)
         {
-            int exitCode = RunTests(options, testProject, targetFramework, customArguments, runningForMultipleFrameworks);
+            int exitCode = RunTests(options, testProject, targetFramework, customArguments);
             
             if (exitCode != Success && exitCode != Failure)
                 Error("Unexpected exit code: " + exitCode);
@@ -115,7 +114,7 @@ static string[] GetTargetFrameworks(Options options, string testProject)
         $"The test project targets the following framework(s): {availableFrameworks}");
 }
 
-static int RunTests(Options options, string testProject, string targetFramework, string[] customArguments, bool runningForMultipleFrameworks)
+static int RunTests(Options options, string testProject, string targetFramework, string[] customArguments)
 {
     var assemblyMetadata = QueryTarget(testProject, "_Fixie_GetAssemblyMetadata", options.Configuration, targetFramework);
 
@@ -123,12 +122,7 @@ static int RunTests(Options options, string testProject, string targetFramework,
     var assemblyName = assemblyMetadata[1];
     var targetFileName = assemblyMetadata[2];
 
-    var context =
-        runningForMultipleFrameworks
-            ? $" ({targetFramework})"
-            : "";
-
-    Heading($"Running {assemblyName}{context}");
+    Heading($"Running {assemblyName} ({targetFramework})");
 
     var workingDirectory = Path.Combine(
         new FileInfo(testProject).Directory!.FullName,

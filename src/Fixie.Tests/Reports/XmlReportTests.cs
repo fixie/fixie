@@ -38,12 +38,6 @@ public class XmlReportTests : MessagingTests
         //Avoid brittle assertion introduced by system time.
         cleaned = Regex.Replace(cleaned, @"run-time=""\d\d:\d\d:\d\d""", @"run-time=""HH:MM:SS""");
 
-        //Avoid brittle assertion introduced by .NET version.
-        cleaned = cleaned.Replace($@"environment=""{IntPtr.Size * 8}-bit .NETCoreApp,Version=v{TargetFrameworkVersion}""", @"environment=""00-bit .NETCoreApp,Version=vX.Y""");
-
-        //Avoid brittle assertion introduced by fixie version.
-        cleaned = cleaned.Replace($@"test-framework=""{Fixie.Internal.Framework.Version}""", @"test-framework=""Fixie 1.2.3.4""");
-
         //Avoid brittle assertion introduced by test duration.
         cleaned = Regex.Replace(cleaned, @"time=""\d+\.\d\d\d""", @"time=""1.234""");
 
@@ -58,7 +52,7 @@ public class XmlReportTests : MessagingTests
 
             var expected = $@"<?xml version=""1.0"" encoding=""utf-8"" ?>
 <assemblies>
-<assembly name=""{assemblyLocation}"" run-date=""YYYY-MM-DD"" run-time=""HH:MM:SS"" time=""1.234"" total=""7"" passed=""3"" failed=""3"" skipped=""1"" environment=""00-bit .NETCoreApp,Version=vX.Y"" test-framework=""Fixie 1.2.3.4"">
+<assembly name=""{assemblyLocation}"" run-date=""YYYY-MM-DD"" run-time=""HH:MM:SS"" time=""1.234"" total=""7"" passed=""3"" failed=""3"" skipped=""1"" environment=""64-bit net8.0"" test-framework=""{Fixie.Internal.Framework.Version}"">
   <collection time=""1.234"" name=""{GenericTestClass}"" total=""3"" passed=""2"" failed=""1"" skipped=""0"">
     <test name=""{GenericTestClass}.ShouldBeString&lt;System.String&gt;(&quot;A&quot;)"" type=""{GenericTestClass}"" method=""ShouldBeString"" result=""Pass"" time=""1.234"" />
     <test name=""{GenericTestClass}.ShouldBeString&lt;System.String&gt;(&quot;B&quot;)"" type=""{GenericTestClass}"" method=""ShouldBeString"" result=""Pass"" time=""1.234"" />

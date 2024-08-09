@@ -19,7 +19,8 @@ public class EntryPoint
     {
         var console = Console.Out;
         var rootPath = Directory.GetCurrentDirectory();
-        var environment = new TestEnvironment(assembly, console, rootPath, customArguments);
+        var targetFramework = GetEnvironmentVariable("FIXIE_TARGET_FRAMEWORK");
+        var environment = new TestEnvironment(assembly, targetFramework, console, rootPath, customArguments);
 
         using var boundary = new ConsoleRedirectionBoundary();
 

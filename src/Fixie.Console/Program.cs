@@ -133,6 +133,8 @@ static int RunTests(Options options, string testProject, string targetFramework,
     if (options.Tests != null)
         environmentVariables["FIXIE_TESTS_PATTERN"] = options.Tests;
 
+    environmentVariables["FIXIE_TARGET_FRAMEWORK"] = targetFramework;
+
     return Run("dotnet", workingDirectory, [targetFileName, ..customArguments], environmentVariables);
 }
 

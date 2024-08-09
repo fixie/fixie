@@ -1,21 +1,35 @@
 ﻿using System.Reflection;
 using System.Runtime.Versioning;
+using System.Text.RegularExpressions;
 using static System.Environment;
 
 namespace Fixie;
 
 public class TestEnvironment
 {
-    internal TestEnvironment(Assembly assembly, TextWriter console, string rootPath)
-        : this(assembly, console, rootPath, []) { }
+    internal TestEnvironment(Assembly assembly, string? targetFramework, TextWriter console, string rootPath)
+        : this(assembly, targetFramework, console, rootPath, []) { }
 
-    internal TestEnvironment(Assembly assembly, TextWriter console, string rootPath,
+    internal TestEnvironment(Assembly assembly, string? targetFramework, TextWriter console, string rootPath,
         IReadOnlyList<string> customArguments)
     {
+        TargetFramework = targetFramework ?? InferTargetFramework(assembly);
         Assembly = assembly;
         CustomArguments = customArguments;
         Console = console;
         RootPath = rootPath;
+    }
+
+    string? InferTargetFramework(Assembly assembly)
+    {
+        var name = assembly.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName;
+        
+        if (name == null)
+            return null;
+        
+        return Regex.Replace(name,
+            @"^\.NETCoreApp,Version=v([\d\.]+)$",
+            "net$1");
     }
 
     /// <summary>
@@ -26,10 +40,7 @@ public class TestEnvironment
     /// <summary>
     /// Identifies the target framework value that the test assembly was compiled against.
     /// </summary>
-    public string? TargetFramework
-        => Assembly
-            .GetCustomAttribute<TargetFrameworkAttribute>()?
-            .FrameworkName;
+    public string? TargetFramework { get; }
 
     /// <summary>
     /// Optional custom command line arguments provided to the test runner.

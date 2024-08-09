@@ -27,7 +27,7 @@ public class AppVeyorReportTests : MessagingTests
         foreach (var result in results)
         {
             result.TestFramework.ShouldBe("Fixie");
-            result.FileName.ShouldBe($"Fixie.Tests (.NETCoreApp,Version=v{TargetFrameworkVersion})");
+            result.FileName.ShouldBe($"Fixie.Tests (net{TargetFrameworkVersion})");
         }
 
         var fail = results[0];

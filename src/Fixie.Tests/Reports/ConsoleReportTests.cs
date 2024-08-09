@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Fixie.Reports;
+using static Fixie.Tests.Utility;
 
 namespace Fixie.Tests.Reports;
 
@@ -13,6 +14,7 @@ public class ConsoleReportTests : MessagingTests
             .NormalizeStackTraceLines()
             .CleanDuration()
             .ShouldBe(
+                $"Running Fixie.Tests (net{TargetFrameworkVersion})",
                 "",
 
                 "Test '" + TestClass + ".Fail' failed:",
@@ -56,6 +58,7 @@ public class ConsoleReportTests : MessagingTests
             .NormalizeStackTraceLines()
             .CleanDuration()
             .ShouldBe(
+                $"Running Fixie.Tests (net{TargetFrameworkVersion})",
                 "",
 
                 "Test '" + TestClass + ".Fail' failed:",

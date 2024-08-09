@@ -4,11 +4,13 @@ using static System.Environment;
 namespace Fixie.Reports;
 
 class ConsoleReport :
+    IHandler<ExecutionStarted>,
     IHandler<TestSkipped>,
     IHandler<TestPassed>,
     IHandler<TestFailed>,
     IHandler<ExecutionCompleted>
 {
+    readonly TestEnvironment environment;
     readonly string? testPattern;
     readonly TextWriter console;
     readonly bool outputTestPassed;
@@ -20,9 +22,21 @@ class ConsoleReport :
     public ConsoleReport(TestEnvironment environment, string? testPattern = null)
     {
         console = environment.Console;
+        this.environment = environment;
         this.testPattern = testPattern;
         this.outputTestPassed = testPattern != null;
         paddingWouldRequireOpeningBlankLine = true;
+    }
+
+    public Task Handle(ExecutionStarted message)
+    {
+        var assemblyName = Path.GetFileNameWithoutExtension(environment.Assembly.Location);
+        var targetFramework = environment.TargetFramework;
+
+        using (Foreground.Green)
+            console.WriteLine($"Running {assemblyName} ({targetFramework})");
+
+        return Task.CompletedTask;
     }
 
     public Task Handle(TestSkipped message)

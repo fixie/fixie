@@ -122,8 +122,6 @@ static int RunTests(Options options, string testProject, string targetFramework,
     var assemblyName = assemblyMetadata[1];
     var targetFileName = assemblyMetadata[2];
 
-    Heading($"Running {assemblyName} ({targetFramework})");
-
     var workingDirectory = Path.Combine(
         new FileInfo(testProject).Directory!.FullName,
         outputPath);
@@ -174,12 +172,6 @@ static void Help()
     WriteLine("    custom arguments");
     WriteLine("        Arbitrary arguments made available to custom discovery/execution classes.");
     WriteLine();
-}
-
-static void Heading(string message)
-{
-    using (Foreground.Green)
-        WriteLine(message);
 }
 
 static void Error(string message)

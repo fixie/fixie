@@ -10,6 +10,7 @@ public class StackTracePresentationTests
     {
         (await Run<ConstructionFailureTestClass, ImplicitExceptionHandling>())
             .ShouldBe(
+                $"Running Fixie.Tests (net{TargetFrameworkVersion})",
                 "",
                 "Test '" + FullName<ConstructionFailureTestClass>() + ".UnreachableTest' failed:",
                 "",
@@ -26,6 +27,7 @@ public class StackTracePresentationTests
     {
         (await Run<ConstructionFailureTestClass, ExplicitExceptionHandling>())
             .ShouldBe(
+                $"Running Fixie.Tests (net{TargetFrameworkVersion})",
                 "",
                 "Test '" + FullName<ConstructionFailureTestClass>() + ".UnreachableTest' failed:",
                 "",
@@ -45,6 +47,7 @@ public class StackTracePresentationTests
     {
         (await Run<FailureTestClass, ImplicitExceptionHandling>())
             .ShouldBe(
+                $"Running Fixie.Tests (net{TargetFrameworkVersion})",
                 "",
                 "Test '" + FullName<FailureTestClass>() + ".Asynchronous' failed:",
                 "",
@@ -72,6 +75,7 @@ public class StackTracePresentationTests
 
         output
             .ShouldBe(
+                $"Running Fixie.Tests (net{TargetFrameworkVersion})",
                 "",
                 "Test '" + FullName<FailureTestClass>() + ".Asynchronous' failed:",
                 "",
@@ -105,6 +109,7 @@ public class StackTracePresentationTests
     {
         (await Run<NestedFailureTestClass, ImplicitExceptionHandling>())
             .ShouldBe(
+                $"Running Fixie.Tests (net{TargetFrameworkVersion})",
                 "",
                 "Test '" + FullName<NestedFailureTestClass>() + ".Asynchronous' failed:",
                 "",

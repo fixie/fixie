@@ -25,6 +25,12 @@ public static class AssertionExtensions
             throw new AssertException(expression, expected, actual);
     }
 
+    public static void ShouldBe(this bool actual, bool expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
+    {
+        if (actual != expected)
+            throw new AssertException(expression, Serialize(expected), Serialize(actual));
+    }
+
     public static void ShouldBe<T>(this IEquatable<T> actual, IEquatable<T> expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
         if (!actual.Equals(expected))
@@ -155,4 +161,6 @@ public static class AssertionExtensions
                 writer.WriteStringValue(value.ToString());
         }
     }
+
+    static string Serialize(bool x) => x ? "true" : "false";
 }

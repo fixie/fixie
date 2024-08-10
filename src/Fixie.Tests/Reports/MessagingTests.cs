@@ -90,7 +90,8 @@ public abstract class MessagingTests
 
         public void FailByAssertion()
         {
-            1.ShouldBe(2);
+            var x = 1;
+            x.ShouldBe(2);
         }
 
         const string alert = "\x26A0";

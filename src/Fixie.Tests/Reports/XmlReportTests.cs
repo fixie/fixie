@@ -58,8 +58,7 @@ public class XmlReportTests : MessagingTests
     <test name=""{GenericTestClass}.ShouldBeString&lt;System.String&gt;(&quot;B&quot;)"" type=""{GenericTestClass}"" method=""ShouldBeString"" result=""Pass"" time=""1.234"" />
     <test name=""{GenericTestClass}.ShouldBeString&lt;System.Int32&gt;(123)"" type=""{GenericTestClass}"" method=""ShouldBeString"" result=""Fail"" time=""1.234"">
       <failure exception-type=""Fixie.Tests.Assertions.AssertException"">
-        <message><![CDATA[Expected: System.String
-Actual:   System.Int32]]></message>
+        <message><![CDATA[genericArgument should be System.String but was System.Int32]]></message>
         <stack-trace><![CDATA[{At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")}]]></stack-trace>
       </failure>
     </test>
@@ -73,8 +72,7 @@ Actual:   System.Int32]]></message>
     </test>
     <test name=""{TestClass}.FailByAssertion"" type=""{TestClass}"" method=""FailByAssertion"" result=""Fail"" time=""1.234"">
       <failure exception-type=""Fixie.Tests.Assertions.AssertException"">
-        <message><![CDATA[Expected: 2
-Actual:   1]]></message>
+        <message><![CDATA[x should be 2 but was 1]]></message>
         <stack-trace><![CDATA[{At("FailByAssertion()")}]]></stack-trace>
       </failure>
     </test>

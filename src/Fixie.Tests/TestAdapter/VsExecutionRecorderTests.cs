@@ -74,10 +74,7 @@ public class VsExecutionRecorderTests : MessagingTests
         failByAssertion.TestCase.ShouldBeExecutionTimeTest(TestClass+".FailByAssertion", assemblyPath);
         failByAssertion.TestCase.DisplayName.ShouldBe(TestClass+".FailByAssertion");
         failByAssertion.Outcome.ShouldBe(TestOutcome.Failed);
-        failByAssertion.ErrorMessage.Lines().ShouldBe([
-            "Expected: 2",
-            "Actual:   1"
-        ]);
+        failByAssertion.ErrorMessage.ShouldBe("x should be 2 but was 1");
         failByAssertion.ErrorStackTrace
             .Lines()
             .NormalizeStackTraceLines()
@@ -128,16 +125,12 @@ public class VsExecutionRecorderTests : MessagingTests
         shouldBeStringPassB.Messages.ShouldBeEmpty();
         shouldBeStringPassB.Duration.ShouldBe(TimeSpan.FromMilliseconds(106));
 
-
         shouldBeStringFailStart.ShouldBeExecutionTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath);
 
         shouldBeStringFail.TestCase.ShouldBeExecutionTimeTest(GenericTestClass+".ShouldBeString", assemblyPath);
         shouldBeStringFail.TestCase.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString");
         shouldBeStringFail.Outcome.ShouldBe(TestOutcome.Failed);
-        shouldBeStringFail.ErrorMessage.Lines().ShouldBe([
-            "Expected: System.String",
-            "Actual:   System.Int32"
-        ]);
+        shouldBeStringFail.ErrorMessage.ShouldBe("genericArgument should be System.String but was System.Int32");
         shouldBeStringFail.ErrorStackTrace
             .Lines()
             .NormalizeStackTraceLines()
@@ -183,7 +176,7 @@ public class VsExecutionRecorderTests : MessagingTests
             Reason = new PipeMessage.Exception
             {
                 Type = "Fixie.Tests.Assertions.AssertException",
-                Message = "Expected: 2" + NewLine + "Actual:   1",
+                Message = "x should be 2 but was 1",
                 StackTrace = At("FailByAssertion()")
             }
         }));
@@ -245,7 +238,7 @@ public class VsExecutionRecorderTests : MessagingTests
             Reason = new PipeMessage.Exception
             {
                 Type = "Fixie.Tests.Assertions.AssertException",
-                Message = "Expected: System.String" + NewLine + "Actual:   System.Int32",
+                Message = "genericArgument should be System.String but was System.Int32",
                 StackTrace = At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")
             }
         }));

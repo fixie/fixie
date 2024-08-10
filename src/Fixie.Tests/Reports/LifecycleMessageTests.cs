@@ -58,10 +58,7 @@ public class LifecycleMessageTests : MessagingTests
             .Lines()
             .NormalizeStackTraceLines()
             .ShouldBe([At("FailByAssertion()")]);
-        failByAssertion.Reason.Message.Lines().ShouldBe([
-            "Expected: 2",
-            "Actual:   1"
-        ]);
+        failByAssertion.Reason.Message.ShouldBe("x should be 2 but was 1");
 
         skip.Test.ShouldBe(TestClass + ".Skip");
         skip.TestCase.ShouldBe(TestClass + ".Skip");
@@ -90,10 +87,7 @@ public class LifecycleMessageTests : MessagingTests
             .Lines()
             .NormalizeStackTraceLines()
             .ShouldBe([At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")]);
-        shouldBeStringFail.Reason.Message.Lines().ShouldBe([
-            "Expected: System.String",
-            "Actual:   System.Int32"
-        ]);
+        shouldBeStringFail.Reason.Message.ShouldBe("genericArgument should be System.String but was System.Int32");
 
         executionCompleted.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
         executionCompleted.Failed.ShouldBe(3);

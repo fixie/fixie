@@ -10,7 +10,7 @@ public class AssertException : Exception
     public string? Actual { get; }
     public bool HasCompactRepresentations { get; }
 
-    public AssertException(string? expected, string? actual)
+    public AssertException(string? expression, string? expected, string? actual)
     {
         Expected = expected;
         Actual = actual;

@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -18,43 +19,43 @@ public static class AssertionExtensions
         JsonSerializerOptions.Converters.Add(new StringRepresentation<Type>());
     }
 
-    public static void ShouldBe(this string? actual, string? expected)
+    public static void ShouldBe(this string? actual, string? expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
         if (actual != expected)
-            throw new AssertException(expected, actual);
+            throw new AssertException(expression, expected, actual);
     }
 
-    public static void ShouldBe<T>(this IEquatable<T> actual, IEquatable<T> expected)
+    public static void ShouldBe<T>(this IEquatable<T> actual, IEquatable<T> expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
         if (!actual.Equals(expected))
-            throw new AssertException(expected.ToString(), actual.ToString());
+            throw new AssertException(expression, expected.ToString(), actual.ToString());
     }
 
-    public static void ShouldBe(this object? actual, object? expected)
+    public static void ShouldBe(this object? actual, object? expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
         if (!Equals(actual, expected))
-            throw new AssertException(expected?.ToString(), actual?.ToString());
+            throw new AssertException(expression, expected?.ToString(), actual?.ToString());
     }
 
-    public static void ShouldBe<T>(this IEnumerable<T> actual, T[] expected)
+    public static void ShouldBe<T>(this IEnumerable<T> actual, T[] expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
-        actual.ToArray().ShouldMatch(expected);
+        actual.ToArray().ShouldMatch(expected, expression);
     }
 
-    public static T ShouldBe<T>(this object? actual)
+    public static T ShouldBe<T>(this object? actual, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
         if (actual is T typed)
             return typed;
 
-        throw new AssertException(typeof(T).ToString(), actual?.GetType().ToString());
+        throw new AssertException(expression, typeof(T).ToString(), actual?.GetType().ToString());
     }
 
-    public static void ShouldBeEmpty<T>(this IEnumerable<T> collection)
+    public static void ShouldBeEmpty<T>(this IEnumerable<T> collection, [CallerArgumentExpression(nameof(collection))] string? expression = null)
     {
-        collection.ShouldMatch([]);
+        collection.ShouldMatch([], expression);
     }
 
-    public static TException ShouldThrow<TException>(this Action shouldThrow, string expectedMessage) where TException : Exception
+    public static TException ShouldThrow<TException>(this Action shouldThrow, string expectedMessage, [CallerArgumentExpression(nameof(shouldThrow))] string? expression = null) where TException : Exception
     {
         try
         {
@@ -68,10 +69,10 @@ public static class AssertionExtensions
             return (TException)actual;
         }
 
-        throw new AssertException(typeof(TException).FullName, "No exception was thrown.");
+        throw new AssertException(expression, typeof(TException).FullName, "No exception was thrown.");
     }
 
-    public static async Task<TException> ShouldThrowAsync<TException>(this Func<Task> shouldThrowAsync, string expectedMessage) where TException : Exception
+    public static async Task<TException> ShouldThrowAsync<TException>(this Func<Task> shouldThrowAsync, string expectedMessage, [CallerArgumentExpression(nameof(shouldThrowAsync))] string? expression = null) where TException : Exception
     {
         try
         {
@@ -85,36 +86,37 @@ public static class AssertionExtensions
             return (TException)actual;
         }
 
-        throw new AssertException(typeof(TException).FullName, "No exception was thrown.");
+        throw new AssertException(expression, typeof(TException).FullName, "No exception was thrown.");
     }
 
-    public static void ShouldBeGreaterThan<T>(this T actual, T minimum) where T: IComparable<T>
+    public static void ShouldBeGreaterThan<T>(this T actual, T minimum, [CallerArgumentExpression(nameof(actual))] string? expression = null) where T: IComparable<T>
     {
         if (actual.CompareTo(minimum) <= 0)
-            throw new AssertException($"value > {minimum}", actual.ToString());
+            throw new AssertException(expression, $"> {minimum}", actual.ToString());
     }
 
-    public static void ShouldBeGreaterThanOrEqualTo<T>(this T actual, T minimum) where T: IComparable<T>
+    public static void ShouldBeGreaterThanOrEqualTo<T>(this T actual, T minimum, [CallerArgumentExpression(nameof(actual))] string? expression = null) where T: IComparable<T>
     {
         if (actual.CompareTo(minimum) < 0)
-            throw new AssertException($"value >= {minimum}", actual.ToString());
+            throw new AssertException(expression, $">= {minimum}", actual.ToString());
     }
 
-    public static void ShouldMatch<T>(this T actual, T expected)
+    public static void ShouldMatch<T>(this T actual, T expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
         var actualJson = Json(actual);
         var expectedJson = Json(expected);
             
         if (actualJson != expectedJson)
-            throw new AssertException(expectedJson, actualJson);
+            throw new AssertException(expression, expectedJson, actualJson);
     }
 
-    public static void ShouldSatisfy<T>(this IEnumerable<T> actual, Action<T>[] itemExpectations)
+    public static void ShouldSatisfy<T>(this IEnumerable<T> actual, Action<T>[] itemExpectations, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
         var actualItems = actual.ToArray();
 
         if (actualItems.Length != itemExpectations.Length)
             throw new AssertException(
+                expression,
                 $"{itemExpectations.Length} items",
                 $"{actualItems.Length} items");
 
@@ -122,17 +124,17 @@ public static class AssertionExtensions
             itemExpectations[i](actualItems[i]);
     }
 
-    public static void ShouldBeGenericTypeParameter(this Type actual, string expectedName)
+    public static void ShouldBeGenericTypeParameter(this Type actual, string expectedName, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
         actual.IsGenericParameter.ShouldBe(true);
         actual.FullName.ShouldBe(null);
         actual.Name.ShouldBe(expectedName);
     }
 
-    public static void ShouldNotBeNull([NotNull] this object? actual)
+    public static void ShouldNotBeNull([NotNull] this object? actual, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
         if (actual == null)
-            throw new AssertException("not null", "null");
+            throw new AssertException(expression, "not null", "null");
     }
 
     static string Json<T>(T @object)

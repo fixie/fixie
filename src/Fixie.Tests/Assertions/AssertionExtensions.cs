@@ -109,7 +109,7 @@ public static class AssertionExtensions
             throw new AssertException(expectedJson, actualJson);
     }
 
-    public static void ShouldSatisfy<T>(this IEnumerable<T> actual, params Action<T>[] itemExpectations)
+    public static void ShouldSatisfy<T>(this IEnumerable<T> actual, Action<T>[] itemExpectations)
     {
         var actualItems = actual.ToArray();
 

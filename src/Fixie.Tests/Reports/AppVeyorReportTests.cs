@@ -45,19 +45,20 @@ public class AppVeyorReportTests : MessagingTests
         fail.ErrorStackTrace
             .Lines()
             .NormalizeStackTraceLines()
-            .ShouldBe("Fixie.Tests.FailureException", At("Fail()"));
+            .ShouldBe(["Fixie.Tests.FailureException", At("Fail()")]);
         fail.StdOut.ShouldBe("");
 
         failByAssertion.TestName.ShouldBe(TestClass + ".FailByAssertion");
         failByAssertion.Outcome.ShouldBe("Failed");
         int.Parse(failByAssertion.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
-        failByAssertion.ErrorMessage.Lines().ShouldBe(
+        failByAssertion.ErrorMessage.Lines().ShouldBe([
             "Expected: 2",
-            "Actual:   1");
+            "Actual:   1"
+        ]);
         failByAssertion.ErrorStackTrace
             .Lines()
             .NormalizeStackTraceLines()
-            .ShouldBe("Fixie.Tests.Assertions.AssertException", At("FailByAssertion()"));
+            .ShouldBe(["Fixie.Tests.Assertions.AssertException", At("FailByAssertion()")]);
         failByAssertion.StdOut.ShouldBe("");
 
         pass.TestName.ShouldBe(TestClass + ".Pass");
@@ -91,13 +92,17 @@ public class AppVeyorReportTests : MessagingTests
         shouldBeStringFail.TestName.ShouldBe(GenericTestClass + ".ShouldBeString<System.Int32>(123)");
         shouldBeStringFail.Outcome.ShouldBe("Failed");
         int.Parse(shouldBeStringFail.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
-        shouldBeStringFail.ErrorMessage.Lines().ShouldBe(
+        shouldBeStringFail.ErrorMessage.Lines().ShouldBe([
             "Expected: System.String",
-            "Actual:   System.Int32");
+            "Actual:   System.Int32"
+        ]);
         shouldBeStringFail.ErrorStackTrace
             .Lines()
             .NormalizeStackTraceLines()
-            .ShouldBe("Fixie.Tests.Assertions.AssertException", At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"));
+            .ShouldBe([
+                "Fixie.Tests.Assertions.AssertException",
+                At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")
+            ]);
         shouldBeStringFail.StdOut.ShouldBe("");
     }
 }

@@ -106,19 +106,20 @@ public class AzureReportTests : MessagingTests
         fail.stackTrace
             .Lines()
             .NormalizeStackTraceLines()
-            .ShouldBe("Fixie.Tests.FailureException", At("Fail()"));
+            .ShouldBe(["Fixie.Tests.FailureException", At("Fail()")]);
 
         failByAssertion.automatedTestName.ShouldBe(TestClass + ".FailByAssertion");
         failByAssertion.testCaseTitle.ShouldBe(TestClass + ".FailByAssertion");
         failByAssertion.outcome.ShouldBe("Failed");
         failByAssertion.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
-        failByAssertion.errorMessage.Lines().ShouldBe(
+        failByAssertion.errorMessage.Lines().ShouldBe([
             "Expected: 2",
-            "Actual:   1");
+            "Actual:   1"
+        ]);
         failByAssertion.stackTrace
             .Lines()
             .NormalizeStackTraceLines()
-            .ShouldBe("Fixie.Tests.Assertions.AssertException", At("FailByAssertion()"));
+            .ShouldBe(["Fixie.Tests.Assertions.AssertException", At("FailByAssertion()")]);
 
         pass.automatedTestName.ShouldBe(TestClass + ".Pass");
         pass.testCaseTitle.ShouldBe(TestClass + ".Pass");
@@ -152,15 +153,17 @@ public class AzureReportTests : MessagingTests
         shouldBeStringFail.testCaseTitle.ShouldBe(GenericTestClass + ".ShouldBeString<System.Int32>(123)");
         shouldBeStringFail.outcome.ShouldBe("Failed");
         shouldBeStringFail.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
-        shouldBeStringFail.errorMessage.Lines().ShouldBe(
+        shouldBeStringFail.errorMessage.Lines().ShouldBe([
             "Expected: System.String",
-            "Actual:   System.Int32");
+            "Actual:   System.Int32"
+        ]);
         shouldBeStringFail.stackTrace
             .Lines()
             .NormalizeStackTraceLines()
-            .ShouldBe(
+            .ShouldBe([
                 "Fixie.Tests.Assertions.AssertException",
-                At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"));
+                At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")
+            ]);
 
         var lastRequest = (Request<AzureReport.CompleteRun>)requests.Last();
         lastRequest.Method.ShouldBe(new HttpMethod("PATCH"));

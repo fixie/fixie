@@ -14,7 +14,7 @@ public class TeamCityReportTests : MessagingTests
         output.Console
             .NormalizeStackTraceLines()
             .Select(x => Regex.Replace(x, @"duration='\d+'", "duration='#'"))
-            .ShouldBe(
+            .ShouldBe([
                 "##teamcity[testSuiteStarted name='Fixie.Tests']",
 
                 $"##teamcity[testStarted name='{TestClass}.Fail']",
@@ -27,14 +27,14 @@ public class TeamCityReportTests : MessagingTests
 
                 $"##teamcity[testStarted name='{TestClass}.Pass']",
                 $"##teamcity[testFinished name='{TestClass}.Pass' duration='#']",
-                
+
                 $"##teamcity[testStarted name='{TestClass}.Skip']",
                 $"##teamcity[testIgnored name='{TestClass}.Skip' message='|0x26a0 Skipped with attribute.']",
                 $"##teamcity[testFinished name='{TestClass}.Skip' duration='#']",
-                
+
                 $"##teamcity[testStarted name='{GenericTestClass}.ShouldBeString<System.String>(\"A\")']",
                 $"##teamcity[testFinished name='{GenericTestClass}.ShouldBeString<System.String>(\"A\")' duration='#']",
-                
+
                 $"##teamcity[testStarted name='{GenericTestClass}.ShouldBeString<System.String>(\"B\")']",
                 $"##teamcity[testFinished name='{GenericTestClass}.ShouldBeString<System.String>(\"B\")' duration='#']",
 
@@ -42,6 +42,7 @@ public class TeamCityReportTests : MessagingTests
                 $"##teamcity[testFailed name='{GenericTestClass}.ShouldBeString<System.Int32>(123)' message='Expected: System.String{eol}Actual:   System.Int32' details='Fixie.Tests.Assertions.AssertException{eol}{At<SampleGenericTestClass>("ShouldBeString|[T|](T genericArgument)")}']",
                 $"##teamcity[testFinished name='{GenericTestClass}.ShouldBeString<System.Int32>(123)' duration='#']",
 
-                "##teamcity[testSuiteFinished name='Fixie.Tests']");
+                "##teamcity[testSuiteFinished name='Fixie.Tests']"
+            ]);
     }
 }

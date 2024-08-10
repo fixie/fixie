@@ -36,7 +36,7 @@ public static class AssertionExtensions
             throw new AssertException(expected?.ToString(), actual?.ToString());
     }
 
-    public static void ShouldBe<T>(this IEnumerable<T> actual, params T[] expected)
+    public static void ShouldBe<T>(this IEnumerable<T> actual, T[] expected)
     {
         actual.ToArray().ShouldMatch(expected);
     }

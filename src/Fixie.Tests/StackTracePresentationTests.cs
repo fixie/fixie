@@ -9,7 +9,7 @@ public class StackTracePresentationTests
     public async Task ShouldProvideCleanStackTraceForImplicitTestClassConstructionFailures()
     {
         (await Run<ConstructionFailureTestClass, ImplicitExceptionHandling>())
-            .ShouldBe(
+            .ShouldBe([
                 $"Running Fixie.Tests (net{TargetFrameworkVersion})",
                 "",
                 "Test '" + FullName<ConstructionFailureTestClass>() + ".UnreachableTest' failed:",
@@ -20,13 +20,14 @@ public class StackTracePresentationTests
                 At<ConstructionFailureTestClass>(".ctor()"),
                 "   at System.RuntimeType.CreateInstanceDefaultCtor(Boolean publicOnly, Boolean wrapExceptions)",
                 "",
-                "1 failed, took 1.23 seconds");
+                "1 failed, took 1.23 seconds"
+            ]);
     }
         
     public async Task ShouldNotAlterTheMeaningfulStackTraceOfExplicitTestClassConstructionFailures()
     {
         (await Run<ConstructionFailureTestClass, ExplicitExceptionHandling>())
-            .ShouldBe(
+            .ShouldBe([
                 $"Running Fixie.Tests (net{TargetFrameworkVersion})",
                 "",
                 "Test '" + FullName<ConstructionFailureTestClass>() + ".UnreachableTest' failed:",
@@ -37,16 +38,18 @@ public class StackTracePresentationTests
                 At<ConstructionFailureTestClass>(".ctor()"),
                 "   at System.RuntimeType.CreateInstanceDefaultCtor(Boolean publicOnly, Boolean wrapExceptions)",
                 "--- End of stack trace from previous location where exception was thrown ---",
-                At(typeof(TestClass), "Construct(Object[] parameters)", Path.Join("...", "src", "Fixie", "TestClass.cs")),
+                At(typeof(TestClass), "Construct(Object[] parameters)",
+                    Path.Join("...", "src", "Fixie", "TestClass.cs")),
                 At<ExplicitExceptionHandling>("Run(TestSuite testSuite)"),
                 "",
-                "1 failed, took 1.23 seconds");
+                "1 failed, took 1.23 seconds"
+            ]);
     }
 
     public async Task ShouldProvideCleanStackTraceTestMethodFailures()
     {
         (await Run<FailureTestClass, ImplicitExceptionHandling>())
-            .ShouldBe(
+            .ShouldBe([
                 $"Running Fixie.Tests (net{TargetFrameworkVersion})",
                 "",
                 "Test '" + FullName<FailureTestClass>() + ".Asynchronous' failed:",
@@ -63,7 +66,8 @@ public class StackTracePresentationTests
                 "Fixie.Tests.FailureException",
                 At<FailureTestClass>("Synchronous()"),
                 "",
-                "2 failed, took 1.23 seconds");
+                "2 failed, took 1.23 seconds"
+            ]);
     }
 
     public async Task ShouldNotAlterTheMeaningfulStackTraceOfExplicitTestMethodInvocationFailures()
@@ -74,7 +78,7 @@ public class StackTracePresentationTests
         const string initialInvoker = "   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)";
 
         output
-            .ShouldBe(
+            .ShouldBe([
                 $"Running Fixie.Tests (net{TargetFrameworkVersion})",
                 "",
                 "Test '" + FullName<FailureTestClass>() + ".Asynchronous' failed:",
@@ -83,8 +87,11 @@ public class StackTracePresentationTests
                 "",
                 "Fixie.Tests.FailureException",
                 At<FailureTestClass>("Asynchronous()"),
-                At(typeof(MethodInfoExtensions), "CallResolvedMethod(MethodInfo resolvedMethod, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
-                At(typeof(MethodInfoExtensions), "Call(MethodInfo method, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
+                At(typeof(MethodInfoExtensions),
+                    "CallResolvedMethod(MethodInfo resolvedMethod, Object instance, Object[] parameters)",
+                    Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
+                At(typeof(MethodInfoExtensions), "Call(MethodInfo method, Object instance, Object[] parameters)",
+                    Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
                 At<ExplicitExceptionHandling>("Run(TestSuite testSuite)"),
                 "",
                 "Test '" + FullName<FailureTestClass>() + ".Synchronous' failed:",
@@ -98,17 +105,21 @@ public class StackTracePresentationTests
                     : initialInvoker,
                 "   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)",
                 "--- End of stack trace from previous location where exception was thrown ---",
-                At(typeof(MethodInfoExtensions), "CallResolvedMethod(MethodInfo resolvedMethod, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
-                At(typeof(MethodInfoExtensions), "Call(MethodInfo method, Object instance, Object[] parameters)", Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
+                At(typeof(MethodInfoExtensions),
+                    "CallResolvedMethod(MethodInfo resolvedMethod, Object instance, Object[] parameters)",
+                    Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
+                At(typeof(MethodInfoExtensions), "Call(MethodInfo method, Object instance, Object[] parameters)",
+                    Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),
                 At<ExplicitExceptionHandling>("Run(TestSuite testSuite)"),
                 "",
-                "2 failed, took 1.23 seconds");
+                "2 failed, took 1.23 seconds"
+            ]);
     }
 
     public async Task ShouldProvideLiterateStackTraceIncludingAllNestedExceptions()
     {
         (await Run<NestedFailureTestClass, ImplicitExceptionHandling>())
-            .ShouldBe(
+            .ShouldBe([
                 $"Running Fixie.Tests (net{TargetFrameworkVersion})",
                 "",
                 "Test '" + FullName<NestedFailureTestClass>() + ".Asynchronous' failed:",
@@ -143,7 +154,8 @@ public class StackTracePresentationTests
                 "Divide by Zero Exception!",
                 At<StackTracePresentationTests>("ThrowNestedException()"),
                 "",
-                "2 failed, took 1.23 seconds");
+                "2 failed, took 1.23 seconds"
+            ]);
     }
 
     static async Task<IEnumerable<string>> Run<TSampleTestClass, TExecution>() where TExecution : IExecution, new()

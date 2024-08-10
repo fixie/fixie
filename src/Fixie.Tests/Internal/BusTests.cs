@@ -23,13 +23,14 @@ public class BusTests
         await bus.Publish(new Event(3));
 
         console.ToString().Lines()
-            .ShouldBe(
+            .ShouldBe([
                 FullName<EventHandler>() + " handled Event 1",
                 FullName<CombinationEventHandler>() + " handled Event 1",
                 FullName<AnotherEventHandler>() + " handled AnotherEvent 2",
                 FullName<CombinationEventHandler>() + " handled AnotherEvent 2",
                 FullName<EventHandler>() + " handled Event 3",
-                FullName<CombinationEventHandler>() + " handled Event 3");
+                FullName<CombinationEventHandler>() + " handled Event 3"
+            ]);
     }
 
     public async Task ShouldCatchAndLogExceptionsThrowByProblematicReportsRatherThanInterruptExecution()
@@ -48,7 +49,7 @@ public class BusTests
         await bus.Publish(new Event(3));
 
         console.ToString().Lines()
-            .ShouldBe(
+            .ShouldBe([
                 FullName<EventHandler>() + " handled Event 1",
                 FullName<FailingEventHandler>() + $" threw an exception while attempting to handle a message of type {FullName<Event>()}:",
                 "",
@@ -59,7 +60,8 @@ public class BusTests
                 FullName<FailingEventHandler>() + $" threw an exception while attempting to handle a message of type {FullName<Event>()}:",
                 "",
                 FullName<StubException>() + ": Could not handle Event 3",
-                "<<Stack Trace>>");
+                "<<Stack Trace>>"
+            ]);
     }
 
     class Event : IMessage

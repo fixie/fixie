@@ -12,6 +12,7 @@ public class TeamCityReportTests : MessagingTests
         var output = await Run(environment => new TeamCityReport(environment));
 
         output.Console
+            .Lines()
             .NormalizeStackTraceLines()
             .Select(x => Regex.Replace(x, @"duration='\d+'", "duration='#'"))
             .ShouldBe([

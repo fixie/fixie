@@ -11,6 +11,7 @@ public class ConsoleReportTests : MessagingTests
         var output = await Run(environment => new ConsoleReport(environment));
 
         output.Console
+            .Lines()
             .NormalizeStackTraceLines()
             .CleanDuration()
             .ShouldBe([
@@ -54,6 +55,7 @@ public class ConsoleReportTests : MessagingTests
         var output = await Run(console => new ConsoleReport(console, testPattern: "*"));
 
         output.Console
+            .Lines()
             .NormalizeStackTraceLines()
             .CleanDuration()
             .ShouldBe([
@@ -112,6 +114,7 @@ public class ConsoleReportTests : MessagingTests
         var output = await Run(console => new ConsoleReport(console), discovery);
 
         output.Console
+            .Lines()
             .CleanDuration()
             .Last()
             .ShouldBe("2 failed, 1 skipped, took 1.23 seconds");
@@ -130,6 +133,7 @@ public class ConsoleReportTests : MessagingTests
         var output = await Run(console => new ConsoleReport(console), discovery);
 
         output.Console
+            .Lines()
             .CleanDuration()
             .Last()
             .ShouldBe("1 passed, 1 skipped, took 1.23 seconds");
@@ -148,6 +152,7 @@ public class ConsoleReportTests : MessagingTests
         var output = await Run(console => new ConsoleReport(console), discovery);
 
         output.Console
+            .Lines()
             .CleanDuration()
             .Last()
             .ShouldBe("1 passed, 2 failed, took 1.23 seconds");
@@ -166,12 +171,14 @@ public class ConsoleReportTests : MessagingTests
         var output = await Run(console => new ConsoleReport(console), discovery);
 
         output.Console
+            .Lines()
             .Last()
             .ShouldBe("No tests found.");
 
         output = await Run(console => new ConsoleReport(console, testPattern: "Ineffective*Pattern"), discovery);
 
         output.Console
+            .Lines()
             .Last()
             .ShouldBe("No tests match the specified pattern: Ineffective*Pattern");
     }

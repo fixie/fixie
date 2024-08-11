@@ -66,8 +66,7 @@ public class ClassDiscovererTests
         var discovery = new DefaultDiscovery();
 
         DiscoveredTestClasses(discovery)
-            .ShouldBe(
-                typeof(NameEndsWithTests));
+            .ShouldBe([typeof(NameEndsWithTests)]);
     }
 
     public void ShouldSupportMaximalDiscoveryOfConcreteClasses()
@@ -75,14 +74,15 @@ public class ClassDiscovererTests
         var discovery = new MaximumDiscovery();
 
         DiscoveredTestClasses(discovery)
-            .ShouldBe(
+            .ShouldBe([
                 typeof(StaticClass),
                 typeof(DefaultConstructor),
                 typeof(NoDefaultConstructor),
                 typeof(NameEndsWithTests),
                 typeof(String),
                 typeof(InheritanceSampleBase),
-                typeof(InheritanceSample));
+                typeof(InheritanceSample)
+            ]);
     }
 
     public void ShouldNotConsiderCompilerGeneratedClosureClasses()
@@ -98,14 +98,15 @@ public class ClassDiscovererTests
         var discovery = new MaximumDiscovery();
 
         DiscoveredTestClasses(discovery, nested)
-            .ShouldBe(
+            .ShouldBe([
                 typeof(StaticClass),
                 typeof(DefaultConstructor),
                 typeof(NoDefaultConstructor),
                 typeof(NameEndsWithTests),
                 typeof(String),
                 typeof(InheritanceSampleBase),
-                typeof(InheritanceSample));
+                typeof(InheritanceSample)
+            ]);
     }
 
     public void ShouldDiscoverClassesSatisfyingAllSpecifiedConditions()
@@ -113,10 +114,11 @@ public class ClassDiscovererTests
         var discovery = new NarrowDiscovery();
 
         DiscoveredTestClasses(discovery)
-            .ShouldBe(
+            .ShouldBe([
                 typeof(NameEndsWithTests),
                 typeof(InheritanceSampleBase),
-                typeof(InheritanceSample));
+                typeof(InheritanceSample)
+            ]);
     }
 
     public void ShouldFailWithClearExplanationWhenDiscoveryThrows()

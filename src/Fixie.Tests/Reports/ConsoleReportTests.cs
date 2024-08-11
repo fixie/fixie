@@ -13,7 +13,7 @@ public class ConsoleReportTests : MessagingTests
         output.Console
             .NormalizeStackTraceLines()
             .CleanDuration()
-            .ShouldBe(
+            .ShouldBe([
                 $"Running Fixie.Tests (net{TargetFrameworkVersion})",
                 "",
 
@@ -47,7 +47,8 @@ public class ConsoleReportTests : MessagingTests
                 At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"),
                 "",
 
-                "3 passed, 3 failed, 1 skipped, took 1.23 seconds");
+                "3 passed, 3 failed, 1 skipped, took 1.23 seconds"
+            ]);
     }
 
     public async Task ShouldIncludePassingResultsWhenFilteringByPattern()
@@ -57,7 +58,7 @@ public class ConsoleReportTests : MessagingTests
         output.Console
             .NormalizeStackTraceLines()
             .CleanDuration()
-            .ShouldBe(
+            .ShouldBe([
                 $"Running Fixie.Tests (net{TargetFrameworkVersion})",
                 "",
 
@@ -98,7 +99,8 @@ public class ConsoleReportTests : MessagingTests
                 At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"),
                 "",
 
-                "3 passed, 3 failed, 1 skipped, took 1.23 seconds");
+                "3 passed, 3 failed, 1 skipped, took 1.23 seconds"
+            ]);
     }
 
     class ZeroPassed : SelfTestDiscovery

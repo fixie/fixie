@@ -44,18 +44,20 @@ public class MethodDiscovererTests
         var discovery = new DefaultDiscovery();
 
         DiscoveredTestMethods<Sample>(discovery)
-            .ShouldBe(
+            .ShouldBe([
                 "PublicInstanceNoArgsVoid()",
                 "PublicInstanceNoArgsWithReturn()",
                 "PublicInstanceWithArgsVoid(x)",
-                "PublicInstanceWithArgsWithReturn(x)");
+                "PublicInstanceWithArgsWithReturn(x)"
+            ]);
 
         DiscoveredTestMethods<AsyncSample>(discovery)
-            .ShouldBe(
+            .ShouldBe([
                 "PublicInstanceNoArgsVoid()",
                 "PublicInstanceNoArgsWithReturn()",
                 "PublicInstanceWithArgsVoid(x)",
-                "PublicInstanceWithArgsWithReturn(x)");
+                "PublicInstanceWithArgsWithReturn(x)"
+            ]);
     }
 
     public void ShouldSupportMaximalDiscoveryOfAllPublicMethods()
@@ -63,7 +65,7 @@ public class MethodDiscovererTests
         var discovery = new MaximumDiscovery();
 
         DiscoveredTestMethods<Sample>(discovery)
-            .ShouldBe(
+            .ShouldBe([
                 "PublicInstanceNoArgsVoid()",
                 "PublicInstanceNoArgsWithReturn()",
                 "PublicInstanceWithArgsVoid(x)",
@@ -72,10 +74,11 @@ public class MethodDiscovererTests
                 "PublicStaticNoArgsVoid()",
                 "PublicStaticNoArgsWithReturn()",
                 "PublicStaticWithArgsVoid(x)",
-                "PublicStaticWithArgsWithReturn(x)");
+                "PublicStaticWithArgsWithReturn(x)"
+            ]);
 
         DiscoveredTestMethods<AsyncSample>(discovery)
-            .ShouldBe(
+            .ShouldBe([
                 "PublicInstanceNoArgsVoid()",
                 "PublicInstanceNoArgsWithReturn()",
                 "PublicInstanceWithArgsVoid(x)",
@@ -84,7 +87,8 @@ public class MethodDiscovererTests
                 "PublicStaticNoArgsVoid()",
                 "PublicStaticNoArgsWithReturn()",
                 "PublicStaticWithArgsVoid(x)",
-                "PublicStaticWithArgsWithReturn(x)");
+                "PublicStaticWithArgsWithReturn(x)"
+            ]);
     }
 
     public void ShouldDiscoverMethodsSatisfyingAllSpecifiedConditions()
@@ -92,7 +96,7 @@ public class MethodDiscovererTests
         var discovery = new NarrowDiscovery();
 
         DiscoveredTestMethods<Sample>(discovery)
-            .ShouldBe("PublicInstanceNoArgsVoid()");
+            .ShouldBe(["PublicInstanceNoArgsVoid()"]);
     }
 
     public void ShouldFailWithClearExplanationWhenDiscoveryThrows()

@@ -23,12 +23,13 @@ public class VsDiscoveryRecorderTests : MessagingTests
 
         log.Messages.ShouldBeEmpty();
 
-        discoverySink.TestCases.ShouldSatisfy(
+        discoverySink.TestCases.ShouldSatisfy([
             x => x.ShouldBeDiscoveryTimeTest(TestClass + ".Fail", assemblyPath),
             x => x.ShouldBeDiscoveryTimeTest(TestClass + ".FailByAssertion", assemblyPath),
             x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Pass", assemblyPath),
             x => x.ShouldBeDiscoveryTimeTest(TestClass + ".Skip", assemblyPath),
-            x => x.ShouldBeDiscoveryTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath));
+            x => x.ShouldBeDiscoveryTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath)
+        ]);
     }
 
     public void ShouldDefaultSourceLocationPropertiesWhenSourceInspectionThrows()
@@ -45,19 +46,21 @@ public class VsDiscoveryRecorderTests : MessagingTests
         var expectedError =
             $"Error: {typeof(FileNotFoundException).FullName}: " +
             $"Could not find file '{Path.Combine(GetCurrentDirectory(), invalidAssemblyPath)}'.";
-        log.Messages.ShouldSatisfy(
+        log.Messages.ShouldSatisfy([
             x => x.Contains(expectedError).ShouldBe(true),
             x => x.Contains(expectedError).ShouldBe(true),
             x => x.Contains(expectedError).ShouldBe(true),
             x => x.Contains(expectedError).ShouldBe(true),
-            x => x.Contains(expectedError).ShouldBe(true));
+            x => x.Contains(expectedError).ShouldBe(true)
+        ]);
 
-        discoverySink.TestCases.ShouldSatisfy(
+        discoverySink.TestCases.ShouldSatisfy([
             x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Fail", invalidAssemblyPath),
             x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".FailByAssertion", invalidAssemblyPath),
             x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Pass", invalidAssemblyPath),
             x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Skip", invalidAssemblyPath),
-            x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(GenericTestClass + ".ShouldBeString", invalidAssemblyPath));
+            x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(GenericTestClass + ".ShouldBeString", invalidAssemblyPath)
+        ]);
     }
 
     void RecordAnticipatedPipeMessages(VsDiscoveryRecorder vsDiscoveryRecorder)

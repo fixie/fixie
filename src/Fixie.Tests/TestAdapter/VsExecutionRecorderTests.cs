@@ -64,7 +64,7 @@ public class VsExecutionRecorderTests : MessagingTests
         fail.ErrorStackTrace
             .Lines()
             .NormalizeStackTraceLines()
-            .ShouldBe("Fixie.Tests.FailureException", At("Fail()"));
+            .ShouldBe(["Fixie.Tests.FailureException", At("Fail()")]);
         fail.DisplayName.ShouldBe(TestClass+".Fail");
         fail.Messages.ShouldBeEmpty();
         fail.Duration.ShouldBe(TimeSpan.FromMilliseconds(102));
@@ -74,13 +74,14 @@ public class VsExecutionRecorderTests : MessagingTests
         failByAssertion.TestCase.ShouldBeExecutionTimeTest(TestClass+".FailByAssertion", assemblyPath);
         failByAssertion.TestCase.DisplayName.ShouldBe(TestClass+".FailByAssertion");
         failByAssertion.Outcome.ShouldBe(TestOutcome.Failed);
-        failByAssertion.ErrorMessage.Lines().ShouldBe(
+        failByAssertion.ErrorMessage.Lines().ShouldBe([
             "Expected: 2",
-            "Actual:   1");
+            "Actual:   1"
+        ]);
         failByAssertion.ErrorStackTrace
             .Lines()
             .NormalizeStackTraceLines()
-            .ShouldBe("Fixie.Tests.Assertions.AssertException", At("FailByAssertion()"));
+            .ShouldBe(["Fixie.Tests.Assertions.AssertException", At("FailByAssertion()")]);
         failByAssertion.DisplayName.ShouldBe(TestClass+".FailByAssertion");
         failByAssertion.Messages.ShouldBeEmpty();
         failByAssertion.Duration.ShouldBe(TimeSpan.FromMilliseconds(103));
@@ -133,15 +134,17 @@ public class VsExecutionRecorderTests : MessagingTests
         shouldBeStringFail.TestCase.ShouldBeExecutionTimeTest(GenericTestClass+".ShouldBeString", assemblyPath);
         shouldBeStringFail.TestCase.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString");
         shouldBeStringFail.Outcome.ShouldBe(TestOutcome.Failed);
-        shouldBeStringFail.ErrorMessage.Lines().ShouldBe(
+        shouldBeStringFail.ErrorMessage.Lines().ShouldBe([
             "Expected: System.String",
-            "Actual:   System.Int32");
+            "Actual:   System.Int32"
+        ]);
         shouldBeStringFail.ErrorStackTrace
             .Lines()
             .NormalizeStackTraceLines()
-            .ShouldBe(
+            .ShouldBe([
                 "Fixie.Tests.Assertions.AssertException",
-                At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"));
+                At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")
+            ]);
         shouldBeStringFail.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString<System.Int32>(123)");
         shouldBeStringFail.Messages.ShouldBeEmpty();
         shouldBeStringFail.Duration.ShouldBe(TimeSpan.FromMilliseconds(107));

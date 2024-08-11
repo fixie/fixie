@@ -45,7 +45,7 @@ public class LifecycleMessageTests : MessagingTests
         fail.Reason.StackTraceSummary()
             .Lines()
             .NormalizeStackTraceLines()
-            .ShouldBe(At("Fail()"));
+            .ShouldBe([At("Fail()")]);
         fail.Reason.Message.ShouldBe("'Fail' failed!");
 
         failByAssertionStarted.Test.ShouldBe(TestClass + ".FailByAssertion");
@@ -57,10 +57,11 @@ public class LifecycleMessageTests : MessagingTests
         failByAssertion.Reason.StackTraceSummary()
             .Lines()
             .NormalizeStackTraceLines()
-            .ShouldBe(At("FailByAssertion()"));
-        failByAssertion.Reason.Message.Lines().ShouldBe(
+            .ShouldBe([At("FailByAssertion()")]);
+        failByAssertion.Reason.Message.Lines().ShouldBe([
             "Expected: 2",
-            "Actual:   1");
+            "Actual:   1"
+        ]);
 
         skip.Test.ShouldBe(TestClass + ".Skip");
         skip.TestCase.ShouldBe(TestClass + ".Skip");
@@ -88,10 +89,11 @@ public class LifecycleMessageTests : MessagingTests
         shouldBeStringFail.Reason.StackTraceSummary()
             .Lines()
             .NormalizeStackTraceLines()
-            .ShouldBe(At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"));
-        shouldBeStringFail.Reason.Message.Lines().ShouldBe(
+            .ShouldBe([At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")]);
+        shouldBeStringFail.Reason.Message.Lines().ShouldBe([
             "Expected: System.String",
-            "Actual:   System.Int32");
+            "Actual:   System.Int32"
+        ]);
 
         executionCompleted.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
         executionCompleted.Failed.ShouldBe(3);

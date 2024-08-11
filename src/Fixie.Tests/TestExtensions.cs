@@ -56,12 +56,12 @@ static class TestExtensions
             .ShouldBe(string.Join(Environment.NewLine, expected), expression);
     }
 
-    public static IEnumerable<string> CleanDuration(this IEnumerable<string> lines)
+    public static string CleanDuration(this string multiline)
     {
         //Avoid brittle assertion introduced by test duration.
 
         var decimalSeparator = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
 
-        return lines.Select(line => Regex.Replace(line, @"took [\d" + Regex.Escape(decimalSeparator) + @"]+ seconds", @"took 1.23 seconds"));
+        return Regex.Replace(multiline, @"took [\d" + Regex.Escape(decimalSeparator) + "]+ seconds", "took 1.23 seconds");
     }
 }

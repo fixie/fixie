@@ -171,8 +171,8 @@ public class StackTracePresentationTests
 
         return console.ToString()
             .NormalizeStackTraces()
-            .Lines()
-            .CleanDuration();
+            .CleanDuration()
+            .Lines();
     }
 
     class ImplicitExceptionHandling : IExecution

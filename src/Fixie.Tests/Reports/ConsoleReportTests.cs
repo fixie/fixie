@@ -12,8 +12,8 @@ public class ConsoleReportTests : MessagingTests
 
         output.Console
             .NormalizeStackTraces()
-            .Lines()
             .CleanDuration()
+            .Lines()
             .ShouldBe([
                 $"Running Fixie.Tests (net{TargetFrameworkVersion})",
                 "",
@@ -56,8 +56,8 @@ public class ConsoleReportTests : MessagingTests
 
         output.Console
             .NormalizeStackTraces()
-            .Lines()
             .CleanDuration()
+            .Lines()
             .ShouldBe([
                 $"Running Fixie.Tests (net{TargetFrameworkVersion})",
                 "",
@@ -114,8 +114,8 @@ public class ConsoleReportTests : MessagingTests
         var output = await Run(console => new ConsoleReport(console), discovery);
 
         output.Console
-            .Lines()
             .CleanDuration()
+            .Lines()
             .Last()
             .ShouldBe("2 failed, 1 skipped, took 1.23 seconds");
     }
@@ -133,8 +133,8 @@ public class ConsoleReportTests : MessagingTests
         var output = await Run(console => new ConsoleReport(console), discovery);
 
         output.Console
-            .Lines()
             .CleanDuration()
+            .Lines()
             .Last()
             .ShouldBe("1 passed, 1 skipped, took 1.23 seconds");
     }
@@ -152,8 +152,8 @@ public class ConsoleReportTests : MessagingTests
         var output = await Run(console => new ConsoleReport(console), discovery);
 
         output.Console
-            .Lines()
             .CleanDuration()
+            .Lines()
             .Last()
             .ShouldBe("1 passed, 2 failed, took 1.23 seconds");
     }

@@ -130,7 +130,7 @@ public class VsExecutionRecorderTests : MessagingTests
         shouldBeStringFail.TestCase.ShouldBeExecutionTimeTest(GenericTestClass+".ShouldBeString", assemblyPath);
         shouldBeStringFail.TestCase.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString");
         shouldBeStringFail.Outcome.ShouldBe(TestOutcome.Failed);
-        shouldBeStringFail.ErrorMessage.ShouldBe("genericArgument should be System.String but was System.Int32");
+        shouldBeStringFail.ErrorMessage.ShouldBe("genericArgument should be typeof(string) but was typeof(int)");
         shouldBeStringFail.ErrorStackTrace
             .Lines()
             .NormalizeStackTraceLines()
@@ -238,7 +238,7 @@ public class VsExecutionRecorderTests : MessagingTests
             Reason = new PipeMessage.Exception
             {
                 Type = "Fixie.Tests.Assertions.AssertException",
-                Message = "genericArgument should be System.String but was System.Int32",
+                Message = "genericArgument should be typeof(string) but was typeof(int)",
                 StackTrace = At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")
             }
         }));

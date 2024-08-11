@@ -39,7 +39,7 @@ public class ConsoleReportTests : MessagingTests
 
                 "Test '" + GenericTestClass + ".ShouldBeString<System.Int32>(123)' failed:",
                 "",
-                "genericArgument should be System.String but was System.Int32",
+                "genericArgument should be typeof(string) but was typeof(int)",
                 "",
                 "Fixie.Tests.Assertions.AssertException",
                 At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"),
@@ -89,7 +89,7 @@ public class ConsoleReportTests : MessagingTests
 
                 "Test '" + GenericTestClass + ".ShouldBeString<System.Int32>(123)' failed:",
                 "",
-                "genericArgument should be System.String but was System.Int32",
+                "genericArgument should be typeof(string) but was typeof(int)",
                 "",
                 "Fixie.Tests.Assertions.AssertException",
                 At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"),

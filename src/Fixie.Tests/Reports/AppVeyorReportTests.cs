@@ -90,7 +90,7 @@ public class AppVeyorReportTests : MessagingTests
         shouldBeStringFail.Outcome.ShouldBe("Failed");
         int.Parse(shouldBeStringFail.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
         shouldBeStringFail.ErrorMessage
-            .ShouldBe("genericArgument should be System.String but was System.Int32");
+            .ShouldBe("genericArgument should be typeof(string) but was typeof(int)");
         shouldBeStringFail.ErrorStackTrace
             .Lines()
             .NormalizeStackTraceLines()

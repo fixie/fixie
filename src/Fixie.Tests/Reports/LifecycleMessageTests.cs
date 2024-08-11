@@ -87,7 +87,7 @@ public class LifecycleMessageTests : MessagingTests
             .Lines()
             .NormalizeStackTraceLines()
             .ShouldBe([At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")]);
-        shouldBeStringFail.Reason.Message.ShouldBe("genericArgument should be System.String but was System.Int32");
+        shouldBeStringFail.Reason.Message.ShouldBe("genericArgument should be typeof(string) but was typeof(int)");
 
         executionCompleted.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
         executionCompleted.Failed.ShouldBe(3);

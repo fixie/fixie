@@ -78,7 +78,7 @@ public class MethodInfoExtensionsTests : InstrumentedExecutionTests
             "GenericTestClass.Args<System.Char, System.Double>('a', 3, System.Char, System.Double) passed",
 
             "GenericTestClass.ConstrainedArgs<System.Int32, System.Char>(1, 'a', System.Int32, System.Char) passed",
-            "GenericTestClass.ConstrainedArgs<System.Int32, System.Char>(2, 'b', System.Int32, System.Int32) failed: typeof(T2) should be System.Int32 but was System.Char",
+            "GenericTestClass.ConstrainedArgs<System.Int32, System.Char>(2, 'b', System.Int32, System.Int32) failed: typeof(T2) should be typeof(int) but was typeof(char)",
             "GenericTestClass.ConstrainedArgs<T1, T2>(1, null, System.Int32, System.Object) failed: The type parameters for generic method ConstrainedArgs could not be resolved.",
             "GenericTestClass.ConstrainedArgs<T1, T2>(null, 2, System.Object, System.Int32) failed: The type parameters for generic method ConstrainedArgs could not be resolved.",
 

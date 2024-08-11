@@ -43,6 +43,12 @@ public static class AssertionExtensions
             throw new AssertException(expression, expected.ToString(), actual.ToString());
     }
 
+    public static void ShouldBe(this Type actual, Type expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
+    {
+        if (actual != expected)
+            throw new AssertException(expression, Serialize(expected), Serialize(actual));
+    }
+
     public static void ShouldBe(this object? actual, object? expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
         if (!Equals(actual, expected))
@@ -59,7 +65,7 @@ public static class AssertionExtensions
         if (actual is T typed)
             return typed;
 
-        throw new AssertException(expression, typeof(T).ToString(), actual?.GetType().ToString());
+        throw new AssertException(expression, Serialize(typeof(T)), actual == null ? "null" : Serialize(actual.GetType()));
     }
 
     public static TException ShouldThrow<TException>(this Action shouldThrow, string expectedMessage, [CallerArgumentExpression(nameof(shouldThrow))] string? expression = null) where TException : Exception
@@ -184,4 +190,27 @@ public static class AssertionExtensions
         };
 
     static string Serialize(bool x) => x ? "true" : "false";
+
+    static string Serialize(Type x) =>
+        $"typeof({x switch
+        {
+            _ when x == typeof(bool) => "bool",
+            _ when x == typeof(sbyte) => "sbyte",
+            _ when x == typeof(byte) => "byte",
+            _ when x == typeof(short) => "short",
+            _ when x == typeof(ushort) => "ushort",
+            _ when x == typeof(int) => "int",
+            _ when x == typeof(uint) => "uint",
+            _ when x == typeof(long) => "long",
+            _ when x == typeof(ulong) => "ulong",
+            _ when x == typeof(nint) => "nint",
+            _ when x == typeof(nuint) => "nuint",
+            _ when x == typeof(decimal) => "decimal",
+            _ when x == typeof(double) => "double",
+            _ when x == typeof(float) => "float",
+            _ when x == typeof(char) => "char",
+            _ when x == typeof(string) => "string",
+            _ when x == typeof(object) => "object",
+            _ => x.ToString()
+        }})";
 }

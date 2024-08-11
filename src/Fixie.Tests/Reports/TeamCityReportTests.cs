@@ -39,7 +39,7 @@ public class TeamCityReportTests : MessagingTests
                 $"##teamcity[testFinished name='{GenericTestClass}.ShouldBeString<System.String>(\"B\")' duration='#']",
 
                 $"##teamcity[testStarted name='{GenericTestClass}.ShouldBeString<System.Int32>(123)']",
-                $"##teamcity[testFailed name='{GenericTestClass}.ShouldBeString<System.Int32>(123)' message='genericArgument should be System.String but was System.Int32' details='Fixie.Tests.Assertions.AssertException{eol}{At<SampleGenericTestClass>("ShouldBeString|[T|](T genericArgument)")}']",
+                $"##teamcity[testFailed name='{GenericTestClass}.ShouldBeString<System.Int32>(123)' message='genericArgument should be typeof(string) but was typeof(int)' details='Fixie.Tests.Assertions.AssertException{eol}{At<SampleGenericTestClass>("ShouldBeString|[T|](T genericArgument)")}']",
                 $"##teamcity[testFinished name='{GenericTestClass}.ShouldBeString<System.Int32>(123)' duration='#']",
 
                 "##teamcity[testSuiteFinished name='Fixie.Tests']"

@@ -150,7 +150,7 @@ public class AzureReportTests : MessagingTests
         shouldBeStringFail.testCaseTitle.ShouldBe(GenericTestClass + ".ShouldBeString<System.Int32>(123)");
         shouldBeStringFail.outcome.ShouldBe("Failed");
         shouldBeStringFail.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
-        shouldBeStringFail.errorMessage.ShouldBe("genericArgument should be System.String but was System.Int32");
+        shouldBeStringFail.errorMessage.ShouldBe("genericArgument should be typeof(string) but was typeof(int)");
         shouldBeStringFail.stackTrace
             .Lines()
             .NormalizeStackTraceLines()

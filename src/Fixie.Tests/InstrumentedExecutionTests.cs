@@ -35,10 +35,10 @@ public abstract class InstrumentedExecutionTests
     protected class Output
     {
         readonly string namespaceQualifiedTestClass;
-        readonly string[] lifecycle;
+        readonly string lifecycle;
         readonly string[] results;
 
-        public Output(string namespaceQualifiedTestClass, string[] lifecycle, string[] results)
+        public Output(string namespaceQualifiedTestClass, string lifecycle, string[] results)
         {
             this.namespaceQualifiedTestClass = namespaceQualifiedTestClass;
             this.lifecycle = lifecycle;
@@ -47,7 +47,7 @@ public abstract class InstrumentedExecutionTests
 
         public void ShouldHaveLifecycle(params string[] expected)
         {
-            lifecycle.ShouldBe(expected);
+            lifecycle.ShouldBe(string.Join("", expected.Select(x => x + Environment.NewLine)));
         }
 
         public void ShouldHaveResults(params string[] expected)
@@ -124,7 +124,7 @@ public abstract class InstrumentedExecutionTests
         {
             var results = await Utility.Run(testClass, execution, state.Console);
 
-            return new Output(GetType().FullName!, state.Console.ToString().Lines().ToArray(), results.ToArray());
+            return new Output(GetType().FullName!, state.Console.ToString() ?? "", results.ToArray());
         }
     }
 
@@ -137,7 +137,7 @@ public abstract class InstrumentedExecutionTests
         {
             var results = await Utility.Run(testClasses, execution, state.Console);
 
-            return new Output(GetType().FullName!, state.Console.ToString().Lines().ToArray(), results.ToArray());
+            return new Output(GetType().FullName!, state.Console.ToString() ?? "", results.ToArray());
         }
     }
 }

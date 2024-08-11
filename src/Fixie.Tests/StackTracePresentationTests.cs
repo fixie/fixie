@@ -169,8 +169,8 @@ public class StackTracePresentationTests
         
         await Utility.Run(report, discovery, execution, console, typeof(TSampleTestClass));
 
-        return console.ToString().Lines()
-            .NormalizeStackTraceLines()
+        return console.ToString()
+            .NormalizeStackTraces()
             .CleanDuration();
     }
 

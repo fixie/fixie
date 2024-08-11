@@ -11,8 +11,7 @@ public class ConsoleReportTests : MessagingTests
         var output = await Run(environment => new ConsoleReport(environment));
 
         output.Console
-            .Lines()
-            .NormalizeStackTraceLines()
+            .NormalizeStackTraces()
             .CleanDuration()
             .ShouldBe([
                 $"Running Fixie.Tests (net{TargetFrameworkVersion})",
@@ -55,8 +54,7 @@ public class ConsoleReportTests : MessagingTests
         var output = await Run(console => new ConsoleReport(console, testPattern: "*"));
 
         output.Console
-            .Lines()
-            .NormalizeStackTraceLines()
+            .NormalizeStackTraces()
             .CleanDuration()
             .ShouldBe([
                 $"Running Fixie.Tests (net{TargetFrameworkVersion})",

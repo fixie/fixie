@@ -36,12 +36,14 @@ static class TestExtensions
         return lines;
     }
 
-    public static IEnumerable<string> NormalizeStackTraceLines(this IEnumerable<string> lines)
+    public static IEnumerable<string> NormalizeStackTraces(this string? multiline)
     {
-        //Avoid brittle assertion introduced by stack trace absolute paths, line numbers,
-        //and platform dependent variations in the rethrow marker.
+        //Avoid brittle assertion introduced by stack trace absolute paths and line numbers.
 
-        return lines.Select(line =>
+        if (multiline == null)
+            throw new Exception("Expected a non-null string.");
+
+        return multiline.Lines().Select(line =>
         {
             return Regex.Replace(line,
                 @"\) in .+([\\/])src([\\/])Fixie(.+)\.cs:line \d+",

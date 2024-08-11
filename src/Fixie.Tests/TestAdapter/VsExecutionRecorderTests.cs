@@ -62,8 +62,7 @@ public class VsExecutionRecorderTests : MessagingTests
         fail.Outcome.ShouldBe(TestOutcome.Failed);
         fail.ErrorMessage.ShouldBe("'Fail' failed!");
         fail.ErrorStackTrace
-            .Lines()
-            .NormalizeStackTraceLines()
+            .NormalizeStackTraces()
             .ShouldBe(["Fixie.Tests.FailureException", At("Fail()")]);
         fail.DisplayName.ShouldBe(TestClass+".Fail");
         fail.Messages.ShouldBe([]);
@@ -76,8 +75,7 @@ public class VsExecutionRecorderTests : MessagingTests
         failByAssertion.Outcome.ShouldBe(TestOutcome.Failed);
         failByAssertion.ErrorMessage.ShouldBe("x should be 2 but was 1");
         failByAssertion.ErrorStackTrace
-            .Lines()
-            .NormalizeStackTraceLines()
+            .NormalizeStackTraces()
             .ShouldBe(["Fixie.Tests.Assertions.AssertException", At("FailByAssertion()")]);
         failByAssertion.DisplayName.ShouldBe(TestClass+".FailByAssertion");
         failByAssertion.Messages.ShouldBe([]);
@@ -132,8 +130,7 @@ public class VsExecutionRecorderTests : MessagingTests
         shouldBeStringFail.Outcome.ShouldBe(TestOutcome.Failed);
         shouldBeStringFail.ErrorMessage.ShouldBe("genericArgument should be typeof(string) but was typeof(int)");
         shouldBeStringFail.ErrorStackTrace
-            .Lines()
-            .NormalizeStackTraceLines()
+            .NormalizeStackTraces()
             .ShouldBe([
                 "Fixie.Tests.Assertions.AssertException",
                 At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")

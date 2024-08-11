@@ -37,7 +37,7 @@ public class StackTracePresentationTests
                 "Fixie.Tests.FailureException",
                 At<ConstructionFailureTestClass>(".ctor()"),
                 "   at System.RuntimeType.CreateInstanceDefaultCtor(Boolean publicOnly, Boolean wrapExceptions)",
-                "--- End of stack trace from previous location where exception was thrown ---",
+                "--- End of stack trace from previous location ---",
                 At(typeof(TestClass), "Construct(Object[] parameters)",
                     Path.Join("...", "src", "Fixie", "TestClass.cs")),
                 At<ExplicitExceptionHandling>("Run(TestSuite testSuite)"),
@@ -104,7 +104,7 @@ public class StackTracePresentationTests
                     ? optimizedInvoker
                     : initialInvoker,
                 "   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)",
-                "--- End of stack trace from previous location where exception was thrown ---",
+                "--- End of stack trace from previous location ---",
                 At(typeof(MethodInfoExtensions),
                     "CallResolvedMethod(MethodInfo resolvedMethod, Object instance, Object[] parameters)",
                     Path.Join("...", "src", "Fixie", "MethodInfoExtensions.cs")),

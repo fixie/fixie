@@ -43,9 +43,6 @@ static class TestExtensions
 
         return lines.Select(line =>
         {
-            if (line == "--- End of stack trace from previous location ---")
-                line = "--- End of stack trace from previous location where exception was thrown ---";
-
             return Regex.Replace(line,
                 @"\) in .+([\\/])src([\\/])Fixie(.+)\.cs:line \d+",
                 ") in ...$1src$2Fixie$3.cs:line #");

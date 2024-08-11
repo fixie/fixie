@@ -25,7 +25,7 @@ public class XmlReportTests : MessagingTests
 
         CleanBrittleValues(actual.ToString())
             .NormalizeStackTraces()
-            .ToArray()
+            .Lines()
             .ShouldBe(ExpectedReport.Lines().ToArray());
     }
 

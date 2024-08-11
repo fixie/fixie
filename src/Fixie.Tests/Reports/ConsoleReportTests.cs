@@ -12,6 +12,7 @@ public class ConsoleReportTests : MessagingTests
 
         output.Console
             .NormalizeStackTraces()
+            .Lines()
             .CleanDuration()
             .ShouldBe([
                 $"Running Fixie.Tests (net{TargetFrameworkVersion})",
@@ -55,6 +56,7 @@ public class ConsoleReportTests : MessagingTests
 
         output.Console
             .NormalizeStackTraces()
+            .Lines()
             .CleanDuration()
             .ShouldBe([
                 $"Running Fixie.Tests (net{TargetFrameworkVersion})",

@@ -13,6 +13,7 @@ public class TeamCityReportTests : MessagingTests
 
         output.Console
             .NormalizeStackTraces()
+            .Lines()
             .Select(x => Regex.Replace(x, @"duration='\d+'", "duration='#'"))
             .ShouldBe([
                 "##teamcity[testSuiteStarted name='Fixie.Tests']",

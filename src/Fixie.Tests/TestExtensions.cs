@@ -37,25 +37,23 @@ static class TestExtensions
         return lines;
     }
 
-    public static IEnumerable<string> NormalizeStackTraces(this string? multiline)
+    public static string NormalizeStackTraces(this string? multiline)
     {
         //Avoid brittle assertion introduced by stack trace absolute paths and line numbers.
 
         if (multiline == null)
             throw new Exception("Expected a non-null string.");
 
-        return multiline.Lines().Select(line =>
-        {
-            return Regex.Replace(line,
-                @"\) in .+([\\/])src([\\/])Fixie(.+)\.cs:line \d+",
-                ") in ...$1src$2Fixie$3.cs:line #");
-        });
+        return Regex.Replace(multiline,
+            @"\) in .+([\\/])src([\\/])Fixie(.+)\.cs:line \d+",
+            ") in ...$1src$2Fixie$3.cs:line #");
     }
 
     public static void ShouldBeStackTrace(this string? actual, string[] expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
         actual
             .NormalizeStackTraces()
+            .Lines()
             .ShouldBe(expected, expression);
     }
 

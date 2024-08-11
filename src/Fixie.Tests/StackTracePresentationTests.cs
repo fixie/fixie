@@ -171,6 +171,7 @@ public class StackTracePresentationTests
 
         return console.ToString()
             .NormalizeStackTraces()
+            .Lines()
             .CleanDuration();
     }
 

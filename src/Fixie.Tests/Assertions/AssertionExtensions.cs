@@ -170,24 +170,30 @@ public static class AssertionExtensions
     }
 
     static string Serialize(char x) =>
+        $"'{Escape(x)}'";
+    
+    static string Escape(char x) =>
         x switch
         {
-            '\0' => @"'\0'",
-            '\a' => @"'\a'",
-            '\b' => @"'\b'",
-            '\t' => @"'\t'",
-            '\n' => @"'\n'",
-            '\v' => @"'\v'",
-            '\f' => @"'\f'",
-            '\r' => @"'\r'",
-            //'\e' => @"'\e'", TODO: Applicable in C# 13
-            ' ' => "' '",
-            '"' => @"'\""'",
-            '\'' => @"'\''",
-            '\\' => @"'\\'",
-            _ when (char.IsControl(x) || char.IsWhiteSpace(x)) => $"'\\u{(int)x:X4}'",
-            _ => $"'{x}'"
+            '\0' => @"\0",
+            '\a' => @"\a",
+            '\b' => @"\b",
+            '\t' => @"\t",
+            '\n' => @"\n",
+            '\v' => @"\v",
+            '\f' => @"\f",
+            '\r' => @"\r",
+            //'\e' => @"\e", TODO: Applicable in C# 13
+            ' ' => " ",
+            '"' => @"\""",
+            '\'' => @"\'",
+            '\\' => @"\\",
+            _ when (char.IsControl(x) || char.IsWhiteSpace(x)) => $"\\u{(int)x:X4}",
+            _ => x.ToString()
         };
+
+    static string Serialize(string x) =>
+        $"\"{string.Join("", x.Select(Escape))}\"";
 
     static string Serialize(bool x) => x ? "true" : "false";
 

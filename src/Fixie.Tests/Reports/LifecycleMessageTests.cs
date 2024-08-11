@@ -43,8 +43,7 @@ public class LifecycleMessageTests : MessagingTests
         fail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
         fail.Reason.ShouldBe<FailureException>();
         fail.Reason.StackTraceSummary()
-            .NormalizeStackTraces()
-            .ShouldBe([At("Fail()")]);
+            .ShouldBeStackTrace([At("Fail()")]);
         fail.Reason.Message.ShouldBe("'Fail' failed!");
 
         failByAssertionStarted.Test.ShouldBe(TestClass + ".FailByAssertion");
@@ -54,8 +53,7 @@ public class LifecycleMessageTests : MessagingTests
         failByAssertion.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
         failByAssertion.Reason.ShouldBe<AssertException>();
         failByAssertion.Reason.StackTraceSummary()
-            .NormalizeStackTraces()
-            .ShouldBe([At("FailByAssertion()")]);
+            .ShouldBeStackTrace([At("FailByAssertion()")]);
         failByAssertion.Reason.Message.ShouldBe("x should be 2 but was 1");
 
         skip.Test.ShouldBe(TestClass + ".Skip");
@@ -82,8 +80,7 @@ public class LifecycleMessageTests : MessagingTests
         shouldBeStringFail.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);
         shouldBeStringFail.Reason.ShouldBe<AssertException>();
         shouldBeStringFail.Reason.StackTraceSummary()
-            .NormalizeStackTraces()
-            .ShouldBe([At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")]);
+            .ShouldBeStackTrace([At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")]);
         shouldBeStringFail.Reason.Message.ShouldBe("genericArgument should be typeof(string) but was typeof(int)");
 
         executionCompleted.Duration.ShouldBeGreaterThanOrEqualTo(TimeSpan.Zero);

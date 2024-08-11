@@ -104,8 +104,7 @@ public class AzureReportTests : MessagingTests
         fail.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
         fail.errorMessage.ShouldBe("'Fail' failed!");
         fail.stackTrace
-            .NormalizeStackTraces()
-            .ShouldBe(["Fixie.Tests.FailureException", At("Fail()")]);
+            .ShouldBeStackTrace(["Fixie.Tests.FailureException", At("Fail()")]);
 
         failByAssertion.automatedTestName.ShouldBe(TestClass + ".FailByAssertion");
         failByAssertion.testCaseTitle.ShouldBe(TestClass + ".FailByAssertion");
@@ -113,8 +112,7 @@ public class AzureReportTests : MessagingTests
         failByAssertion.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
         failByAssertion.errorMessage.ShouldBe("x should be 2 but was 1");
         failByAssertion.stackTrace
-            .NormalizeStackTraces()
-            .ShouldBe(["Fixie.Tests.Assertions.AssertException", At("FailByAssertion()")]);
+            .ShouldBeStackTrace(["Fixie.Tests.Assertions.AssertException", At("FailByAssertion()")]);
 
         pass.automatedTestName.ShouldBe(TestClass + ".Pass");
         pass.testCaseTitle.ShouldBe(TestClass + ".Pass");
@@ -150,8 +148,7 @@ public class AzureReportTests : MessagingTests
         shouldBeStringFail.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
         shouldBeStringFail.errorMessage.ShouldBe("genericArgument should be typeof(string) but was typeof(int)");
         shouldBeStringFail.stackTrace
-            .NormalizeStackTraces()
-            .ShouldBe([
+            .ShouldBeStackTrace([
                 "Fixie.Tests.Assertions.AssertException",
                 At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")
             ]);

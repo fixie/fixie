@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 namespace Fixie.Tests;
@@ -49,6 +50,13 @@ static class TestExtensions
                 @"\) in .+([\\/])src([\\/])Fixie(.+)\.cs:line \d+",
                 ") in ...$1src$2Fixie$3.cs:line #");
         });
+    }
+
+    public static void ShouldBeStackTrace(this string? actual, string[] expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
+    {
+        actual
+            .NormalizeStackTraces()
+            .ShouldBe(expected, expression);
     }
 
     public static IEnumerable<string> CleanDuration(this IEnumerable<string> lines)

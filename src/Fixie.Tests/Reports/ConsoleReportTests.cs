@@ -10,9 +10,7 @@ public class ConsoleReportTests : MessagingTests
     {
         var output = await Run(environment => new ConsoleReport(environment));
 
-        output.Console
-            .NormalizeStackTraces()
-            .CleanDuration()
+        NormalizeOutput(output)
             .ShouldBe(
                 $"""
                  Running Fixie.Tests (net{TargetFrameworkVersion})
@@ -51,9 +49,7 @@ public class ConsoleReportTests : MessagingTests
     {
         var output = await Run(console => new ConsoleReport(console, testPattern: "*"));
 
-        output.Console
-            .NormalizeStackTraces()
-            .CleanDuration()
+        NormalizeOutput(output)
             .ShouldBe(
                 $"""
                  Running Fixie.Tests (net{TargetFrameworkVersion})
@@ -105,10 +101,7 @@ public class ConsoleReportTests : MessagingTests
 
         var output = await Run(console => new ConsoleReport(console), discovery);
 
-        output.Console
-            .CleanDuration()
-            .Lines()
-            .Last()
+        LastNonemptyLine(NormalizeOutput(output))
             .ShouldBe("2 failed, 1 skipped, took 1.23 seconds");
     }
 
@@ -124,10 +117,7 @@ public class ConsoleReportTests : MessagingTests
 
         var output = await Run(console => new ConsoleReport(console), discovery);
 
-        output.Console
-            .CleanDuration()
-            .Lines()
-            .Last()
+        LastNonemptyLine(NormalizeOutput(output))
             .ShouldBe("1 passed, 1 skipped, took 1.23 seconds");
     }
 
@@ -143,10 +133,7 @@ public class ConsoleReportTests : MessagingTests
 
         var output = await Run(console => new ConsoleReport(console), discovery);
 
-        output.Console
-            .CleanDuration()
-            .Lines()
-            .Last()
+        LastNonemptyLine(NormalizeOutput(output))
             .ShouldBe("1 passed, 2 failed, took 1.23 seconds");
     }
 
@@ -162,16 +149,20 @@ public class ConsoleReportTests : MessagingTests
 
         var output = await Run(console => new ConsoleReport(console), discovery);
 
-        output.Console
-            .Lines()
-            .Last()
+        LastNonemptyLine(NormalizeOutput(output))
             .ShouldBe("No tests found.");
 
         output = await Run(console => new ConsoleReport(console, testPattern: "Ineffective*Pattern"), discovery);
 
-        output.Console
-            .Lines()
-            .Last()
+        LastNonemptyLine(NormalizeOutput(output))
             .ShouldBe("No tests match the specified pattern: Ineffective*Pattern");
     }
+
+    static string NormalizeOutput(Output output) =>
+        output.Console
+            .NormalizeStackTraces()
+            .CleanDuration();
+
+    static string LastNonemptyLine(string multiline) =>
+        multiline.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).Last();
 }

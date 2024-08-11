@@ -24,19 +24,6 @@ static class TestExtensions
         return type.GetMethods(InstanceMethods);
     }
 
-    public static IEnumerable<string> Lines(this string? multiline)
-    {
-        if (multiline == null)
-            throw new Exception("Expected a non-null string.");
-
-        var lines = multiline.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
-
-        while (lines.Count > 0 && lines[lines.Count-1] == "")
-            lines.RemoveAt(lines.Count-1);
-
-        return lines;
-    }
-
     public static string NormalizeStackTraces(this string? multiline)
     {
         //Avoid brittle assertion introduced by stack trace absolute paths and line numbers.

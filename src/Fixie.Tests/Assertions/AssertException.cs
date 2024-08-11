@@ -6,12 +6,14 @@ public class AssertException : Exception
 {
     public static string FilterStackTraceAssemblyPrefix = typeof(AssertException).Namespace + ".";
 
+    public string? Expression { get; }
     public string? Expected { get; }
     public string? Actual { get; }
     public bool HasCompactRepresentations { get; }
 
-    public AssertException(string? expected, string? actual)
+    public AssertException(string? expression, string? expected, string? actual)
     {
+        Expression = expression;
         Expected = expected;
         Actual = actual;
         HasCompactRepresentations = HasCompactRepresentation(expected) &&
@@ -26,11 +28,10 @@ public class AssertException : Exception
             var actual = Actual ?? "null";
 
             if (HasCompactRepresentations)
-                return $"Expected: {expected}{NewLine}" +
-                       $"Actual:   {actual}";
+                return $"{Expression} should be {expected} but was {actual}";
 
-            return $"Expected:{NewLine}{expected}{NewLine}{NewLine}" +
-                   $"Actual:{NewLine}{actual}";
+            return $"{Expression} should be {NewLine}{expected}{NewLine}{NewLine}" +
+                   $"but was {NewLine}{actual}";
         }
     }
 

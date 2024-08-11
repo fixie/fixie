@@ -29,8 +29,8 @@ public class VsExecutionRecorderTests : MessagingTests
         {
             if (message is TestResult result)
             {
-                result.Traits.ShouldBeEmpty();
-                result.Attachments.ShouldBeEmpty();
+                result.Traits.ShouldBe([]);
+                result.Attachments.ShouldBe([]);
                 result.ComputerName.ShouldBe(MachineName);
             }
         }
@@ -66,7 +66,7 @@ public class VsExecutionRecorderTests : MessagingTests
             .NormalizeStackTraceLines()
             .ShouldBe(["Fixie.Tests.FailureException", At("Fail()")]);
         fail.DisplayName.ShouldBe(TestClass+".Fail");
-        fail.Messages.ShouldBeEmpty();
+        fail.Messages.ShouldBe([]);
         fail.Duration.ShouldBe(TimeSpan.FromMilliseconds(102));
 
         failByAssertionStart.ShouldBeExecutionTimeTest(TestClass + ".FailByAssertion", assemblyPath);
@@ -74,16 +74,13 @@ public class VsExecutionRecorderTests : MessagingTests
         failByAssertion.TestCase.ShouldBeExecutionTimeTest(TestClass+".FailByAssertion", assemblyPath);
         failByAssertion.TestCase.DisplayName.ShouldBe(TestClass+".FailByAssertion");
         failByAssertion.Outcome.ShouldBe(TestOutcome.Failed);
-        failByAssertion.ErrorMessage.Lines().ShouldBe([
-            "Expected: 2",
-            "Actual:   1"
-        ]);
+        failByAssertion.ErrorMessage.ShouldBe("x should be 2 but was 1");
         failByAssertion.ErrorStackTrace
             .Lines()
             .NormalizeStackTraceLines()
             .ShouldBe(["Fixie.Tests.Assertions.AssertException", At("FailByAssertion()")]);
         failByAssertion.DisplayName.ShouldBe(TestClass+".FailByAssertion");
-        failByAssertion.Messages.ShouldBeEmpty();
+        failByAssertion.Messages.ShouldBe([]);
         failByAssertion.Duration.ShouldBe(TimeSpan.FromMilliseconds(103));
 
         passStart.ShouldBeExecutionTimeTest(TestClass + ".Pass", assemblyPath);
@@ -94,7 +91,7 @@ public class VsExecutionRecorderTests : MessagingTests
         pass.ErrorMessage.ShouldBe(null);
         pass.ErrorStackTrace.ShouldBe(null);
         pass.DisplayName.ShouldBe(TestClass+".Pass");
-        pass.Messages.ShouldBeEmpty();
+        pass.Messages.ShouldBe([]);
         pass.Duration.ShouldBe(TimeSpan.FromMilliseconds(104));
 
         skip.TestCase.ShouldBeExecutionTimeTest(TestClass+".Skip", assemblyPath);
@@ -103,7 +100,7 @@ public class VsExecutionRecorderTests : MessagingTests
         skip.ErrorMessage.ShouldBe("⚠ Skipped with attribute.");
         skip.ErrorStackTrace.ShouldBe(null);
         skip.DisplayName.ShouldBe(TestClass+".Skip");
-        skip.Messages.ShouldBeEmpty();
+        skip.Messages.ShouldBe([]);
         skip.Duration.ShouldBe(TimeSpan.Zero);
 
         shouldBeStringPassAStart.ShouldBeExecutionTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath);
@@ -114,7 +111,7 @@ public class VsExecutionRecorderTests : MessagingTests
         shouldBeStringPassA.ErrorMessage.ShouldBe(null);
         shouldBeStringPassA.ErrorStackTrace.ShouldBe(null);
         shouldBeStringPassA.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString<System.String>(\"A\")");
-        shouldBeStringPassA.Messages.ShouldBeEmpty();
+        shouldBeStringPassA.Messages.ShouldBe([]);
         shouldBeStringPassA.Duration.ShouldBe(TimeSpan.FromMilliseconds(105));
 
         shouldBeStringPassBStart.ShouldBeExecutionTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath);
@@ -125,19 +122,15 @@ public class VsExecutionRecorderTests : MessagingTests
         shouldBeStringPassB.ErrorMessage.ShouldBe(null);
         shouldBeStringPassB.ErrorStackTrace.ShouldBe(null);
         shouldBeStringPassB.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString<System.String>(\"B\")");
-        shouldBeStringPassB.Messages.ShouldBeEmpty();
+        shouldBeStringPassB.Messages.ShouldBe([]);
         shouldBeStringPassB.Duration.ShouldBe(TimeSpan.FromMilliseconds(106));
-
 
         shouldBeStringFailStart.ShouldBeExecutionTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath);
 
         shouldBeStringFail.TestCase.ShouldBeExecutionTimeTest(GenericTestClass+".ShouldBeString", assemblyPath);
         shouldBeStringFail.TestCase.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString");
         shouldBeStringFail.Outcome.ShouldBe(TestOutcome.Failed);
-        shouldBeStringFail.ErrorMessage.Lines().ShouldBe([
-            "Expected: System.String",
-            "Actual:   System.Int32"
-        ]);
+        shouldBeStringFail.ErrorMessage.ShouldBe("genericArgument should be typeof(string) but was typeof(int)");
         shouldBeStringFail.ErrorStackTrace
             .Lines()
             .NormalizeStackTraceLines()
@@ -146,7 +139,7 @@ public class VsExecutionRecorderTests : MessagingTests
                 At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")
             ]);
         shouldBeStringFail.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString<System.Int32>(123)");
-        shouldBeStringFail.Messages.ShouldBeEmpty();
+        shouldBeStringFail.Messages.ShouldBe([]);
         shouldBeStringFail.Duration.ShouldBe(TimeSpan.FromMilliseconds(107));
     }
 
@@ -183,7 +176,7 @@ public class VsExecutionRecorderTests : MessagingTests
             Reason = new PipeMessage.Exception
             {
                 Type = "Fixie.Tests.Assertions.AssertException",
-                Message = "Expected: 2" + NewLine + "Actual:   1",
+                Message = "x should be 2 but was 1",
                 StackTrace = At("FailByAssertion()")
             }
         }));
@@ -245,7 +238,7 @@ public class VsExecutionRecorderTests : MessagingTests
             Reason = new PipeMessage.Exception
             {
                 Type = "Fixie.Tests.Assertions.AssertException",
-                Message = "Expected: System.String" + NewLine + "Actual:   System.Int32",
+                Message = "genericArgument should be typeof(string) but was typeof(int)",
                 StackTrace = At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")
             }
         }));

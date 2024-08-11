@@ -27,8 +27,7 @@ public class ConsoleReportTests : MessagingTests
 
                 "Test '" + TestClass + ".FailByAssertion' failed:",
                 "",
-                "Expected: 2",
-                "Actual:   1",
+                "x should be 2 but was 1",
                 "",
                 "Fixie.Tests.Assertions.AssertException",
                 At("FailByAssertion()"),
@@ -40,8 +39,7 @@ public class ConsoleReportTests : MessagingTests
 
                 "Test '" + GenericTestClass + ".ShouldBeString<System.Int32>(123)' failed:",
                 "",
-                "Expected: System.String",
-                "Actual:   System.Int32",
+                "genericArgument should be typeof(string) but was typeof(int)",
                 "",
                 "Fixie.Tests.Assertions.AssertException",
                 At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"),
@@ -72,8 +70,7 @@ public class ConsoleReportTests : MessagingTests
 
                 "Test '" + TestClass + ".FailByAssertion' failed:",
                 "",
-                "Expected: 2",
-                "Actual:   1",
+                "x should be 2 but was 1",
                 "",
                 "Fixie.Tests.Assertions.AssertException",
                 At("FailByAssertion()"),
@@ -92,8 +89,7 @@ public class ConsoleReportTests : MessagingTests
 
                 "Test '" + GenericTestClass + ".ShouldBeString<System.Int32>(123)' failed:",
                 "",
-                "Expected: System.String",
-                "Actual:   System.Int32",
+                "genericArgument should be typeof(string) but was typeof(int)",
                 "",
                 "Fixie.Tests.Assertions.AssertException",
                 At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"),

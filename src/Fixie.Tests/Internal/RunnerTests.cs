@@ -25,7 +25,7 @@ public class RunnerTests
 
         await runner.Discover(candidateTypes, discovery);
 
-        console.ToString().ShouldBeEmpty();
+        console.ToString().ShouldBe("");
 
         report.Entries.ShouldBe([
             Self + "+PassTestClass.PassA discovered",
@@ -58,7 +58,7 @@ public class RunnerTests
 
         await runner.Run(candidateTypes, configuration, []);
 
-        console.ToString().ShouldBeEmpty();
+        console.ToString().ShouldBe("");
 
         report.Entries.ShouldBe([
             Self + "+PassTestClass.PassA passed",

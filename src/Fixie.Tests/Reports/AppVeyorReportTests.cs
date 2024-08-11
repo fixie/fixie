@@ -20,7 +20,7 @@ public class AppVeyorReportTests : MessagingTests
 
         await Run(report);
 
-        console.ToString().ShouldBeEmpty();
+        console.ToString().ShouldBe("");
 
         results.Count.ShouldBe(7);
 
@@ -51,10 +51,7 @@ public class AppVeyorReportTests : MessagingTests
         failByAssertion.TestName.ShouldBe(TestClass + ".FailByAssertion");
         failByAssertion.Outcome.ShouldBe("Failed");
         int.Parse(failByAssertion.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
-        failByAssertion.ErrorMessage.Lines().ShouldBe([
-            "Expected: 2",
-            "Actual:   1"
-        ]);
+        failByAssertion.ErrorMessage.ShouldBe("x should be 2 but was 1");
         failByAssertion.ErrorStackTrace
             .Lines()
             .NormalizeStackTraceLines()
@@ -92,10 +89,8 @@ public class AppVeyorReportTests : MessagingTests
         shouldBeStringFail.TestName.ShouldBe(GenericTestClass + ".ShouldBeString<System.Int32>(123)");
         shouldBeStringFail.Outcome.ShouldBe("Failed");
         int.Parse(shouldBeStringFail.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
-        shouldBeStringFail.ErrorMessage.Lines().ShouldBe([
-            "Expected: System.String",
-            "Actual:   System.Int32"
-        ]);
+        shouldBeStringFail.ErrorMessage
+            .ShouldBe("genericArgument should be typeof(string) but was typeof(int)");
         shouldBeStringFail.ErrorStackTrace
             .Lines()
             .NormalizeStackTraceLines()

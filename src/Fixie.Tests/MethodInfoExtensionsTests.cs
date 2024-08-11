@@ -78,7 +78,7 @@ public class MethodInfoExtensionsTests : InstrumentedExecutionTests
             "GenericTestClass.Args<System.Char, System.Double>('a', 3, System.Char, System.Double) passed",
 
             "GenericTestClass.ConstrainedArgs<System.Int32, System.Char>(1, 'a', System.Int32, System.Char) passed",
-            "GenericTestClass.ConstrainedArgs<System.Int32, System.Char>(2, 'b', System.Int32, System.Int32) failed: Expected: System.Int32" + NewLine + "Actual:   System.Char",
+            "GenericTestClass.ConstrainedArgs<System.Int32, System.Char>(2, 'b', System.Int32, System.Int32) failed: typeof(T2) should be typeof(int) but was typeof(char)",
             "GenericTestClass.ConstrainedArgs<T1, T2>(1, null, System.Int32, System.Object) failed: The type parameters for generic method ConstrainedArgs could not be resolved.",
             "GenericTestClass.ConstrainedArgs<T1, T2>(null, 2, System.Object, System.Int32) failed: The type parameters for generic method ConstrainedArgs could not be resolved.",
 
@@ -97,8 +97,8 @@ public class MethodInfoExtensionsTests : InstrumentedExecutionTests
             "AsyncTestClass.AwaitTaskThenPass passed",
             "AsyncTestClass.AwaitValueTaskThenPass passed",
             "AsyncTestClass.CompleteTaskThenPass passed",
-            "AsyncTestClass.FailAfterAwaitTask failed: Expected: 0" + NewLine + "Actual:   3",
-            "AsyncTestClass.FailAfterAwaitValueTask failed: Expected: 0" + NewLine + "Actual:   3",
+            "AsyncTestClass.FailAfterAwaitTask failed: result should be 0 but was 3",
+            "AsyncTestClass.FailAfterAwaitValueTask failed: result should be 0 but was 3",
             "AsyncTestClass.FailBeforeAwaitTask failed: 'FailBeforeAwaitTask' failed!",
             "AsyncTestClass.FailBeforeAwaitValueTask failed: 'FailBeforeAwaitValueTask' failed!",
             "AsyncTestClass.FailDuringAwaitTask failed: Attempted to divide by zero.",
@@ -141,7 +141,7 @@ public class MethodInfoExtensionsTests : InstrumentedExecutionTests
         output.ShouldHaveResults(
             "FSharpAsyncTestClass.AsyncPass passed",
             "FSharpAsyncTestClass.FailBeforeAsync failed: 'FailBeforeAsync' failed!",
-            "FSharpAsyncTestClass.FailFromAsync failed: Expected: 0" + NewLine + "Actual:   3",
+            "FSharpAsyncTestClass.FailFromAsync failed: result should be 0 but was 3",
             "FSharpAsyncTestClass.NullAsync failed: The asynchronous method NullAsync returned null, " +
             "but a non-null awaitable object was expected.");
 

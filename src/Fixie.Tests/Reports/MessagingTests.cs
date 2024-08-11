@@ -24,10 +24,10 @@ public abstract class MessagingTests
 
     protected class Output
     {
-        public Output(string[] console)
+        public Output(string console)
             => Console = console;
 
-        public string[] Console { get; }
+        public string Console { get; }
     }
 
     protected Task<Output> Run(IReport report)
@@ -53,7 +53,7 @@ public abstract class MessagingTests
 
         await Utility.Run(getReport(GetTestEnvironment(console)), discovery, execution, console, candidateTypes);
 
-        return new Output(console.ToString().Lines().ToArray());
+        return new Output(console.ToString());
     }
 
     class MessagingTestsExecution : IExecution

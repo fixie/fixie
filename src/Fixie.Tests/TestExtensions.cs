@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 namespace Fixie.Tests;
@@ -23,41 +24,31 @@ static class TestExtensions
         return type.GetMethods(InstanceMethods);
     }
 
-    public static IEnumerable<string> Lines(this string? multiline)
+    public static string NormalizeStackTraces(this string? multiline)
     {
+        //Avoid brittle assertion introduced by stack trace absolute paths and line numbers.
+
         if (multiline == null)
             throw new Exception("Expected a non-null string.");
 
-        var lines = multiline.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
-
-        while (lines.Count > 0 && lines[lines.Count-1] == "")
-            lines.RemoveAt(lines.Count-1);
-
-        return lines;
+        return Regex.Replace(multiline,
+            @"\) in .+([\\/])src([\\/])Fixie(.+)\.cs:line \d+",
+            ") in ...$1src$2Fixie$3.cs:line #");
     }
 
-    public static IEnumerable<string> NormalizeStackTraceLines(this IEnumerable<string> lines)
+    public static void ShouldBeStackTrace(this string? actual, string[] expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
-        //Avoid brittle assertion introduced by stack trace absolute paths, line numbers,
-        //and platform dependent variations in the rethrow marker.
-
-        return lines.Select(line =>
-        {
-            if (line == "--- End of stack trace from previous location ---")
-                line = "--- End of stack trace from previous location where exception was thrown ---";
-
-            return Regex.Replace(line,
-                @"\) in .+([\\/])src([\\/])Fixie(.+)\.cs:line \d+",
-                ") in ...$1src$2Fixie$3.cs:line #");
-        });
+        actual
+            .NormalizeStackTraces()
+            .ShouldBe(string.Join(Environment.NewLine, expected), expression);
     }
 
-    public static IEnumerable<string> CleanDuration(this IEnumerable<string> lines)
+    public static string CleanDuration(this string multiline)
     {
         //Avoid brittle assertion introduced by test duration.
 
         var decimalSeparator = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
 
-        return lines.Select(line => Regex.Replace(line, @"took [\d" + Regex.Escape(decimalSeparator) + @"]+ seconds", @"took 1.23 seconds"));
+        return Regex.Replace(multiline, @"took [\d" + Regex.Escape(decimalSeparator) + "]+ seconds", "took 1.23 seconds");
     }
 }

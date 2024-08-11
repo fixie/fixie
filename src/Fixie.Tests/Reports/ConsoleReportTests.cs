@@ -10,93 +10,83 @@ public class ConsoleReportTests : MessagingTests
     {
         var output = await Run(environment => new ConsoleReport(environment));
 
-        output.Console
-            .NormalizeStackTraceLines()
-            .CleanDuration()
-            .ShouldBe([
-                $"Running Fixie.Tests (net{TargetFrameworkVersion})",
-                "",
+        NormalizeOutput(output)
+            .ShouldBe(
+                $"""
+                 Running Fixie.Tests (net{TargetFrameworkVersion})
 
-                "Test '" + TestClass + ".Fail' failed:",
-                "",
-                "'Fail' failed!",
-                "",
-                "Fixie.Tests.FailureException",
-                At("Fail()"),
-                "",
+                 Test '{TestClass}.Fail' failed:
 
-                "Test '" + TestClass + ".FailByAssertion' failed:",
-                "",
-                "x should be 2 but was 1",
-                "",
-                "Fixie.Tests.Assertions.AssertException",
-                At("FailByAssertion()"),
-                "",
+                 'Fail' failed!
 
-                "Test '" + TestClass + ".Skip' skipped:",
-                "⚠ Skipped with attribute.",
-                "",
+                 Fixie.Tests.FailureException
+                 {At("Fail()")}
 
-                "Test '" + GenericTestClass + ".ShouldBeString<System.Int32>(123)' failed:",
-                "",
-                "genericArgument should be typeof(string) but was typeof(int)",
-                "",
-                "Fixie.Tests.Assertions.AssertException",
-                At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"),
-                "",
+                 Test '{TestClass}.FailByAssertion' failed:
 
-                "3 passed, 3 failed, 1 skipped, took 1.23 seconds"
-            ]);
+                 x should be 2 but was 1
+
+                 Fixie.Tests.Assertions.AssertException
+                 {At("FailByAssertion()")}
+
+                 Test '{TestClass}.Skip' skipped:
+                 ⚠ Skipped with attribute.
+
+                 Test '{GenericTestClass}.ShouldBeString<System.Int32>(123)' failed:
+
+                 genericArgument should be typeof(string) but was typeof(int)
+
+                 Fixie.Tests.Assertions.AssertException
+                 {At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")}
+
+                 3 passed, 3 failed, 1 skipped, took 1.23 seconds
+
+
+                 """);
     }
 
     public async Task ShouldIncludePassingResultsWhenFilteringByPattern()
     {
         var output = await Run(console => new ConsoleReport(console, testPattern: "*"));
 
-        output.Console
-            .NormalizeStackTraceLines()
-            .CleanDuration()
-            .ShouldBe([
-                $"Running Fixie.Tests (net{TargetFrameworkVersion})",
-                "",
+        NormalizeOutput(output)
+            .ShouldBe(
+                $"""
+                 Running Fixie.Tests (net{TargetFrameworkVersion})
 
-                "Test '" + TestClass + ".Fail' failed:",
-                "",
-                "'Fail' failed!",
-                "",
-                "Fixie.Tests.FailureException",
-                At("Fail()"),
-                "",
+                 Test '{TestClass}.Fail' failed:
 
-                "Test '" + TestClass + ".FailByAssertion' failed:",
-                "",
-                "x should be 2 but was 1",
-                "",
-                "Fixie.Tests.Assertions.AssertException",
-                At("FailByAssertion()"),
-                "",
+                 'Fail' failed!
 
-                "Test '" + TestClass + ".Pass' passed",
-                "",
+                 Fixie.Tests.FailureException
+                 {At("Fail()")}
 
-                "Test '" + TestClass + ".Skip' skipped:",
-                "⚠ Skipped with attribute.",
-                "",
+                 Test '{TestClass}.FailByAssertion' failed:
 
-                "Test '" + GenericTestClass + ".ShouldBeString<System.String>(\"A\")' passed",
-                "Test '" + GenericTestClass + ".ShouldBeString<System.String>(\"B\")' passed",
-                "",
+                 x should be 2 but was 1
 
-                "Test '" + GenericTestClass + ".ShouldBeString<System.Int32>(123)' failed:",
-                "",
-                "genericArgument should be typeof(string) but was typeof(int)",
-                "",
-                "Fixie.Tests.Assertions.AssertException",
-                At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)"),
-                "",
+                 Fixie.Tests.Assertions.AssertException
+                 {At("FailByAssertion()")}
 
-                "3 passed, 3 failed, 1 skipped, took 1.23 seconds"
-            ]);
+                 Test '{TestClass}.Pass' passed
+
+                 Test '{TestClass}.Skip' skipped:
+                 ⚠ Skipped with attribute.
+
+                 Test '{GenericTestClass}.ShouldBeString<System.String>("A")' passed
+                 Test '{GenericTestClass}.ShouldBeString<System.String>("B")' passed
+
+                 Test '{GenericTestClass}.ShouldBeString<System.Int32>(123)' failed:
+
+                 genericArgument should be typeof(string) but was typeof(int)
+
+                 Fixie.Tests.Assertions.AssertException
+                 {At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")}
+
+                 3 passed, 3 failed, 1 skipped, took 1.23 seconds
+
+
+                 """);
     }
 
     class ZeroPassed : SelfTestDiscovery
@@ -111,9 +101,7 @@ public class ConsoleReportTests : MessagingTests
 
         var output = await Run(console => new ConsoleReport(console), discovery);
 
-        output.Console
-            .CleanDuration()
-            .Last()
+        LastNonemptyLine(NormalizeOutput(output))
             .ShouldBe("2 failed, 1 skipped, took 1.23 seconds");
     }
 
@@ -129,9 +117,7 @@ public class ConsoleReportTests : MessagingTests
 
         var output = await Run(console => new ConsoleReport(console), discovery);
 
-        output.Console
-            .CleanDuration()
-            .Last()
+        LastNonemptyLine(NormalizeOutput(output))
             .ShouldBe("1 passed, 1 skipped, took 1.23 seconds");
     }
 
@@ -147,9 +133,7 @@ public class ConsoleReportTests : MessagingTests
 
         var output = await Run(console => new ConsoleReport(console), discovery);
 
-        output.Console
-            .CleanDuration()
-            .Last()
+        LastNonemptyLine(NormalizeOutput(output))
             .ShouldBe("1 passed, 2 failed, took 1.23 seconds");
     }
 
@@ -165,14 +149,20 @@ public class ConsoleReportTests : MessagingTests
 
         var output = await Run(console => new ConsoleReport(console), discovery);
 
-        output.Console
-            .Last()
+        LastNonemptyLine(NormalizeOutput(output))
             .ShouldBe("No tests found.");
 
         output = await Run(console => new ConsoleReport(console, testPattern: "Ineffective*Pattern"), discovery);
 
-        output.Console
-            .Last()
+        LastNonemptyLine(NormalizeOutput(output))
             .ShouldBe("No tests match the specified pattern: Ineffective*Pattern");
     }
+
+    static string NormalizeOutput(Output output) =>
+        output.Console
+            .NormalizeStackTraces()
+            .CleanDuration();
+
+    static string LastNonemptyLine(string multiline) =>
+        multiline.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).Last();
 }

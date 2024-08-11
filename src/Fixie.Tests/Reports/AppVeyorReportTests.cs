@@ -43,9 +43,7 @@ public class AppVeyorReportTests : MessagingTests
         int.Parse(fail.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
         fail.ErrorMessage.ShouldBe("'Fail' failed!");
         fail.ErrorStackTrace
-            .Lines()
-            .NormalizeStackTraceLines()
-            .ShouldBe(["Fixie.Tests.FailureException", At("Fail()")]);
+            .ShouldBeStackTrace(["Fixie.Tests.FailureException", At("Fail()")]);
         fail.StdOut.ShouldBe("");
 
         failByAssertion.TestName.ShouldBe(TestClass + ".FailByAssertion");
@@ -53,9 +51,7 @@ public class AppVeyorReportTests : MessagingTests
         int.Parse(failByAssertion.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
         failByAssertion.ErrorMessage.ShouldBe("x should be 2 but was 1");
         failByAssertion.ErrorStackTrace
-            .Lines()
-            .NormalizeStackTraceLines()
-            .ShouldBe(["Fixie.Tests.Assertions.AssertException", At("FailByAssertion()")]);
+            .ShouldBeStackTrace(["Fixie.Tests.Assertions.AssertException", At("FailByAssertion()")]);
         failByAssertion.StdOut.ShouldBe("");
 
         pass.TestName.ShouldBe(TestClass + ".Pass");
@@ -92,9 +88,7 @@ public class AppVeyorReportTests : MessagingTests
         shouldBeStringFail.ErrorMessage
             .ShouldBe("genericArgument should be typeof(string) but was typeof(int)");
         shouldBeStringFail.ErrorStackTrace
-            .Lines()
-            .NormalizeStackTraceLines()
-            .ShouldBe([
+            .ShouldBeStackTrace([
                 "Fixie.Tests.Assertions.AssertException",
                 At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")
             ]);

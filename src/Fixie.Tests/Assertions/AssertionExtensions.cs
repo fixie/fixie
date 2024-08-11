@@ -30,6 +30,12 @@ public static class AssertionExtensions
         if (actual != expected)
             throw new AssertException(expression, Serialize(expected), Serialize(actual));
     }
+    
+    public static void ShouldBe(this char actual, char expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
+    {
+        if (actual != expected)
+            throw new AssertException(expression, Serialize(expected), Serialize(actual));
+    }
 
     public static void ShouldBe<T>(this IEquatable<T> actual, IEquatable<T> expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
@@ -161,6 +167,26 @@ public static class AssertionExtensions
                 writer.WriteStringValue(value.ToString());
         }
     }
+
+    static string Serialize(char x) =>
+        x switch
+        {
+            '\0' => @"'\0'",
+            '\a' => @"'\a'",
+            '\b' => @"'\b'",
+            '\t' => @"'\t'",
+            '\n' => @"'\n'",
+            '\v' => @"'\v'",
+            '\f' => @"'\f'",
+            '\r' => @"'\r'",
+            //'\e' => @"'\e'", TODO: Applicable in C# 13
+            ' ' => "' '",
+            '"' => @"'\""'",
+            '\'' => @"'\''",
+            '\\' => @"'\\'",
+            _ when (char.IsControl(x) || char.IsWhiteSpace(x)) => $"'\\u{(int)x:X4}'",
+            _ => $"'{x}'"
+        };
 
     static string Serialize(bool x) => x ? "true" : "false";
 }

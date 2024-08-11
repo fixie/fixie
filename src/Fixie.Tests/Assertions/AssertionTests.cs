@@ -158,6 +158,56 @@ public class AssertionTests
         }
     }
 
+    public void ShouldAssertStrings()
+    {
+        "a☺".ShouldBe("a☺");
+        Contradiction("a☺", x => x.ShouldBe("z☺"),
+            """
+            x should be "z☺" but was "a☺"
+            """);
+
+        ((string?)null).ShouldBe(null);
+        Contradiction("abc", x => x.ShouldBe(null),
+            """
+            x should be null but was "abc"
+            """);
+        Contradiction(((string?)null), x => x.ShouldBe("abc"),
+            """
+            x should be "abc" but was null
+            """);
+        
+        "\u0020 ".ShouldBe("  ");
+        Contradiction("abc", x => x.ShouldBe("\u0020 "),
+            """
+            x should be "  " but was "abc"
+            """);
+
+        "\u0000\0 \u0007\a \u0008\b \u0009\t \u000A\n \u000B\v".ShouldBe("\0\0 \a\a \b\b \t\t \n\n \v\v");
+        Contradiction("abc", x => x.ShouldBe("\0\a\b\t\n\v"),
+            """
+            x should be "\0\a\b\t\n\v" but was "abc"
+            """);
+
+        // TODO: In C# 13, include \u001B\e becoming \e\e
+        "\u000C\f \u000D\r \u0022\" \u0027\' \u005C\\".ShouldBe("\f\f \r\r \"\" \'\' \\\\");
+        // TODO: In C# 13, include \e being preserved.
+        Contradiction("abc", x => x.ShouldBe("\f\r\"\'\\"),
+            """
+            x should be "\f\r\"\'\\" but was "abc"
+            """);
+
+        foreach (var c in UnicodeEscapedCharacters())
+        {
+            var s = c.ToString();
+
+            s.ShouldBe(s);
+            Contradiction("a", x => x.ShouldBe(s),
+                $"""
+                 x should be "\u{(int)c:X4}" but was "a"
+                 """);
+        }
+    }
+
     public void ShouldAssertTypes()
     {
         typeof(int).ShouldBe(typeof(int));

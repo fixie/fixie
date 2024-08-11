@@ -22,7 +22,9 @@ public static class AssertionExtensions
     public static void ShouldBe(this string? actual, string? expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
         if (actual != expected)
-            throw new AssertException(expression, expected, actual);
+            throw new AssertException(expression,
+                expected == null ? "null" : Serialize(expected),
+                actual == null ? "null" : Serialize(actual));
     }
 
     public static void ShouldBe(this bool actual, bool expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)

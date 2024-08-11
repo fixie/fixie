@@ -41,7 +41,7 @@ public static class TestCaseMappingAssertions
 
     static void ShouldUseDefaultsForUnmappedProperties(TestCase test)
     {
-        test.Traits.ShouldBeEmpty();
+        test.Traits.ShouldBe([]);
         test.ExecutorUri.ToString().ShouldBe("executor://fixie.testadapter/");
     }
 

@@ -62,11 +62,6 @@ public static class AssertionExtensions
         throw new AssertException(expression, typeof(T).ToString(), actual?.GetType().ToString());
     }
 
-    public static void ShouldBeEmpty<T>(this IEnumerable<T> collection, [CallerArgumentExpression(nameof(collection))] string? expression = null)
-    {
-        collection.ShouldMatch([], expression);
-    }
-
     public static TException ShouldThrow<TException>(this Action shouldThrow, string expectedMessage, [CallerArgumentExpression(nameof(shouldThrow))] string? expression = null) where TException : Exception
     {
         try

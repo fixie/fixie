@@ -29,8 +29,8 @@ public class VsExecutionRecorderTests : MessagingTests
         {
             if (message is TestResult result)
             {
-                result.Traits.ShouldBeEmpty();
-                result.Attachments.ShouldBeEmpty();
+                result.Traits.ShouldBe([]);
+                result.Attachments.ShouldBe([]);
                 result.ComputerName.ShouldBe(MachineName);
             }
         }
@@ -66,7 +66,7 @@ public class VsExecutionRecorderTests : MessagingTests
             .NormalizeStackTraceLines()
             .ShouldBe(["Fixie.Tests.FailureException", At("Fail()")]);
         fail.DisplayName.ShouldBe(TestClass+".Fail");
-        fail.Messages.ShouldBeEmpty();
+        fail.Messages.ShouldBe([]);
         fail.Duration.ShouldBe(TimeSpan.FromMilliseconds(102));
 
         failByAssertionStart.ShouldBeExecutionTimeTest(TestClass + ".FailByAssertion", assemblyPath);
@@ -80,7 +80,7 @@ public class VsExecutionRecorderTests : MessagingTests
             .NormalizeStackTraceLines()
             .ShouldBe(["Fixie.Tests.Assertions.AssertException", At("FailByAssertion()")]);
         failByAssertion.DisplayName.ShouldBe(TestClass+".FailByAssertion");
-        failByAssertion.Messages.ShouldBeEmpty();
+        failByAssertion.Messages.ShouldBe([]);
         failByAssertion.Duration.ShouldBe(TimeSpan.FromMilliseconds(103));
 
         passStart.ShouldBeExecutionTimeTest(TestClass + ".Pass", assemblyPath);
@@ -91,7 +91,7 @@ public class VsExecutionRecorderTests : MessagingTests
         pass.ErrorMessage.ShouldBe(null);
         pass.ErrorStackTrace.ShouldBe(null);
         pass.DisplayName.ShouldBe(TestClass+".Pass");
-        pass.Messages.ShouldBeEmpty();
+        pass.Messages.ShouldBe([]);
         pass.Duration.ShouldBe(TimeSpan.FromMilliseconds(104));
 
         skip.TestCase.ShouldBeExecutionTimeTest(TestClass+".Skip", assemblyPath);
@@ -100,7 +100,7 @@ public class VsExecutionRecorderTests : MessagingTests
         skip.ErrorMessage.ShouldBe("⚠ Skipped with attribute.");
         skip.ErrorStackTrace.ShouldBe(null);
         skip.DisplayName.ShouldBe(TestClass+".Skip");
-        skip.Messages.ShouldBeEmpty();
+        skip.Messages.ShouldBe([]);
         skip.Duration.ShouldBe(TimeSpan.Zero);
 
         shouldBeStringPassAStart.ShouldBeExecutionTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath);
@@ -111,7 +111,7 @@ public class VsExecutionRecorderTests : MessagingTests
         shouldBeStringPassA.ErrorMessage.ShouldBe(null);
         shouldBeStringPassA.ErrorStackTrace.ShouldBe(null);
         shouldBeStringPassA.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString<System.String>(\"A\")");
-        shouldBeStringPassA.Messages.ShouldBeEmpty();
+        shouldBeStringPassA.Messages.ShouldBe([]);
         shouldBeStringPassA.Duration.ShouldBe(TimeSpan.FromMilliseconds(105));
 
         shouldBeStringPassBStart.ShouldBeExecutionTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath);
@@ -122,7 +122,7 @@ public class VsExecutionRecorderTests : MessagingTests
         shouldBeStringPassB.ErrorMessage.ShouldBe(null);
         shouldBeStringPassB.ErrorStackTrace.ShouldBe(null);
         shouldBeStringPassB.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString<System.String>(\"B\")");
-        shouldBeStringPassB.Messages.ShouldBeEmpty();
+        shouldBeStringPassB.Messages.ShouldBe([]);
         shouldBeStringPassB.Duration.ShouldBe(TimeSpan.FromMilliseconds(106));
 
         shouldBeStringFailStart.ShouldBeExecutionTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath);
@@ -139,7 +139,7 @@ public class VsExecutionRecorderTests : MessagingTests
                 At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")
             ]);
         shouldBeStringFail.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString<System.Int32>(123)");
-        shouldBeStringFail.Messages.ShouldBeEmpty();
+        shouldBeStringFail.Messages.ShouldBe([]);
         shouldBeStringFail.Duration.ShouldBe(TimeSpan.FromMilliseconds(107));
     }
 

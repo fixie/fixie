@@ -20,7 +20,7 @@ public class AppVeyorReportTests : MessagingTests
 
         await Run(report);
 
-        console.ToString().ShouldBeEmpty();
+        console.ToString().ShouldBe("");
 
         results.Count.ShouldBe(7);
 

@@ -18,7 +18,7 @@ public class XmlReportTests : MessagingTests
 
         await Run(report);
 
-        console.ToString().ShouldBeEmpty();
+        console.ToString().ShouldBe("");
         
         if (actual == null)
             throw new Exception("Expected non-null XML report.");

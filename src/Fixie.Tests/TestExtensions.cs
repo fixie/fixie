@@ -53,8 +53,7 @@ static class TestExtensions
     {
         actual
             .NormalizeStackTraces()
-            .Lines()
-            .ShouldBe(expected, expression);
+            .ShouldBe(string.Join(Environment.NewLine, expected), expression);
     }
 
     public static IEnumerable<string> CleanDuration(this IEnumerable<string> lines)

@@ -22,21 +22,19 @@ public static class AssertionExtensions
     public static void ShouldBe(this string? actual, string? expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
         if (actual != expected)
-            throw new AssertException(expression,
-                expected == null ? "null" : Serialize(expected),
-                actual == null ? "null" : Serialize(actual));
+            throw AssertException.Create(expression, expected, actual);
     }
 
     public static void ShouldBe(this bool actual, bool expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
         if (actual != expected)
-            throw new AssertException(expression, Serialize(expected), Serialize(actual));
+            throw AssertException.Create(expression, expected, actual);
     }
     
     public static void ShouldBe(this char actual, char expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
         if (actual != expected)
-            throw new AssertException(expression, Serialize(expected), Serialize(actual));
+            throw AssertException.Create(expression, expected, actual);
     }
 
     public static void ShouldBe<T>(this IEquatable<T> actual, IEquatable<T> expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
@@ -48,7 +46,7 @@ public static class AssertionExtensions
     public static void ShouldBe(this Type actual, Type expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
         if (actual != expected)
-            throw new AssertException(expression, Serialize(expected), Serialize(actual));
+            throw AssertException.Create(expression, expected, actual);
     }
 
     public static void ShouldBe(this object? actual, object? expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
@@ -67,7 +65,7 @@ public static class AssertionExtensions
         if (actual is T typed)
             return typed;
 
-        throw new AssertException(expression, Serialize(typeof(T)), actual == null ? "null" : Serialize(actual.GetType()));
+        throw AssertException.Create(expression, typeof(T), actual?.GetType());
     }
 
     public static TException ShouldThrow<TException>(this Action shouldThrow, string expectedMessage, [CallerArgumentExpression(nameof(shouldThrow))] string? expression = null) where TException : Exception
@@ -170,55 +168,4 @@ public static class AssertionExtensions
                 writer.WriteStringValue(value.ToString());
         }
     }
-
-    static string Serialize(char x) =>
-        $"'{Escape(x)}'";
-    
-    static string Escape(char x) =>
-        x switch
-        {
-            '\0' => @"\0",
-            '\a' => @"\a",
-            '\b' => @"\b",
-            '\t' => @"\t",
-            '\n' => @"\n",
-            '\v' => @"\v",
-            '\f' => @"\f",
-            '\r' => @"\r",
-            //'\e' => @"\e", TODO: Applicable in C# 13
-            ' ' => " ",
-            '"' => @"\""",
-            '\'' => @"\'",
-            '\\' => @"\\",
-            _ when (char.IsControl(x) || char.IsWhiteSpace(x)) => $"\\u{(int)x:X4}",
-            _ => x.ToString()
-        };
-
-    static string Serialize(string x) =>
-        $"\"{string.Join("", x.Select(Escape))}\"";
-
-    static string Serialize(bool x) => x ? "true" : "false";
-
-    static string Serialize(Type x) =>
-        $"typeof({x switch
-        {
-            _ when x == typeof(bool) => "bool",
-            _ when x == typeof(sbyte) => "sbyte",
-            _ when x == typeof(byte) => "byte",
-            _ when x == typeof(short) => "short",
-            _ when x == typeof(ushort) => "ushort",
-            _ when x == typeof(int) => "int",
-            _ when x == typeof(uint) => "uint",
-            _ when x == typeof(long) => "long",
-            _ when x == typeof(ulong) => "ulong",
-            _ when x == typeof(nint) => "nint",
-            _ when x == typeof(nuint) => "nuint",
-            _ when x == typeof(decimal) => "decimal",
-            _ when x == typeof(double) => "double",
-            _ when x == typeof(float) => "float",
-            _ when x == typeof(char) => "char",
-            _ when x == typeof(string) => "string",
-            _ when x == typeof(object) => "object",
-            _ => x.ToString()
-        }})";
 }

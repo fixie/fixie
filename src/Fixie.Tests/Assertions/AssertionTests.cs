@@ -257,6 +257,28 @@ public class AssertionTests
         Contradiction((AssertionTests?)null, x => x.ShouldBe<AssertionTests>(), "x should be typeof(Fixie.Tests.Assertions.AssertionTests) but was null");
     }
 
+    public void ShouldAssertObjects()
+    {
+        var objectA = new SampleA();
+        var objectB = new SampleB();
+
+        ((object?)null).ShouldBe(((object?)null));
+        objectA.ShouldBe(objectA);
+        objectB.ShouldBe(objectB);
+
+        Contradiction((object?)null, x => x.ShouldBe(objectA),
+            "x should be Fixie.Tests.Assertions.AssertionTests+SampleA but was null");
+        Contradiction(objectB, x => x.ShouldBe((object?)null),
+            "x should be null but was Fixie.Tests.Assertions.AssertionTests+SampleB");
+        Contradiction(objectB, x => x.ShouldBe(objectA),
+            "x should be Fixie.Tests.Assertions.AssertionTests+SampleA but was Fixie.Tests.Assertions.AssertionTests+SampleB");
+        Contradiction(objectA, x => x.ShouldBe(objectB),
+            "x should be Fixie.Tests.Assertions.AssertionTests+SampleB but was Fixie.Tests.Assertions.AssertionTests+SampleA");
+    }
+
+    class SampleA;
+    class SampleB;
+
     static void Contradiction<T>(T actual, Action<T> shouldThrow, string expectedMessage, [CallerArgumentExpression(nameof(shouldThrow))] string? assertion = null)
     {
         try

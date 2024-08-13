@@ -1,10 +1,12 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Text;
+using static System.Environment;
 
 namespace Fixie.Tests.Assertions;
 
 public class AssertionTests
 {
-    static readonly string Line = Environment.NewLine + Environment.NewLine;
+    static readonly string Line = NewLine + NewLine;
 
     public void ShouldAssertBools()
     {
@@ -158,6 +160,125 @@ public class AssertionTests
         }
     }
 
+    public void ShouldAssertStrings()
+    {
+        "a☺".ShouldBe("a☺");
+        Contradiction("a☺", x => x.ShouldBe("z☺"),
+            """
+            x should be "z☺" but was "a☺"
+            """);
+
+        ((string?)null).ShouldBe(null);
+        Contradiction("abc", x => x.ShouldBe(null),
+            """
+            x should be null but was "abc"
+            """);
+        Contradiction(((string?)null), x => x.ShouldBe("abc"),
+            """
+            x should be "abc" but was null
+            """);
+        
+        "\u0020 ".ShouldBe("  ");
+        Contradiction("abc", x => x.ShouldBe("\u0020 "),
+            """
+            x should be "  " but was "abc"
+            """);
+
+        "\u0000\0 \u0007\a \u0008\b \u0009\t \u000A\n \u000D\r".ShouldBe("\0\0 \a\a \b\b \t\t \n\n \r\r");
+        Contradiction("abc", x => x.ShouldBe("\0\a\b\t\n\r"),
+            """
+            x should be "\0\a\b\t\n\r" but was "abc"
+            """);
+
+        // TODO: In C# 13, include \u001B\e becoming \e\e
+        "\u000C\f \u000B\v \u0022\" \u0027\' \u005C\\".ShouldBe("\f\f \v\v \"\" \'\' \\\\");
+        // TODO: In C# 13, include \e being preserved.
+        Contradiction("abc", x => x.ShouldBe("\f\v\"\'\\"),
+            """
+            x should be "\f\v\"\'\\" but was "abc"
+            """);
+
+        foreach (var c in UnicodeEscapedCharacters())
+        {
+            var s = c.ToString();
+
+            s.ShouldBe(s);
+            Contradiction("a", x => x.ShouldBe(s),
+                $"""
+                 x should be "\u{(int)c:X4}" but was "a"
+                 """);
+        }
+    }
+
+    public void ShouldAssertMultilineStrings()
+    {
+        var original = new StringBuilder()
+            .AppendLine("Line 1")
+            .AppendLine("Line 2")
+            .AppendLine("Line 3")
+            .Append("Line 4")
+            .ToString();
+
+        var altered = new StringBuilder()
+            .AppendLine("Line 1")
+            .AppendLine("Line 2 Altered")
+            .AppendLine("Line 3")
+            .Append("Line 4")
+            .ToString();
+
+        var mixedLineEndings = "\r \n \r\n \n \r";
+
+        original.ShouldBe(original);
+        altered.ShouldBe(altered);
+
+        Contradiction(original, x => x.ShouldBe(altered),
+            new StringBuilder()
+                .AppendLine("x should be")
+                .AppendLine("\t\"\"\"")
+                .AppendLine("\tLine 1")
+                .AppendLine("\tLine 2 Altered")
+                .AppendLine("\tLine 3")
+                .AppendLine("\tLine 4")
+                .AppendLine("\t\"\"\"")
+                .AppendLine()
+                .AppendLine("but was")
+                .AppendLine("\t\"\"\"")
+                .AppendLine("\tLine 1")
+                .AppendLine("\tLine 2")
+                .AppendLine("\tLine 3")
+                .AppendLine("\tLine 4")
+                .Append("\t\"\"\"")
+                .ToString());
+
+        Contradiction(original, x => x.ShouldBe(mixedLineEndings),
+            new StringBuilder()
+                .AppendLine("x should be")
+                .AppendLine("\t\"\\r \\n \\r\\n \\n \\r\"")
+                .AppendLine()
+                .AppendLine("but was")
+                .AppendLine("\t\"\"\"")
+                .AppendLine("\tLine 1")
+                .AppendLine("\tLine 2")
+                .AppendLine("\tLine 3")
+                .AppendLine("\tLine 4")
+                .Append("\t\"\"\"")
+                .ToString());
+
+        Contradiction(mixedLineEndings, x => x.ShouldBe(original),
+            new StringBuilder()
+                .AppendLine("x should be")
+                .AppendLine("\t\"\"\"")
+                .AppendLine("\tLine 1")
+                .AppendLine("\tLine 2")
+                .AppendLine("\tLine 3")
+                .AppendLine("\tLine 4")
+                .AppendLine("\t\"\"\"")
+                .AppendLine()
+                .AppendLine("but was")
+                .Append("\t\"\\r \\n \\r\\n \\n \\r\"")
+                .ToString());
+    }
+
     public void ShouldAssertTypes()
     {
         typeof(int).ShouldBe(typeof(int));
@@ -207,6 +328,28 @@ public class AssertionTests
         Contradiction((AssertionTests?)null, x => x.ShouldBe<AssertionTests>(), "x should be typeof(Fixie.Tests.Assertions.AssertionTests) but was null");
     }
 
+    public void ShouldAssertObjects()
+    {
+        var objectA = new SampleA();
+        var objectB = new SampleB();
+
+        ((object?)null).ShouldBe(((object?)null));
+        objectA.ShouldBe(objectA);
+        objectB.ShouldBe(objectB);
+
+        Contradiction((object?)null, x => x.ShouldBe(objectA),
+            "x should be Fixie.Tests.Assertions.AssertionTests+SampleA but was null");
+        Contradiction(objectB, x => x.ShouldBe((object?)null),
+            "x should be null but was Fixie.Tests.Assertions.AssertionTests+SampleB");
+        Contradiction(objectB, x => x.ShouldBe(objectA),
+            "x should be Fixie.Tests.Assertions.AssertionTests+SampleA but was Fixie.Tests.Assertions.AssertionTests+SampleB");
+        Contradiction(objectA, x => x.ShouldBe(objectB),
+            "x should be Fixie.Tests.Assertions.AssertionTests+SampleB but was Fixie.Tests.Assertions.AssertionTests+SampleA");
+    }
+
+    class SampleA;
+    class SampleB;
+
     static void Contradiction<T>(T actual, Action<T> shouldThrow, string expectedMessage, [CallerArgumentExpression(nameof(shouldThrow))] string? assertion = null)
     {
         try
@@ -220,8 +363,8 @@ public class AssertionTests
                 if (exception.Message != expectedMessage)
                     throw new Exception(
                         $"An example assertion failed as expected, but with the wrong message.{Line}" +
-                        $"Expected Message:{Line}\t{expectedMessage}{Line}" +
-                        $"Actual Message:{Line}\t{exception.Message}");
+                        $"Expected Message:{Line}{Indent(expectedMessage)}{Line}" +
+                        $"Actual Message:{Line}{Indent(exception.Message)}");
                 return;
             }
 
@@ -240,6 +383,9 @@ public class AssertionTests
             $"The actual value in question was:{Line}" +
             $"\t{actual}");
     }
+
+    static string Indent(string multiline) =>
+        string.Join(NewLine, multiline.Split(NewLine).Select(x => $"\t{x}"));
 
     static IEnumerable<char> UnicodeEscapedCharacters()
     {

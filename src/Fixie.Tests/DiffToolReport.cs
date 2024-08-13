@@ -20,7 +20,7 @@ class DiffToolReport : IHandler<TestFailed>, IHandler<ExecutionCompleted>
     public async Task Handle(ExecutionCompleted message)
     {
         if (singleFailure is AssertException exception)
-            if (!exception.HasCompactRepresentations)
+            if (exception.HasMultilineRepresentation)
                 await LaunchDiffTool(exception);
     }
 

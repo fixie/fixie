@@ -7,17 +7,20 @@ public class AssertException : Exception
     public static string FilterStackTraceAssemblyPrefix = typeof(AssertException).Namespace + ".";
 
     public string? Expression { get; }
-    public string? Expected { get; }
-    public string? Actual { get; }
-    public bool HasCompactRepresentations { get; }
-
-    AssertException(string? expression, string? expected, string? actual)
+    public string Expected { get; }
+    public string Actual { get; }
+    public bool HasMultilineRepresentation => expectedIsMultiline || actualIsMultiline;
+    readonly bool expectedIsMultiline = false;
+    readonly bool actualIsMultiline = false;
+    
+    AssertException(string? expression, string expected, string actual)
     {
+        expectedIsMultiline = IsMultiline(expected);
+        actualIsMultiline = IsMultiline(actual);
+
         Expression = expression;
         Expected = expected;
         Actual = actual;
-        HasCompactRepresentations = HasCompactRepresentation(expected) &&
-                                    HasCompactRepresentation(actual);
     }
 
     public AssertException(string? expression, bool expected, bool actual)
@@ -25,7 +28,6 @@ public class AssertException : Exception
         Expression = expression;
         Expected = Serialize(expected);
         Actual = Serialize(actual);
-        HasCompactRepresentations = true;
     }
 
     public AssertException(string? expression, char expected, char actual)
@@ -33,59 +35,55 @@ public class AssertException : Exception
         Expression = expression;
         Expected = Serialize(expected);
         Actual = Serialize(actual);
-        HasCompactRepresentations = true;
     }
 
     public AssertException(string? expression, object? expected, object? actual)
     {
         Expression = expression;
-        Expected = expected?.ToString();
-        Actual = actual?.ToString();
-        HasCompactRepresentations = true;
+        Expected = Serialize(expected);
+        Actual = Serialize(actual);
     }
 
     public AssertException(string? expression, Type expected, Type? actual)
     {
         Expression = expression;
         Expected = Serialize(expected);
-        Actual = actual == null ? null: Serialize(actual);
-        HasCompactRepresentations = true;
+        Actual = Serialize(actual);
     }
 
     public static AssertException ForLiterals(string? expression, string? expected, string? actual)
     {
-        return new AssertException(expression, expected == null ? null : Serialize(expected), actual == null ? null : Serialize(actual));
+        return new AssertException(expression,
+            expected != null && IsMultiline(expected) ? SerializeMultiline(expected) : Serialize(expected),
+            actual != null && IsMultiline(actual) ? SerializeMultiline(actual) : Serialize(actual));
     }
 
     public static AssertException ForDescriptions(string? expression, string? expectationDescription, string? actualDescription)
     {
-        return new AssertException(expression, expectationDescription, actualDescription);
+        return new AssertException(expression, expectationDescription ?? "null", actualDescription ?? "null");
     }
 
     public override string Message
     {
         get
         {
-            var expected = Expected ?? "null";
-            var actual = Actual ?? "null";
+            if (!HasMultilineRepresentation)
+                return $"{Expression} should be {Expected} but was {Actual}";
 
-            if (HasCompactRepresentations)
-                return $"{Expression} should be {expected} but was {actual}";
-
-            return $"{Expression} should be {NewLine}{expected}{NewLine}{NewLine}" +
-                   $"but was {NewLine}{actual}";
+            return $"{Expression} should be{NewLine}{Indent(Expected)}{NewLine}{NewLine}" +
+                   $"but was{NewLine}{Indent(Actual)}";
         }
     }
 
-    static bool HasCompactRepresentation(string? value)
+    static bool IsMultiline(string value)
     {
-        const int compactLength = 50;
+        var lines = value.Split(NewLine);
 
-        if (value is null)
-            return true;
-
-        return value.Length <= compactLength && !value.Contains(NewLine);
+        return lines.Length > 1 && lines.All(line => !line.Contains("\r") && !line.Contains("\n"));
     }
+
+    static string Indent(string multiline) =>
+        string.Join(NewLine, multiline.Split(NewLine).Select(x => $"\t{x}"));
 
     public override string? StackTrace => FilterStackTrace(base.StackTrace);
 
@@ -113,11 +111,22 @@ public class AssertException : Exception
 
     static string Serialize(bool x) => x ? "true" : "false";
 
-    static string Serialize(char x) =>
-        $"'{Escape(x)}'";
+    static string Serialize(char x) => $"'{Escape(x)}'";
 
-    static string Serialize(string x) =>
-        $"\"{string.Join("", x.Select(Escape))}\"";
+    static string Serialize(object? x) => x?.ToString() ?? "null";
+    
+    static string Serialize(string? x) => x == null ? "null": $"\"{string.Join("", x.Select(Escape))}\"";
+    
+    static string SerializeMultiline(string x)
+    {
+        var unescapedLines = x.Split(NewLine);
+
+        var indentedEscapedLines = unescapedLines.Select(line => string.Join("", line.Select(Escape)));
+        
+        var rejoinedEscapedLines = string.Join(NewLine, indentedEscapedLines);
+
+        return $"\"\"\"{NewLine}{rejoinedEscapedLines}{NewLine}\"\"\"";
+    }
     
     static string Escape(char x) =>
         x switch
@@ -139,26 +148,28 @@ public class AssertException : Exception
             _ => x.ToString()
         };
 
-    static string Serialize(Type x) =>
-        $"typeof({x switch
-        {
-            _ when x == typeof(bool) => "bool",
-            _ when x == typeof(sbyte) => "sbyte",
-            _ when x == typeof(byte) => "byte",
-            _ when x == typeof(short) => "short",
-            _ when x == typeof(ushort) => "ushort",
-            _ when x == typeof(int) => "int",
-            _ when x == typeof(uint) => "uint",
-            _ when x == typeof(long) => "long",
-            _ when x == typeof(ulong) => "ulong",
-            _ when x == typeof(nint) => "nint",
-            _ when x == typeof(nuint) => "nuint",
-            _ when x == typeof(decimal) => "decimal",
-            _ when x == typeof(double) => "double",
-            _ when x == typeof(float) => "float",
-            _ when x == typeof(char) => "char",
-            _ when x == typeof(string) => "string",
-            _ when x == typeof(object) => "object",
-            _ => x.ToString()
-        }})";
+    static string Serialize(Type? x) =>
+        x == null
+            ? "null"
+            : $"typeof({x switch
+            {
+                _ when x == typeof(bool) => "bool",
+                _ when x == typeof(sbyte) => "sbyte",
+                _ when x == typeof(byte) => "byte",
+                _ when x == typeof(short) => "short",
+                _ when x == typeof(ushort) => "ushort",
+                _ when x == typeof(int) => "int",
+                _ when x == typeof(uint) => "uint",
+                _ when x == typeof(long) => "long",
+                _ when x == typeof(ulong) => "ulong",
+                _ when x == typeof(nint) => "nint",
+                _ when x == typeof(nuint) => "nuint",
+                _ when x == typeof(decimal) => "decimal",
+                _ when x == typeof(double) => "double",
+                _ when x == typeof(float) => "float",
+                _ when x == typeof(char) => "char",
+                _ when x == typeof(string) => "string",
+                _ when x == typeof(object) => "object",
+                _ => x.ToString()
+            }})";
 }

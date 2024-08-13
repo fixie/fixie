@@ -184,18 +184,18 @@ public class AssertionTests
             x should be "  " but was "abc"
             """);
 
-        "\u0000\0 \u0007\a \u0008\b \u0009\t \u000A\n \u000B\v".ShouldBe("\0\0 \a\a \b\b \t\t \n\n \v\v");
-        Contradiction("abc", x => x.ShouldBe("\0\a\b\t\n\v"),
+        "\u0000\0 \u0007\a \u0008\b \u0009\t \u000A\n \u000D\r".ShouldBe("\0\0 \a\a \b\b \t\t \n\n \r\r");
+        Contradiction("abc", x => x.ShouldBe("\0\a\b\t\n\r"),
             """
-            x should be "\0\a\b\t\n\v" but was "abc"
+            x should be "\0\a\b\t\n\r" but was "abc"
             """);
 
         // TODO: In C# 13, include \u001B\e becoming \e\e
-        "\u000C\f \u000D\r \u0022\" \u0027\' \u005C\\".ShouldBe("\f\f \r\r \"\" \'\' \\\\");
+        "\u000C\f \u000B\v \u0022\" \u0027\' \u005C\\".ShouldBe("\f\f \v\v \"\" \'\' \\\\");
         // TODO: In C# 13, include \e being preserved.
-        Contradiction("abc", x => x.ShouldBe("\f\r\"\'\\"),
+        Contradiction("abc", x => x.ShouldBe("\f\v\"\'\\"),
             """
-            x should be "\f\r\"\'\\" but was "abc"
+            x should be "\f\v\"\'\\" but was "abc"
             """);
 
         foreach (var c in UnicodeEscapedCharacters())

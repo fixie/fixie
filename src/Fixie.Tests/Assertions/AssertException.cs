@@ -11,7 +11,7 @@ public class AssertException : Exception
     public string? Actual { get; }
     public bool HasCompactRepresentations { get; }
 
-    public AssertException(string? expression, string? expected, string? actual)
+    AssertException(string? expression, string? expected, string? actual)
     {
         Expression = expression;
         Expected = expected;
@@ -20,24 +20,46 @@ public class AssertException : Exception
                                     HasCompactRepresentation(actual);
     }
 
-    public static AssertException Create(string? expression, bool expected, bool actual)
+    public AssertException(string? expression, bool expected, bool actual)
     {
-        return new AssertException(expression, Serialize(expected), Serialize(actual));
+        Expression = expression;
+        Expected = Serialize(expected);
+        Actual = Serialize(actual);
+        HasCompactRepresentations = true;
     }
 
-    public static AssertException Create(string? expression, char expected, char actual)
+    public AssertException(string? expression, char expected, char actual)
     {
-        return new AssertException(expression, Serialize(expected), Serialize(actual));
-    }
-    
-    public static AssertException Create(string? expression, Type expected, Type? actual)
-    {
-        return new AssertException(expression, Serialize(expected), actual == null ? null : Serialize(actual));
+        Expression = expression;
+        Expected = Serialize(expected);
+        Actual = Serialize(actual);
+        HasCompactRepresentations = true;
     }
 
-    public static AssertException Create(string? expression, string? expected, string? actual)
+    public AssertException(string? expression, object? expected, object? actual)
+    {
+        Expression = expression;
+        Expected = expected?.ToString();
+        Actual = actual?.ToString();
+        HasCompactRepresentations = true;
+    }
+
+    public AssertException(string? expression, Type expected, Type? actual)
+    {
+        Expression = expression;
+        Expected = Serialize(expected);
+        Actual = actual == null ? null: Serialize(actual);
+        HasCompactRepresentations = true;
+    }
+
+    public static AssertException ForLiterals(string? expression, string? expected, string? actual)
     {
         return new AssertException(expression, expected == null ? null : Serialize(expected), actual == null ? null : Serialize(actual));
+    }
+
+    public static AssertException ForDescriptions(string? expression, string? expectationDescription, string? actualDescription)
+    {
+        return new AssertException(expression, expectationDescription, actualDescription);
     }
 
     public override string Message

@@ -347,8 +347,135 @@ public class AssertionTests
             "x should be Fixie.Tests.Assertions.AssertionTests+SampleB but was Fixie.Tests.Assertions.AssertionTests+SampleA");
     }
 
+    public void ShouldAssertLists()
+    {
+        new int[]{}.ShouldBe([]);
+
+        Contradiction(new[] { 0 }, x => x.ShouldBe([]),
+            """
+            x should be
+            	[
+            	
+            	]
+
+            but was
+            	[
+            	  0
+            	]
+            """);
+
+        Contradiction(new int[] { }, x => x.ShouldBe([0]),
+            """
+            x should be
+            	[
+            	  0
+            	]
+
+            but was
+            	[
+            	
+            	]
+            """);
+
+        new[] { false, true, false }.ShouldBe([false, true, false]);
+
+        Contradiction(new[] { false, true, false }, x => x.ShouldBe([false, true]),
+            """
+            x should be
+            	[
+            	  false,
+            	  true
+            	]
+
+            but was
+            	[
+            	  false,
+            	  true,
+            	  false
+            	]
+            """);
+        
+        new[] { 'A', 'B', 'C' }.ShouldBe(['A', 'B', 'C']);
+        
+        Contradiction(new[] { 'A', 'B', 'C' }, x => x.ShouldBe(['A', 'C']),
+            """
+            x should be
+            	[
+            	  'A',
+            	  'C'
+            	]
+
+            but was
+            	[
+            	  'A',
+            	  'B',
+            	  'C'
+            	]
+            """);
+
+        new[] { "A", "B", "C" }.ShouldBe(["A", "B", "C"]);
+
+        Contradiction(new[] { "A", "B", "C" }, x => x.ShouldBe(["A", "C"]),
+            """
+            x should be
+            	[
+            	  "A",
+            	  "C"
+            	]
+
+            but was
+            	[
+            	  "A",
+            	  "B",
+            	  "C"
+            	]
+            """);
+
+        new[] { typeof(int), typeof(bool) }.ShouldBe([typeof(int), typeof(bool)]);
+
+        Contradiction(new[] { typeof(int), typeof(bool) }, x => x.ShouldBe([typeof(bool), typeof(int)]),
+            """
+            x should be
+            	[
+            	  typeof(bool),
+            	  typeof(int)
+            	]
+            
+            but was
+            	[
+            	  typeof(int),
+            	  typeof(bool)
+            	]
+            """);
+
+        var sampleA = new Sample("A");
+        var sampleB = new Sample("B");
+
+        new[] { sampleA, sampleB }.ShouldBe([sampleA, sampleB]);
+
+        Contradiction(new[] { sampleA, sampleB }, x => x.ShouldBe([sampleB, sampleA]),
+            """
+            x should be
+            	[
+            	  Sample B,
+            	  Sample A
+            	]
+
+            but was
+            	[
+            	  Sample A,
+            	  Sample B
+            	]
+            """);
+    }
+
     class SampleA;
     class SampleB;
+
+    class Sample(string name)
+    {
+        public override string ToString() => $"Sample {name}";
+    }
 
     static void Contradiction<T>(T actual, Action<T> shouldThrow, string expectedMessage, [CallerArgumentExpression(nameof(shouldThrow))] string? assertion = null)
     {

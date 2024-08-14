@@ -22,42 +22,49 @@ public static class AssertionExtensions
     public static void ShouldBe(this string? actual, string? expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
         if (actual != expected)
-            throw AssertException.ForLiterals(expression, expected, actual);
+            throw AssertException.ForValues(expression, expected, actual);
     }
 
     public static void ShouldBe(this bool actual, bool expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
         if (actual != expected)
-            throw new AssertException(expression, expected, actual);
+            throw AssertException.ForValues(expression, expected, actual);
     }
     
     public static void ShouldBe(this char actual, char expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
         if (actual != expected)
-            throw new AssertException(expression, expected, actual);
+            throw AssertException.ForValues(expression, expected, actual);
     }
 
     public static void ShouldBe<T>(this IEquatable<T> actual, IEquatable<T> expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
         if (!actual.Equals(expected))
-            throw new AssertException(expression, expected, actual);
+            throw AssertException.ForValues(expression, expected, actual);
     }
 
     public static void ShouldBe(this Type actual, Type expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
         if (actual != expected)
-            throw new AssertException(expression, expected, actual);
+            throw AssertException.ForValues(expression, expected, actual);
     }
 
     public static void ShouldBe(this object? actual, object? expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
         if (!Equals(actual, expected))
-            throw new AssertException(expression, expected, actual);
+            throw AssertException.ForValues(expression, expected, actual);
     }
 
     public static void ShouldBe<T>(this IEnumerable<T> actual, T[] expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
-        actual.ToArray().ShouldMatch(expected, expression);
+        var actualArray = actual.ToArray();
+
+        if (actualArray.Length != expected.Length)
+            throw AssertException.ForLists(expression, expected, actualArray);
+
+        foreach (var (actualItem, expectedItem) in actualArray.Zip(expected))
+            if (!Equals(actualItem, expectedItem))
+                throw AssertException.ForLists(expression, expected, actualArray);
     }
 
     public static T ShouldBe<T>(this object? actual, [CallerArgumentExpression(nameof(actual))] string? expression = null)
@@ -65,7 +72,7 @@ public static class AssertionExtensions
         if (actual is T typed)
             return typed;
 
-        throw new AssertException(expression, typeof(T), actual?.GetType());
+        throw AssertException.ForValues(expression, typeof(T), actual?.GetType());
     }
 
     public static TException ShouldThrow<TException>(this Action shouldThrow, string expectedMessage, [CallerArgumentExpression(nameof(shouldThrow))] string? expression = null) where TException : Exception

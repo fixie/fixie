@@ -9,53 +9,25 @@ public class AssertException : Exception
     public string? Expression { get; }
     public string Expected { get; }
     public string Actual { get; }
-    public bool HasMultilineRepresentation => expectedIsMultiline || actualIsMultiline;
-    readonly bool expectedIsMultiline = false;
-    readonly bool actualIsMultiline = false;
-    
+    public bool HasMultilineRepresentation { get; }
+    readonly string message;
+
     AssertException(string? expression, string expected, string actual)
     {
-        expectedIsMultiline = IsMultiline(expected);
-        actualIsMultiline = IsMultiline(actual);
+        HasMultilineRepresentation = IsMultiline(expected) || IsMultiline(actual);
 
         Expression = expression;
         Expected = expected;
         Actual = actual;
+
+        message = HasMultilineRepresentation
+            ? MultilineMessage(Expression, Expected, Actual)
+            : ScalarMessage(Expression, Expected, Actual);
     }
 
-    public AssertException(string? expression, bool expected, bool actual)
+    public static AssertException ForValues<T>(string? expression, T expected, T actual)
     {
-        Expression = expression;
-        Expected = Serialize(expected);
-        Actual = Serialize(actual);
-    }
-
-    public AssertException(string? expression, char expected, char actual)
-    {
-        Expression = expression;
-        Expected = Serialize(expected);
-        Actual = Serialize(actual);
-    }
-
-    public AssertException(string? expression, object? expected, object? actual)
-    {
-        Expression = expression;
-        Expected = Serialize(expected);
-        Actual = Serialize(actual);
-    }
-
-    public AssertException(string? expression, Type expected, Type? actual)
-    {
-        Expression = expression;
-        Expected = Serialize(expected);
-        Actual = Serialize(actual);
-    }
-
-    public static AssertException ForLiterals(string? expression, string? expected, string? actual)
-    {
-        return new AssertException(expression,
-            expected != null && IsMultiline(expected) ? SerializeMultiline(expected) : Serialize(expected),
-            actual != null && IsMultiline(actual) ? SerializeMultiline(actual) : Serialize(actual));
+        return new AssertException(expression, SerializeByType(expected), SerializeByType(actual));
     }
 
     public static AssertException ForDescriptions(string? expression, string? expectationDescription, string? actualDescription)
@@ -63,20 +35,29 @@ public class AssertException : Exception
         return new AssertException(expression, expectationDescription ?? "null", actualDescription ?? "null");
     }
 
-    public override string Message
+    public static AssertException ForLists<T>(string? expression, T[] expected, T[] actual)
     {
-        get
-        {
-            if (!HasMultilineRepresentation)
-                return $"{Expression} should be {Expected} but was {Actual}";
-
-            return $"{Expression} should be{NewLine}{Indent(Expected)}{NewLine}{NewLine}" +
-                   $"but was{NewLine}{Indent(Actual)}";
-        }
+        return new AssertException(expression, SerializeList(expected), SerializeList(actual));
     }
 
-    static bool IsMultiline(string value)
+    public override string Message => message;
+
+    static string MultilineMessage(string? expression, string expected, string actual)
     {
+        return $"{expression} should be{NewLine}{Indent(expected)}{NewLine}{NewLine}" +
+               $"but was{NewLine}{Indent(actual)}";
+    }
+
+    static string ScalarMessage(string? expression, string expected, string actual)
+    {
+        return $"{expression} should be {expected} but was {actual}";
+    }
+
+    static bool IsMultiline(string? value)
+    {
+        if (value == null)
+            return false;
+
         var lines = value.Split(NewLine);
 
         return lines.Length > 1 && lines.All(line => !line.Contains("\r") && !line.Contains("\n"));
@@ -115,17 +96,23 @@ public class AssertException : Exception
 
     static string Serialize(object? x) => x?.ToString() ?? "null";
     
-    static string Serialize(string? x) => x == null ? "null": $"\"{string.Join("", x.Select(Escape))}\"";
-    
-    static string SerializeMultiline(string x)
+    static string Serialize(string? x)
     {
-        var unescapedLines = x.Split(NewLine);
+        if (x == null)
+            return "null";
 
-        var indentedEscapedLines = unescapedLines.Select(line => string.Join("", line.Select(Escape)));
+        if (IsMultiline(x))
+        {
+            var unescapedLines = x.Split(NewLine);
+
+            var indentedEscapedLines = unescapedLines.Select(line => string.Join("", line.Select(Escape)));
         
-        var rejoinedEscapedLines = string.Join(NewLine, indentedEscapedLines);
+            var rejoinedEscapedLines = string.Join(NewLine, indentedEscapedLines);
 
-        return $"\"\"\"{NewLine}{rejoinedEscapedLines}{NewLine}\"\"\"";
+            return $"\"\"\"{NewLine}{rejoinedEscapedLines}{NewLine}\"\"\"";
+        }
+        
+        return $"\"{string.Join("", x.Select(Escape))}\"";
     }
     
     static string Escape(char x) =>
@@ -172,4 +159,30 @@ public class AssertException : Exception
                 _ when x == typeof(object) => "object",
                 _ => x.ToString()
             }})";
+
+    static string SerializeList<T>(T[] items)
+    {
+        var formattedItems = string.Join("," + NewLine, items.Select(arg => "  " + SerializeByType(arg)));
+
+        return $"[{NewLine}{formattedItems}{NewLine}]";
+    }
+
+    static string SerializeByType<T>(T any)
+    {
+        if (any == null) return "null";
+
+        if (typeof(T) == typeof(bool))
+            return Serialize((bool)(object)any);
+        
+        if (typeof(T) == typeof(char))
+            return Serialize((char)(object)any);
+        
+        if (typeof(T) == typeof(string))
+            return Serialize((string)(object)any);
+
+        if (typeof(T) == typeof(Type))
+            return Serialize((Type)(object)any);
+
+        return Serialize(any);
+    }
 }

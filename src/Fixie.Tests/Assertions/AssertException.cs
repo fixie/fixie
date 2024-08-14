@@ -9,53 +9,25 @@ public class AssertException : Exception
     public string? Expression { get; }
     public string Expected { get; }
     public string Actual { get; }
-    public bool HasMultilineRepresentation => expectedIsMultiline || actualIsMultiline;
-    readonly bool expectedIsMultiline = false;
-    readonly bool actualIsMultiline = false;
-    
+    public bool HasMultilineRepresentation { get; }
+    readonly string message;
+
     AssertException(string? expression, string expected, string actual)
     {
-        expectedIsMultiline = IsMultiline(expected);
-        actualIsMultiline = IsMultiline(actual);
+        HasMultilineRepresentation = IsMultiline(expected) || IsMultiline(actual);
 
         Expression = expression;
         Expected = expected;
         Actual = actual;
+
+        message = HasMultilineRepresentation
+            ? MultilineMessage(Expression, Expected, Actual)
+            : ScalarMessage(Expression, Expected, Actual);
     }
 
-    public AssertException(string? expression, bool expected, bool actual)
+    public static AssertException ForValues<T>(string? expression, T expected, T actual)
     {
-        Expression = expression;
-        Expected = Serialize(expected);
-        Actual = Serialize(actual);
-    }
-
-    public AssertException(string? expression, char expected, char actual)
-    {
-        Expression = expression;
-        Expected = Serialize(expected);
-        Actual = Serialize(actual);
-    }
-
-    public AssertException(string? expression, object? expected, object? actual)
-    {
-        Expression = expression;
-        Expected = Serialize(expected);
-        Actual = Serialize(actual);
-    }
-
-    public AssertException(string? expression, Type expected, Type? actual)
-    {
-        Expression = expression;
-        Expected = Serialize(expected);
-        Actual = Serialize(actual);
-    }
-
-    public static AssertException ForLiterals(string? expression, string? expected, string? actual)
-    {
-        return new AssertException(expression,
-            expected != null && IsMultiline(expected) ? SerializeMultiline(expected) : Serialize(expected),
-            actual != null && IsMultiline(actual) ? SerializeMultiline(actual) : Serialize(actual));
+        return new AssertException(expression, SerializeByType(expected), SerializeByType(actual));
     }
 
     public static AssertException ForDescriptions(string? expression, string? expectationDescription, string? actualDescription)
@@ -63,25 +35,29 @@ public class AssertException : Exception
         return new AssertException(expression, expectationDescription ?? "null", actualDescription ?? "null");
     }
 
-    public static AssertException ForList<T>(string? expression, T[] expected, T[] actual)
+    public static AssertException ForLists<T>(string? expression, T[] expected, T[] actual)
     {
         return new AssertException(expression, SerializeList(expected), SerializeList(actual));
     }
 
-    public override string Message
-    {
-        get
-        {
-            if (!HasMultilineRepresentation)
-                return $"{Expression} should be {Expected} but was {Actual}";
+    public override string Message => message;
 
-            return $"{Expression} should be{NewLine}{Indent(Expected)}{NewLine}{NewLine}" +
-                   $"but was{NewLine}{Indent(Actual)}";
-        }
+    static string MultilineMessage(string? expression, string expected, string actual)
+    {
+        return $"{expression} should be{NewLine}{Indent(expected)}{NewLine}{NewLine}" +
+               $"but was{NewLine}{Indent(actual)}";
     }
 
-    static bool IsMultiline(string value)
+    static string ScalarMessage(string? expression, string expected, string actual)
     {
+        return $"{expression} should be {expected} but was {actual}";
+    }
+
+    static bool IsMultiline(string? value)
+    {
+        if (value == null)
+            return false;
+
         var lines = value.Split(NewLine);
 
         return lines.Length > 1 && lines.All(line => !line.Contains("\r") && !line.Contains("\n"));
@@ -120,17 +96,23 @@ public class AssertException : Exception
 
     static string Serialize(object? x) => x?.ToString() ?? "null";
     
-    static string Serialize(string? x) => x == null ? "null": $"\"{string.Join("", x.Select(Escape))}\"";
-    
-    static string SerializeMultiline(string x)
+    static string Serialize(string? x)
     {
-        var unescapedLines = x.Split(NewLine);
+        if (x == null)
+            return "null";
 
-        var indentedEscapedLines = unescapedLines.Select(line => string.Join("", line.Select(Escape)));
+        if (IsMultiline(x))
+        {
+            var unescapedLines = x.Split(NewLine);
+
+            var indentedEscapedLines = unescapedLines.Select(line => string.Join("", line.Select(Escape)));
         
-        var rejoinedEscapedLines = string.Join(NewLine, indentedEscapedLines);
+            var rejoinedEscapedLines = string.Join(NewLine, indentedEscapedLines);
 
-        return $"\"\"\"{NewLine}{rejoinedEscapedLines}{NewLine}\"\"\"";
+            return $"\"\"\"{NewLine}{rejoinedEscapedLines}{NewLine}\"\"\"";
+        }
+        
+        return $"\"{string.Join("", x.Select(Escape))}\"";
     }
     
     static string Escape(char x) =>

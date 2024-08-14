@@ -57,7 +57,14 @@ public static class AssertionExtensions
 
     public static void ShouldBe<T>(this IEnumerable<T> actual, T[] expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
-        actual.ToArray().ShouldMatch(expected, expression);
+        var actualArray = actual.ToArray();
+
+        if (actualArray.Length != expected.Length)
+            throw AssertException.ForList(expression, expected, actualArray);
+
+        foreach (var (actualItem, expectedItem) in actualArray.Zip(expected))
+            if (!Equals(actualItem, expectedItem))
+                throw AssertException.ForList(expression, expected, actualArray);
     }
 
     public static T ShouldBe<T>(this object? actual, [CallerArgumentExpression(nameof(actual))] string? expression = null)

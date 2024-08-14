@@ -63,6 +63,11 @@ public class AssertException : Exception
         return new AssertException(expression, expectationDescription ?? "null", actualDescription ?? "null");
     }
 
+    public static AssertException ForList<T>(string? expression, T[] expected, T[] actual)
+    {
+        return new AssertException(expression, SerializeList(expected), SerializeList(actual));
+    }
+
     public override string Message
     {
         get
@@ -172,4 +177,30 @@ public class AssertException : Exception
                 _ when x == typeof(object) => "object",
                 _ => x.ToString()
             }})";
+
+    static string SerializeList<T>(T[] items)
+    {
+        var formattedItems = string.Join("," + NewLine, items.Select(arg => "  " + SerializeByType(arg)));
+
+        return $"[{NewLine}{formattedItems}{NewLine}]";
+    }
+
+    static string SerializeByType<T>(T any)
+    {
+        if (any == null) return "null";
+
+        if (typeof(T) == typeof(bool))
+            return Serialize((bool)(object)any);
+        
+        if (typeof(T) == typeof(char))
+            return Serialize((char)(object)any);
+        
+        if (typeof(T) == typeof(string))
+            return Serialize((string)(object)any);
+
+        if (typeof(T) == typeof(Type))
+            return Serialize((Type)(object)any);
+
+        return Serialize(any);
+    }
 }

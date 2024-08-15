@@ -1,5 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using System.Text;
 using static System.Environment;
 
 namespace Fixie.Tests.Assertions;
@@ -212,71 +211,75 @@ public class AssertionTests
 
     public void ShouldAssertMultilineStrings()
     {
-        var original = new StringBuilder()
-            .AppendLine("Line 1")
-            .AppendLine("Line 2")
-            .AppendLine("Line 3")
-            .Append("Line 4")
-            .ToString();
+        var original =
+            """
+            Line 1
+            Line 2
+            Line 3
+            Line 4
+            """;
 
-        var altered = new StringBuilder()
-            .AppendLine("Line 1")
-            .AppendLine("Line 2 Altered")
-            .AppendLine("Line 3")
-            .Append("Line 4")
-            .ToString();
+        var altered =
+            """
+            Line 1
+            Line 2 Altered
+            Line 3
+            Line 4
+            """;
 
         var mixedLineEndings = "\r \n \r\n \n \r";
 
         original.ShouldBe(original);
         altered.ShouldBe(altered);
 
+        var indent = '\t';
+
         Contradiction(original, x => x.ShouldBe(altered),
-            new StringBuilder()
-                .AppendLine("x should be")
-                .AppendLine("\t\"\"\"")
-                .AppendLine("\tLine 1")
-                .AppendLine("\tLine 2 Altered")
-                .AppendLine("\tLine 3")
-                .AppendLine("\tLine 4")
-                .AppendLine("\t\"\"\"")
-                .AppendLine()
-                .AppendLine("but was")
-                .AppendLine("\t\"\"\"")
-                .AppendLine("\tLine 1")
-                .AppendLine("\tLine 2")
-                .AppendLine("\tLine 3")
-                .AppendLine("\tLine 4")
-                .Append("\t\"\"\"")
-                .ToString());
+            $""""
+            x should be
+            {indent}"""
+            {indent}Line 1
+            {indent}Line 2 Altered
+            {indent}Line 3
+            {indent}Line 4
+            {indent}"""
+
+            but was
+            {indent}"""
+            {indent}Line 1
+            {indent}Line 2
+            {indent}Line 3
+            {indent}Line 4
+            {indent}"""
+            """");
 
         Contradiction(original, x => x.ShouldBe(mixedLineEndings),
-            new StringBuilder()
-                .AppendLine("x should be")
-                .AppendLine("\t\"\\r \\n \\r\\n \\n \\r\"")
-                .AppendLine()
-                .AppendLine("but was")
-                .AppendLine("\t\"\"\"")
-                .AppendLine("\tLine 1")
-                .AppendLine("\tLine 2")
-                .AppendLine("\tLine 3")
-                .AppendLine("\tLine 4")
-                .Append("\t\"\"\"")
-                .ToString());
+            $""""
+             x should be
+             {indent}"\r \n \r\n \n \r"
+
+             but was
+             {indent}"""
+             {indent}Line 1
+             {indent}Line 2
+             {indent}Line 3
+             {indent}Line 4
+             {indent}"""
+             """");
 
         Contradiction(mixedLineEndings, x => x.ShouldBe(original),
-            new StringBuilder()
-                .AppendLine("x should be")
-                .AppendLine("\t\"\"\"")
-                .AppendLine("\tLine 1")
-                .AppendLine("\tLine 2")
-                .AppendLine("\tLine 3")
-                .AppendLine("\tLine 4")
-                .AppendLine("\t\"\"\"")
-                .AppendLine()
-                .AppendLine("but was")
-                .Append("\t\"\\r \\n \\r\\n \\n \\r\"")
-                .ToString());
+            $""""
+             x should be
+             {indent}"""
+             {indent}Line 1
+             {indent}Line 2
+             {indent}Line 3
+             {indent}Line 4
+             {indent}"""
+
+             but was
+             {indent}"\r \n \r\n \n \r"
+             """");
     }
 
     public void ShouldAssertTypes()

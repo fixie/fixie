@@ -43,8 +43,7 @@ public class StackTracePresentationTests
                 {At<ConstructionFailureTestClass>(".ctor()")}
                    at System.RuntimeType.CreateInstanceDefaultCtor(Boolean publicOnly, Boolean wrapExceptions)
                 --- End of stack trace from previous location ---
-                {At(typeof(TestClass), "Construct(Object[] parameters)",
-                    AbsolutePath(["..", "Fixie", "TestClass.cs"]))}
+                {At(typeof(TestClass), "Construct(Object[] parameters)", ["..", "Fixie", "TestClass.cs"])}
                 {At<ExplicitExceptionHandling>("Run(TestSuite testSuite)")}
                 
                 1 failed, took 1.23 seconds
@@ -87,8 +86,6 @@ public class StackTracePresentationTests
         const string optimizedInvoker = "   at InvokeStub_FailureTestClass.Synchronous(Object, Object, IntPtr*)";
         const string initialInvoker = "   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)";
 
-        var pathToMethodInfoExtensions = AbsolutePath(["..", "Fixie", "MethodInfoExtensions.cs"]);
-
         output
             .ShouldBe(
                $"""
@@ -100,8 +97,8 @@ public class StackTracePresentationTests
                 
                 Fixie.Tests.FailureException
                 {At<FailureTestClass>("Asynchronous()")}
-                {At(typeof(MethodInfoExtensions), "CallResolvedMethod(MethodInfo resolvedMethod, Object instance, Object[] parameters)", pathToMethodInfoExtensions)}
-                {At(typeof(MethodInfoExtensions), "Call(MethodInfo method, Object instance, Object[] parameters)", pathToMethodInfoExtensions)}
+                {At(typeof(MethodInfoExtensions), "CallResolvedMethod(MethodInfo resolvedMethod, Object instance, Object[] parameters)", ["..", "Fixie", "MethodInfoExtensions.cs"])}
+                {At(typeof(MethodInfoExtensions), "Call(MethodInfo method, Object instance, Object[] parameters)", ["..", "Fixie", "MethodInfoExtensions.cs"])}
                 {At<ExplicitExceptionHandling>("Run(TestSuite testSuite)")}
                 
                 Test '{FullName<FailureTestClass>()}.Synchronous' failed:
@@ -113,8 +110,8 @@ public class StackTracePresentationTests
                 {(output.Contains(optimizedInvoker) ? optimizedInvoker : initialInvoker)}
                    at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
                 --- End of stack trace from previous location ---
-                {At(typeof(MethodInfoExtensions), "CallResolvedMethod(MethodInfo resolvedMethod, Object instance, Object[] parameters)", pathToMethodInfoExtensions)}
-                {At(typeof(MethodInfoExtensions), "Call(MethodInfo method, Object instance, Object[] parameters)", pathToMethodInfoExtensions)}
+                {At(typeof(MethodInfoExtensions), "CallResolvedMethod(MethodInfo resolvedMethod, Object instance, Object[] parameters)", ["..", "Fixie", "MethodInfoExtensions.cs"])}
+                {At(typeof(MethodInfoExtensions), "Call(MethodInfo method, Object instance, Object[] parameters)", ["..", "Fixie", "MethodInfoExtensions.cs"])}
                 {At<ExplicitExceptionHandling>("Run(TestSuite testSuite)")}
                 
                 2 failed, took 1.23 seconds
@@ -278,9 +275,4 @@ public class StackTracePresentationTests
         public PrimaryException(Exception innerException)
             : base("Primary Exception!", innerException) { }
     }
-
-    static string AbsolutePath(string[] relativePathFromThisCodeFile, [CallerFilePath] string path = default!) =>
-        Path.GetFullPath(
-            path: Path.Join(relativePathFromThisCodeFile),
-            basePath: Path.GetDirectoryName(path)!);
 }

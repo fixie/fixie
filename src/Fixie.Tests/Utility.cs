@@ -27,6 +27,15 @@ public static class Utility
     public static string At<T>(string method, [CallerFilePath] string path = default!)
         => At(typeof(T), method, path);
 
+    public static string At(Type type, string method, string[] relativePathFromCallingCodeFile, [CallerFilePath] string path = default!)
+    {
+        var absolutePath = Path.GetFullPath(
+            path: Path.Join(relativePathFromCallingCodeFile),
+            basePath: Path.GetDirectoryName(path)!);
+
+        return At(type, method, absolutePath);
+    }
+
     public static string At(Type type, string method, string path)
     {
         var typeFullName = type.FullName ??

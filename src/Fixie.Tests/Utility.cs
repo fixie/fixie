@@ -1,5 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
 using Fixie.Internal;
 using Fixie.Reports;
 

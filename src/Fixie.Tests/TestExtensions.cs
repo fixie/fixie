@@ -24,16 +24,14 @@ static class TestExtensions
         return type.GetMethods(InstanceMethods);
     }
 
-    public static string NormalizeLineNumbers(this string? multiline)
+    public static string NormalizeLineNumbers(this string multiline)
     {
-        if (multiline == null)
-            throw new Exception("Expected a non-null string.");
-
         return Regex.Replace(multiline, @"\.cs:line \d+", ".cs:line #");
     }
 
     public static void ShouldBeStackTrace(this string? actual, string[] expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
+        actual.ShouldNotBeNull();
         actual
             .NormalizeLineNumbers()
             .ShouldBe(string.Join(Environment.NewLine, expected), expression);

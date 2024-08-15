@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using Fixie.Reports;
 using static Fixie.Tests.Utility;
 

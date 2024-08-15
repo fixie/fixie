@@ -64,7 +64,7 @@ public class AssertException : Exception
     }
 
     static string Indent(string multiline) =>
-        string.Join(NewLine, multiline.Split(NewLine).Select(x => $"\t{x}"));
+        string.Join(NewLine, multiline.Split(NewLine).Select(x => $"    {x}"));
 
     public override string? StackTrace => FilterStackTrace(base.StackTrace);
 
@@ -103,18 +103,35 @@ public class AssertException : Exception
 
         if (IsMultiline(x))
         {
-            var unescapedLines = x.Split(NewLine);
+            var terminal = RawStringTerminal(x);
 
-            var indentedEscapedLines = unescapedLines.Select(line => string.Join("", line.Select(Escape)));
-        
-            var rejoinedEscapedLines = string.Join(NewLine, indentedEscapedLines);
-
-            return $"\"\"\"{NewLine}{rejoinedEscapedLines}{NewLine}\"\"\"";
+            return $"{terminal}{NewLine}{x}{NewLine}{terminal}";
         }
         
         return $"\"{string.Join("", x.Select(Escape))}\"";
     }
-    
+
+    static string RawStringTerminal(string x)
+    {
+        var longestDoubleQuoteSequence = 0;
+        var currentDoubleQuoteSequence = 0;
+
+        foreach (var c in x)
+        {
+            if (c != '\"')
+            {
+                currentDoubleQuoteSequence = 0;
+                continue;
+            }
+
+            currentDoubleQuoteSequence++;
+            if (currentDoubleQuoteSequence > longestDoubleQuoteSequence)
+                longestDoubleQuoteSequence = currentDoubleQuoteSequence;
+        }
+
+        return new string('\"', longestDoubleQuoteSequence < 3 ? 3 : longestDoubleQuoteSequence + 1);
+    }
+
     static string Escape(char x) =>
         x switch
         {
@@ -162,7 +179,7 @@ public class AssertException : Exception
 
     static string SerializeList<T>(T[] items)
     {
-        var formattedItems = string.Join("," + NewLine, items.Select(arg => "  " + SerializeByType(arg)));
+        var formattedItems = string.Join("," + NewLine, items.Select(arg => "    " + SerializeByType(arg)));
 
         return $"[{NewLine}{formattedItems}{NewLine}]";
     }

@@ -1,5 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using System.Text;
 using static System.Environment;
 
 namespace Fixie.Tests.Assertions;
@@ -212,19 +211,21 @@ public class AssertionTests
 
     public void ShouldAssertMultilineStrings()
     {
-        var original = new StringBuilder()
-            .AppendLine("Line 1")
-            .AppendLine("Line 2")
-            .AppendLine("Line 3")
-            .Append("Line 4")
-            .ToString();
+        var original =
+            """
+            Line 1
+            Line 2
+            Line 3
+            Line 4
+            """;
 
-        var altered = new StringBuilder()
-            .AppendLine("Line 1")
-            .AppendLine("Line 2 Altered")
-            .AppendLine("Line 3")
-            .Append("Line 4")
-            .ToString();
+        var altered =
+            """
+            Line 1
+            Line 2 Altered
+            Line 3
+            Line 4
+            """;
 
         var mixedLineEndings = "\r \n \r\n \n \r";
 
@@ -232,51 +233,155 @@ public class AssertionTests
         altered.ShouldBe(altered);
 
         Contradiction(original, x => x.ShouldBe(altered),
-            new StringBuilder()
-                .AppendLine("x should be")
-                .AppendLine("\t\"\"\"")
-                .AppendLine("\tLine 1")
-                .AppendLine("\tLine 2 Altered")
-                .AppendLine("\tLine 3")
-                .AppendLine("\tLine 4")
-                .AppendLine("\t\"\"\"")
-                .AppendLine()
-                .AppendLine("but was")
-                .AppendLine("\t\"\"\"")
-                .AppendLine("\tLine 1")
-                .AppendLine("\tLine 2")
-                .AppendLine("\tLine 3")
-                .AppendLine("\tLine 4")
-                .Append("\t\"\"\"")
-                .ToString());
+            """"
+            x should be
+                """
+                Line 1
+                Line 2 Altered
+                Line 3
+                Line 4
+                """
+
+            but was
+                """
+                Line 1
+                Line 2
+                Line 3
+                Line 4
+                """
+            """");
 
         Contradiction(original, x => x.ShouldBe(mixedLineEndings),
-            new StringBuilder()
-                .AppendLine("x should be")
-                .AppendLine("\t\"\\r \\n \\r\\n \\n \\r\"")
-                .AppendLine()
-                .AppendLine("but was")
-                .AppendLine("\t\"\"\"")
-                .AppendLine("\tLine 1")
-                .AppendLine("\tLine 2")
-                .AppendLine("\tLine 3")
-                .AppendLine("\tLine 4")
-                .Append("\t\"\"\"")
-                .ToString());
+            """"
+             x should be
+                 "\r \n \r\n \n \r"
+
+             but was
+                 """
+                 Line 1
+                 Line 2
+                 Line 3
+                 Line 4
+                 """
+             """");
 
         Contradiction(mixedLineEndings, x => x.ShouldBe(original),
-            new StringBuilder()
-                .AppendLine("x should be")
-                .AppendLine("\t\"\"\"")
-                .AppendLine("\tLine 1")
-                .AppendLine("\tLine 2")
-                .AppendLine("\tLine 3")
-                .AppendLine("\tLine 4")
-                .AppendLine("\t\"\"\"")
-                .AppendLine()
-                .AppendLine("but was")
-                .Append("\t\"\\r \\n \\r\\n \\n \\r\"")
-                .ToString());
+            """"
+             x should be
+                 """
+                 Line 1
+                 Line 2
+                 Line 3
+                 Line 4
+                 """
+
+             but was
+                 "\r \n \r\n \n \r"
+             """");
+
+        var apparentEscapeSequences =
+            """
+            \u0020
+            \u0000\0 \u0007\a \u0008\b \u0009\t \u000A\n \u000D\r
+            \u000C\f \u000B\v \u001B\e \u0022\" \u0027\' \u005C\\
+            """;
+
+        Contradiction(apparentEscapeSequences, x => x.ShouldBe(original),
+            """"
+            x should be
+                """
+                Line 1
+                Line 2
+                Line 3
+                Line 4
+                """
+
+            but was
+                """
+                \u0020
+                \u0000\0 \u0007\a \u0008\b \u0009\t \u000A\n \u000D\r
+                \u000C\f \u000B\v \u001B\e \u0022\" \u0027\' \u005C\\
+                """
+            """");
+
+        var containsApparentOneQuotedRawLiteral =
+            """
+            "
+            Value contains an apparent one-quotes bounded raw string literal.
+            "
+            """;
+
+        var containsApparentTwoQuotedRawLiteral =
+            """
+            ""
+            Value contains an apparent two-quotes bounded raw string literal.
+            ""
+            """;
+
+        var containsApparentThreeQuotedRawLiteral =
+            """"
+            """
+            Value contains an apparent three-quotes bounded raw string literal.
+            """
+            """";
+
+        var containsApparentFourQuotedRawLiteral =
+            """""
+            """"
+            Value contains an apparent four-quotes bounded raw string literal.
+            """"
+            """"";
+
+         Contradiction(containsApparentTwoQuotedRawLiteral, x => x.ShouldBe(containsApparentOneQuotedRawLiteral),
+             """"
+             x should be
+                 """
+                 "
+                 Value contains an apparent one-quotes bounded raw string literal.
+                 "
+                 """
+
+             but was
+                 """
+                 ""
+                 Value contains an apparent two-quotes bounded raw string literal.
+                 ""
+                 """
+             """");
+
+        Contradiction(containsApparentThreeQuotedRawLiteral, x => x.ShouldBe(containsApparentTwoQuotedRawLiteral),
+            """""
+            x should be
+                """
+                ""
+                Value contains an apparent two-quotes bounded raw string literal.
+                ""
+                """
+
+            but was
+                """"
+                """
+                Value contains an apparent three-quotes bounded raw string literal.
+                """
+                """"
+            """"");
+
+        Contradiction(containsApparentFourQuotedRawLiteral, x => x.ShouldBe(containsApparentThreeQuotedRawLiteral),
+            """"""
+            x should be
+                """"
+                """
+                Value contains an apparent three-quotes bounded raw string literal.
+                """
+                """"
+
+            but was
+                """""
+                """"
+                Value contains an apparent four-quotes bounded raw string literal.
+                """"
+                """""
+            """""");
     }
 
     public void ShouldAssertTypes()
@@ -354,27 +459,27 @@ public class AssertionTests
         Contradiction(new[] { 0 }, x => x.ShouldBe([]),
             """
             x should be
-            	[
-            	
-            	]
+                [
+                
+                ]
 
             but was
-            	[
-            	  0
-            	]
+                [
+                    0
+                ]
             """);
 
         Contradiction(new int[] { }, x => x.ShouldBe([0]),
             """
             x should be
-            	[
-            	  0
-            	]
+                [
+                    0
+                ]
 
             but was
-            	[
-            	
-            	]
+                [
+                
+                ]
             """);
 
         new[] { false, true, false }.ShouldBe([false, true, false]);
@@ -382,17 +487,17 @@ public class AssertionTests
         Contradiction(new[] { false, true, false }, x => x.ShouldBe([false, true]),
             """
             x should be
-            	[
-            	  false,
-            	  true
-            	]
+                [
+                    false,
+                    true
+                ]
 
             but was
-            	[
-            	  false,
-            	  true,
-            	  false
-            	]
+                [
+                    false,
+                    true,
+                    false
+                ]
             """);
         
         new[] { 'A', 'B', 'C' }.ShouldBe(['A', 'B', 'C']);
@@ -400,17 +505,17 @@ public class AssertionTests
         Contradiction(new[] { 'A', 'B', 'C' }, x => x.ShouldBe(['A', 'C']),
             """
             x should be
-            	[
-            	  'A',
-            	  'C'
-            	]
+                [
+                    'A',
+                    'C'
+                ]
 
             but was
-            	[
-            	  'A',
-            	  'B',
-            	  'C'
-            	]
+                [
+                    'A',
+                    'B',
+                    'C'
+                ]
             """);
 
         new[] { "A", "B", "C" }.ShouldBe(["A", "B", "C"]);
@@ -418,17 +523,17 @@ public class AssertionTests
         Contradiction(new[] { "A", "B", "C" }, x => x.ShouldBe(["A", "C"]),
             """
             x should be
-            	[
-            	  "A",
-            	  "C"
-            	]
+                [
+                    "A",
+                    "C"
+                ]
 
             but was
-            	[
-            	  "A",
-            	  "B",
-            	  "C"
-            	]
+                [
+                    "A",
+                    "B",
+                    "C"
+                ]
             """);
 
         new[] { typeof(int), typeof(bool) }.ShouldBe([typeof(int), typeof(bool)]);
@@ -436,16 +541,16 @@ public class AssertionTests
         Contradiction(new[] { typeof(int), typeof(bool) }, x => x.ShouldBe([typeof(bool), typeof(int)]),
             """
             x should be
-            	[
-            	  typeof(bool),
-            	  typeof(int)
-            	]
+                [
+                    typeof(bool),
+                    typeof(int)
+                ]
             
             but was
-            	[
-            	  typeof(int),
-            	  typeof(bool)
-            	]
+                [
+                    typeof(int),
+                    typeof(bool)
+                ]
             """);
 
         var sampleA = new Sample("A");
@@ -456,16 +561,16 @@ public class AssertionTests
         Contradiction(new[] { sampleA, sampleB }, x => x.ShouldBe([sampleB, sampleA]),
             """
             x should be
-            	[
-            	  Sample B,
-            	  Sample A
-            	]
+                [
+                    Sample B,
+                    Sample A
+                ]
 
             but was
-            	[
-            	  Sample A,
-            	  Sample B
-            	]
+                [
+                    Sample A,
+                    Sample B
+                ]
             """);
     }
 

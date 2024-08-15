@@ -25,20 +25,15 @@ public static class Utility
     }
 
     public static string At<T>(string method, [CallerFilePath] string path = default!)
-        => At(typeof(T), method, NormalizedPath(path));
+        => At(typeof(T), method, path);
 
-    public static string At(Type type, string method, string normalizedPath)
+    public static string At(Type type, string method, string path)
     {
         var typeFullName = type.FullName ??
                            throw new Exception($"Expected type {type.Name} to have a non-null FullName.");
 
-        return $"   at {typeFullName.Replace("+", ".")}.{method} in {normalizedPath}:line #";
+        return $"   at {typeFullName.Replace("+", ".")}.{method} in {path}:line #";
     }
-
-    static string NormalizedPath(string path)
-        => Regex.Replace(path,
-            @".+([\\/])src([\\/])Fixie(.+)\.cs",
-            "...$1src$2Fixie$3.cs");
 
     public static async Task<IEnumerable<string>> Run(Type testClass, IExecution execution, TextWriter console)
     {

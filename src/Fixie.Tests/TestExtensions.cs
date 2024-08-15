@@ -26,14 +26,10 @@ static class TestExtensions
 
     public static string NormalizeStackTraces(this string? multiline)
     {
-        //Avoid brittle assertion introduced by stack trace absolute paths and line numbers.
-
         if (multiline == null)
             throw new Exception("Expected a non-null string.");
 
-        return Regex.Replace(multiline,
-            @"\) in .+([\\/])src([\\/])Fixie(.+)\.cs:line \d+",
-            ") in ...$1src$2Fixie$3.cs:line #");
+        return Regex.Replace(multiline, @"\.cs:line \d+", ".cs:line #");
     }
 
     public static void ShouldBeStackTrace(this string? actual, string[] expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)

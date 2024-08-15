@@ -160,8 +160,8 @@ public class ConsoleReportTests : MessagingTests
 
     static string NormalizeOutput(Output output) =>
         output.Console
-            .NormalizeStackTraces()
-            .CleanDuration();
+            .NormalizeLineNumbers()
+            .NormalizeDuration();
 
     static string LastNonemptyLine(string multiline) =>
         multiline.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).Last();

@@ -24,7 +24,7 @@ public class XmlReportTests : MessagingTests
             throw new Exception("Expected non-null XML report.");
 
         CleanBrittleValues(actual.ToString())
-            .NormalizeStackTraces()
+            .NormalizeLineNumbers()
             .ShouldBe(ExpectedReport);
     }
 

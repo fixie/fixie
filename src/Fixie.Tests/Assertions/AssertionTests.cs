@@ -303,6 +303,85 @@ public class AssertionTests
                 \u000C\f \u000B\v \u001B\e \u0022\" \u0027\' \u005C\\
                 """
             """");
+
+        var containsApparentOneQuotedRawLiteral =
+            """
+            "
+            Value contains an apparent one-quotes bounded raw string literal.
+            "
+            """;
+
+        var containsApparentTwoQuotedRawLiteral =
+            """
+            ""
+            Value contains an apparent two-quotes bounded raw string literal.
+            ""
+            """;
+
+        var containsApparentThreeQuotedRawLiteral =
+            """"
+            """
+            Value contains an apparent three-quotes bounded raw string literal.
+            """
+            """";
+
+        var containsApparentFourQuotedRawLiteral =
+            """""
+            """"
+            Value contains an apparent four-quotes bounded raw string literal.
+            """"
+            """"";
+
+         Contradiction(containsApparentTwoQuotedRawLiteral, x => x.ShouldBe(containsApparentOneQuotedRawLiteral),
+             """"
+             x should be
+                 """
+                 "
+                 Value contains an apparent one-quotes bounded raw string literal.
+                 "
+                 """
+
+             but was
+                 """
+                 ""
+                 Value contains an apparent two-quotes bounded raw string literal.
+                 ""
+                 """
+             """");
+
+        Contradiction(containsApparentThreeQuotedRawLiteral, x => x.ShouldBe(containsApparentTwoQuotedRawLiteral),
+            """""
+            x should be
+                """
+                ""
+                Value contains an apparent two-quotes bounded raw string literal.
+                ""
+                """
+
+            but was
+                """"
+                """
+                Value contains an apparent three-quotes bounded raw string literal.
+                """
+                """"
+            """"");
+
+        Contradiction(containsApparentFourQuotedRawLiteral, x => x.ShouldBe(containsApparentThreeQuotedRawLiteral),
+            """"""
+            x should be
+                """"
+                """
+                Value contains an apparent three-quotes bounded raw string literal.
+                """
+                """"
+
+            but was
+                """""
+                """"
+                Value contains an apparent four-quotes bounded raw string literal.
+                """"
+                """""
+            """""");
     }
 
     public void ShouldAssertTypes()

@@ -102,11 +102,36 @@ public class AssertException : Exception
             return "null";
 
         if (IsMultiline(x))
-            return $"\"\"\"{NewLine}{x}{NewLine}\"\"\"";
+        {
+            var terminal = RawStringTerminal(x);
+
+            return $"{terminal}{NewLine}{x}{NewLine}{terminal}";
+        }
         
         return $"\"{string.Join("", x.Select(Escape))}\"";
     }
-    
+
+    static string RawStringTerminal(string x)
+    {
+        var longestDoubleQuoteSequence = 0;
+        var currentDoubleQuoteSequence = 0;
+
+        foreach (var c in x)
+        {
+            if (c != '\"')
+            {
+                currentDoubleQuoteSequence = 0;
+                continue;
+            }
+
+            currentDoubleQuoteSequence++;
+            if (currentDoubleQuoteSequence > longestDoubleQuoteSequence)
+                longestDoubleQuoteSequence = currentDoubleQuoteSequence;
+        }
+
+        return new string('\"', longestDoubleQuoteSequence < 3 ? 3 : longestDoubleQuoteSequence + 1);
+    }
+
     static string Escape(char x) =>
         x switch
         {

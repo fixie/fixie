@@ -278,6 +278,31 @@ public class AssertionTests
              but was
                  "\r \n \r\n \n \r"
              """");
+
+        var apparentEscapeSequences =
+            """
+            \u0020
+            \u0000\0 \u0007\a \u0008\b \u0009\t \u000A\n \u000D\r
+            \u000C\f \u000B\v \u001B\e \u0022\" \u0027\' \u005C\\
+            """;
+
+        Contradiction(apparentEscapeSequences, x => x.ShouldBe(original),
+            """"
+            x should be
+                """
+                Line 1
+                Line 2
+                Line 3
+                Line 4
+                """
+
+            but was
+                """
+                \u0020
+                \u0000\0 \u0007\a \u0008\b \u0009\t \u000A\n \u000D\r
+                \u000C\f \u000B\v \u001B\e \u0022\" \u0027\' \u005C\\
+                """
+            """");
     }
 
     public void ShouldAssertTypes()

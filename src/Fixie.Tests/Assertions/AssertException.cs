@@ -102,15 +102,7 @@ public class AssertException : Exception
             return "null";
 
         if (IsMultiline(x))
-        {
-            var unescapedLines = x.Split(NewLine);
-
-            var indentedEscapedLines = unescapedLines.Select(line => string.Join("", line.Select(Escape)));
-        
-            var rejoinedEscapedLines = string.Join(NewLine, indentedEscapedLines);
-
-            return $"\"\"\"{NewLine}{rejoinedEscapedLines}{NewLine}\"\"\"";
-        }
+            return $"\"\"\"{NewLine}{x}{NewLine}\"\"\"";
         
         return $"\"{string.Join("", x.Select(Escape))}\"";
     }

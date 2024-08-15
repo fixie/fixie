@@ -232,53 +232,51 @@ public class AssertionTests
         original.ShouldBe(original);
         altered.ShouldBe(altered);
 
-        var indent = '\t';
-
         Contradiction(original, x => x.ShouldBe(altered),
-            $""""
+            """"
             x should be
-            {indent}"""
-            {indent}Line 1
-            {indent}Line 2 Altered
-            {indent}Line 3
-            {indent}Line 4
-            {indent}"""
+                """
+                Line 1
+                Line 2 Altered
+                Line 3
+                Line 4
+                """
 
             but was
-            {indent}"""
-            {indent}Line 1
-            {indent}Line 2
-            {indent}Line 3
-            {indent}Line 4
-            {indent}"""
+                """
+                Line 1
+                Line 2
+                Line 3
+                Line 4
+                """
             """");
 
         Contradiction(original, x => x.ShouldBe(mixedLineEndings),
-            $""""
+            """"
              x should be
-             {indent}"\r \n \r\n \n \r"
+                 "\r \n \r\n \n \r"
 
              but was
-             {indent}"""
-             {indent}Line 1
-             {indent}Line 2
-             {indent}Line 3
-             {indent}Line 4
-             {indent}"""
+                 """
+                 Line 1
+                 Line 2
+                 Line 3
+                 Line 4
+                 """
              """");
 
         Contradiction(mixedLineEndings, x => x.ShouldBe(original),
-            $""""
+            """"
              x should be
-             {indent}"""
-             {indent}Line 1
-             {indent}Line 2
-             {indent}Line 3
-             {indent}Line 4
-             {indent}"""
+                 """
+                 Line 1
+                 Line 2
+                 Line 3
+                 Line 4
+                 """
 
              but was
-             {indent}"\r \n \r\n \n \r"
+                 "\r \n \r\n \n \r"
              """");
     }
 
@@ -357,27 +355,27 @@ public class AssertionTests
         Contradiction(new[] { 0 }, x => x.ShouldBe([]),
             """
             x should be
-            	[
-            	
-            	]
+                [
+                
+                ]
 
             but was
-            	[
-            	  0
-            	]
+                [
+                    0
+                ]
             """);
 
         Contradiction(new int[] { }, x => x.ShouldBe([0]),
             """
             x should be
-            	[
-            	  0
-            	]
+                [
+                    0
+                ]
 
             but was
-            	[
-            	
-            	]
+                [
+                
+                ]
             """);
 
         new[] { false, true, false }.ShouldBe([false, true, false]);
@@ -385,17 +383,17 @@ public class AssertionTests
         Contradiction(new[] { false, true, false }, x => x.ShouldBe([false, true]),
             """
             x should be
-            	[
-            	  false,
-            	  true
-            	]
+                [
+                    false,
+                    true
+                ]
 
             but was
-            	[
-            	  false,
-            	  true,
-            	  false
-            	]
+                [
+                    false,
+                    true,
+                    false
+                ]
             """);
         
         new[] { 'A', 'B', 'C' }.ShouldBe(['A', 'B', 'C']);
@@ -403,17 +401,17 @@ public class AssertionTests
         Contradiction(new[] { 'A', 'B', 'C' }, x => x.ShouldBe(['A', 'C']),
             """
             x should be
-            	[
-            	  'A',
-            	  'C'
-            	]
+                [
+                    'A',
+                    'C'
+                ]
 
             but was
-            	[
-            	  'A',
-            	  'B',
-            	  'C'
-            	]
+                [
+                    'A',
+                    'B',
+                    'C'
+                ]
             """);
 
         new[] { "A", "B", "C" }.ShouldBe(["A", "B", "C"]);
@@ -421,17 +419,17 @@ public class AssertionTests
         Contradiction(new[] { "A", "B", "C" }, x => x.ShouldBe(["A", "C"]),
             """
             x should be
-            	[
-            	  "A",
-            	  "C"
-            	]
+                [
+                    "A",
+                    "C"
+                ]
 
             but was
-            	[
-            	  "A",
-            	  "B",
-            	  "C"
-            	]
+                [
+                    "A",
+                    "B",
+                    "C"
+                ]
             """);
 
         new[] { typeof(int), typeof(bool) }.ShouldBe([typeof(int), typeof(bool)]);
@@ -439,16 +437,16 @@ public class AssertionTests
         Contradiction(new[] { typeof(int), typeof(bool) }, x => x.ShouldBe([typeof(bool), typeof(int)]),
             """
             x should be
-            	[
-            	  typeof(bool),
-            	  typeof(int)
-            	]
+                [
+                    typeof(bool),
+                    typeof(int)
+                ]
             
             but was
-            	[
-            	  typeof(int),
-            	  typeof(bool)
-            	]
+                [
+                    typeof(int),
+                    typeof(bool)
+                ]
             """);
 
         var sampleA = new Sample("A");
@@ -459,16 +457,16 @@ public class AssertionTests
         Contradiction(new[] { sampleA, sampleB }, x => x.ShouldBe([sampleB, sampleA]),
             """
             x should be
-            	[
-            	  Sample B,
-            	  Sample A
-            	]
+                [
+                    Sample B,
+                    Sample A
+                ]
 
             but was
-            	[
-            	  Sample A,
-            	  Sample B
-            	]
+                [
+                    Sample A,
+                    Sample B
+                ]
             """);
     }
 

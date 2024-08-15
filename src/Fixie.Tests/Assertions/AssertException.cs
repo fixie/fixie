@@ -64,7 +64,7 @@ public class AssertException : Exception
     }
 
     static string Indent(string multiline) =>
-        string.Join(NewLine, multiline.Split(NewLine).Select(x => $"\t{x}"));
+        string.Join(NewLine, multiline.Split(NewLine).Select(x => $"    {x}"));
 
     public override string? StackTrace => FilterStackTrace(base.StackTrace);
 
@@ -162,7 +162,7 @@ public class AssertException : Exception
 
     static string SerializeList<T>(T[] items)
     {
-        var formattedItems = string.Join("," + NewLine, items.Select(arg => "  " + SerializeByType(arg)));
+        var formattedItems = string.Join("," + NewLine, items.Select(arg => "    " + SerializeByType(arg)));
 
         return $"[{NewLine}{formattedItems}{NewLine}]";
     }

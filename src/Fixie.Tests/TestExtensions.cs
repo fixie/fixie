@@ -24,7 +24,7 @@ static class TestExtensions
         return type.GetMethods(InstanceMethods);
     }
 
-    public static string NormalizeStackTraces(this string? multiline)
+    public static string NormalizeLineNumbers(this string? multiline)
     {
         if (multiline == null)
             throw new Exception("Expected a non-null string.");
@@ -35,11 +35,11 @@ static class TestExtensions
     public static void ShouldBeStackTrace(this string? actual, string[] expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
         actual
-            .NormalizeStackTraces()
+            .NormalizeLineNumbers()
             .ShouldBe(string.Join(Environment.NewLine, expected), expression);
     }
 
-    public static string CleanDuration(this string multiline)
+    public static string NormalizeDuration(this string multiline)
     {
         //Avoid brittle assertion introduced by test duration.
 

@@ -180,8 +180,8 @@ public class StackTracePresentationTests
         await Utility.Run(report, discovery, execution, console, typeof(TSampleTestClass));
 
         return console.ToString()
-            .NormalizeStackTraces()
-            .CleanDuration();
+            .NormalizeLineNumbers()
+            .NormalizeDuration();
     }
 
     class ImplicitExceptionHandling : IExecution

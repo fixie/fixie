@@ -11,7 +11,7 @@ public class TeamCityReportTests : MessagingTests
 
         var output = await Run(environment => new TeamCityReport(environment));
 
-        Regex.Replace(output.Console.NormalizeStackTraces(), @"duration='\d+'", "duration='#'")
+        Regex.Replace(output.Console.NormalizeLineNumbers(), @"duration='\d+'", "duration='#'")
             .ShouldBe(
                 $"""
                  ##teamcity[testSuiteStarted name='Fixie.Tests']

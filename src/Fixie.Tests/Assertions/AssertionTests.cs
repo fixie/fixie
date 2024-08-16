@@ -1,5 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using static System.Environment;
+using static Fixie.Tests.Utility;
 
 namespace Fixie.Tests.Assertions;
 
@@ -438,18 +439,31 @@ public class AssertionTests
         var objectA = new SampleA();
         var objectB = new SampleB();
 
-        ((object?)null).ShouldBe(((object?)null));
         objectA.ShouldBe(objectA);
         objectB.ShouldBe(objectB);
 
-        Contradiction((object?)null, x => x.ShouldBe(objectA),
-            "x should be Fixie.Tests.Assertions.AssertionTests+SampleA but was null");
         Contradiction(objectB, x => x.ShouldBe((object?)null),
-            "x should be null but was Fixie.Tests.Assertions.AssertionTests+SampleB");
+            $"x should be null but was {FullName<SampleB>()}");
         Contradiction(objectB, x => x.ShouldBe(objectA),
-            "x should be Fixie.Tests.Assertions.AssertionTests+SampleA but was Fixie.Tests.Assertions.AssertionTests+SampleB");
+            $"x should be {FullName<SampleA>()} but was {FullName<SampleB>()}");
         Contradiction(objectA, x => x.ShouldBe(objectB),
-            "x should be Fixie.Tests.Assertions.AssertionTests+SampleB but was Fixie.Tests.Assertions.AssertionTests+SampleA");
+            $"x should be {FullName<SampleB>()} but was {FullName<SampleA>()}");
+    }
+
+    public void ShouldAssertNulls()
+    {
+        object? nullObject = null;
+        object nonNullObject = new SampleA();
+
+        nullObject.ShouldBe(null);
+        nonNullObject.ShouldNotBeNull();
+
+        Contradiction((object?)null, x => x.ShouldBe(nonNullObject),
+            $"x should be {FullName<SampleA>()} but was null");
+        Contradiction(nonNullObject, x => x.ShouldBe(null),
+            $"x should be null but was {FullName<SampleA>()}");
+        Contradiction((object?)null, x => x.ShouldNotBeNull(),
+            "x should not be null but was null");
     }
 
     public void ShouldAssertLists()
@@ -572,6 +586,26 @@ public class AssertionTests
                     Sample B
                 ]
             """);
+    }
+
+    public void ShouldAssertExpressions()
+    {
+        Contradiction(3, value => value.Should(x => x > 4), "value should be > 4 but was 3");
+        Contradiction(4, value => value.Should(y => y > 4), "value should be > 4 but was 4");
+        5.Should(x => x > 4);
+
+        Contradiction(3, value => value.Should(abc => abc >= 4), "value should be >= 4 but was 3");
+        4.Should(x => x >= 4);
+        5.Should(x => x >= 4);
+
+        Func<int, bool> someExpression = x => x >= 4;
+        Contradiction(3, value => value.Should(someExpression), "value should be someExpression but was 3");
+
+        var a1 = new SampleA();
+        var a2 = new SampleA();
+
+        a1.Should(x => x == a1);
+        Contradiction(a1, value => value.Should(x => x == a2), "value should be == a2 but was Fixie.Tests.Assertions.AssertionTests+SampleA");
     }
 
     class SampleA;

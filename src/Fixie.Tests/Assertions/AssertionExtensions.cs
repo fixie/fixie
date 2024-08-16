@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 
 namespace Fixie.Tests.Assertions;
 
@@ -109,16 +110,30 @@ public static class AssertionExtensions
         throw AssertException.ForDescriptions(expression, typeof(TException).FullName, "No exception was thrown.");
     }
 
-    public static void ShouldBeGreaterThan<T>(this T actual, T minimum, [CallerArgumentExpression(nameof(actual))] string? expression = null) where T: IComparable<T>
+    public static void Should<T>(this T actual, Func<T, bool> expectation, [CallerArgumentExpression(nameof(actual))] string? expression = default!, [CallerArgumentExpression(nameof(expectation))] string? expectationBody = default!)
     {
-        if (actual.CompareTo(minimum) <= 0)
-            throw AssertException.ForDescriptions(expression, $"> {minimum}", actual.ToString());
+        if (!expectation(actual))
+        {
+            if (expectationBody != null)
+                expectationBody = DropTrivialLambdaPrefix(expectationBody);
+
+            throw AssertException.ForDescriptions(expression, expectationBody, actual?.ToString());
+        }
     }
 
-    public static void ShouldBeGreaterThanOrEqualTo<T>(this T actual, T minimum, [CallerArgumentExpression(nameof(actual))] string? expression = null) where T: IComparable<T>
+    static string DropTrivialLambdaPrefix(string expectationBody)
     {
-        if (actual.CompareTo(minimum) < 0)
-            throw AssertException.ForDescriptions(expression, $">= {minimum}", actual.ToString());
+        var identifierMatch = Regex.Matches(expectationBody, @"^(\w+)");
+
+        if (identifierMatch.Count == 1)
+        {
+            var identifier = identifierMatch[0].Groups[1].Value;
+
+            expectationBody = Regex.Replace(expectationBody,
+                "^" + Regex.Escape(identifier) + @"\s*=>\s*" + Regex.Escape(identifier) + @"\s+", "");
+        }
+
+        return expectationBody;
     }
 
     public static void ShouldMatch<T>(this T actual, T expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
@@ -154,7 +169,7 @@ public static class AssertionExtensions
     public static void ShouldNotBeNull([NotNull] this object? actual, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
         if (actual == null)
-            throw AssertException.ForDescriptions(expression, "not null", "null");
+            throw AssertException.ForMessage(expression, "not null", "null", $"{expression} should not be null but was null");
     }
 
     static string Json<T>(T @object)

@@ -101,7 +101,7 @@ public class AzureReportTests : MessagingTests
         fail.automatedTestName.ShouldBe(TestClass + ".Fail");
         fail.testCaseTitle.ShouldBe(TestClass + ".Fail");
         fail.outcome.ShouldBe("Failed");
-        fail.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
+        fail.durationInMs.Should(x => x >= 0);
         fail.errorMessage.ShouldBe("'Fail' failed!");
         fail.stackTrace
             .ShouldBeStackTrace(["Fixie.Tests.FailureException", At("Fail()")]);
@@ -109,7 +109,7 @@ public class AzureReportTests : MessagingTests
         failByAssertion.automatedTestName.ShouldBe(TestClass + ".FailByAssertion");
         failByAssertion.testCaseTitle.ShouldBe(TestClass + ".FailByAssertion");
         failByAssertion.outcome.ShouldBe("Failed");
-        failByAssertion.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
+        failByAssertion.durationInMs.Should(x => x >= 0);
         failByAssertion.errorMessage.ShouldBe("x should be 2 but was 1");
         failByAssertion.stackTrace
             .ShouldBeStackTrace(["Fixie.Tests.Assertions.AssertException", At("FailByAssertion()")]);
@@ -117,35 +117,35 @@ public class AzureReportTests : MessagingTests
         pass.automatedTestName.ShouldBe(TestClass + ".Pass");
         pass.testCaseTitle.ShouldBe(TestClass + ".Pass");
         pass.outcome.ShouldBe("Passed");
-        pass.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
+        pass.durationInMs.Should(x => x >= 0);
         pass.errorMessage.ShouldBe(null);
         pass.stackTrace.ShouldBe(null);
 
         skip.automatedTestName.ShouldBe(TestClass + ".Skip");
         skip.testCaseTitle.ShouldBe(TestClass + ".Skip");
         skip.outcome.ShouldBe("Warning");
-        skip.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
+        skip.durationInMs.Should(x => x >= 0);
         skip.errorMessage.ShouldBe("⚠ Skipped with attribute.");
         skip.stackTrace.ShouldBe(null);
 
         shouldBeStringPassA.automatedTestName.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"A\")");
         shouldBeStringPassA.testCaseTitle.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"A\")");
         shouldBeStringPassA.outcome.ShouldBe("Passed");
-        shouldBeStringPassA.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
+        shouldBeStringPassA.durationInMs.Should(x => x >= 0);
         shouldBeStringPassA.errorMessage.ShouldBe(null);
         shouldBeStringPassA.stackTrace.ShouldBe(null);
 
         shouldBeStringPassB.automatedTestName.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"B\")");
         shouldBeStringPassB.testCaseTitle.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"B\")");
         shouldBeStringPassB.outcome.ShouldBe("Passed");
-        shouldBeStringPassB.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
+        shouldBeStringPassB.durationInMs.Should(x => x >= 0);
         shouldBeStringPassB.errorMessage.ShouldBe(null);
         shouldBeStringPassB.stackTrace.ShouldBe(null);
 
         shouldBeStringFail.automatedTestName.ShouldBe(GenericTestClass + ".ShouldBeString<System.Int32>(123)");
         shouldBeStringFail.testCaseTitle.ShouldBe(GenericTestClass + ".ShouldBeString<System.Int32>(123)");
         shouldBeStringFail.outcome.ShouldBe("Failed");
-        shouldBeStringFail.durationInMs.ShouldBeGreaterThanOrEqualTo(0);
+        shouldBeStringFail.durationInMs.Should(x => x >= 0);
         shouldBeStringFail.errorMessage.ShouldBe("genericArgument should be typeof(string) but was typeof(int)");
         shouldBeStringFail.stackTrace
             .ShouldBeStackTrace([

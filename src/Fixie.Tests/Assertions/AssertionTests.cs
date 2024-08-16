@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using static System.Environment;
 using static Fixie.Tests.Utility;
 
@@ -608,6 +609,88 @@ public class AssertionTests
         Contradiction(a1, value => value.Should(x => x == a2), "value should be == a2 but was Fixie.Tests.Assertions.AssertionTests+SampleA");
     }
 
+    public void ShouldAssertExpectedExceptions()
+    {
+        var doNothing = () => { };
+        Action divideByZero = () => throw new DivideByZeroException("Divided By Zero");
+
+        divideByZero.ShouldThrow<DivideByZeroException>("Divided By Zero")
+            .ShouldBe<DivideByZeroException>();
+
+        divideByZero.ShouldThrow<Exception>("Divided By Zero")
+            .ShouldBe<DivideByZeroException>();
+
+        Contradiction(doNothing, noop => noop.ShouldThrow<DivideByZeroException>("Divided By Zero"),
+            """
+            noop should have thrown System.DivideByZeroException but did not
+            """);
+
+        Contradiction(divideByZero, divide => divide.ShouldThrow<DivideByZeroException>("Divided By One Minus One"),
+            """
+            divide should have thrown System.DivideByZeroException with message
+            
+                "Divided By One Minus One"
+            
+            but instead the message was
+            
+                "Divided By Zero"
+            """);
+
+        Contradiction(divideByZero, divide => divide.ShouldThrow<ArgumentNullException>("Argument Null"),
+            """
+            divide should have thrown System.ArgumentNullException with message
+            
+                "Argument Null"
+            
+            but instead it threw System.DivideByZeroException with message
+            
+                "Divided By Zero"
+            """);
+    }
+
+    public async Task ShouldAssertExpectedAsyncExceptions()
+    {
+        var doNothing = async () => { await Task.CompletedTask; };
+        var divideByZero = async () =>
+        {
+            await Task.CompletedTask;
+            throw new DivideByZeroException("Divided By Zero");
+        };
+
+        var actualDivideByZeroException = await divideByZero.ShouldThrowAsync<DivideByZeroException>("Divided By Zero");
+        actualDivideByZeroException.ShouldBe<DivideByZeroException>();
+
+        var actualException = await divideByZero.ShouldThrowAsync<Exception>("Divided By Zero");
+        actualException.ShouldBe<DivideByZeroException>();
+
+        await ContradictionAsync(doNothing, noop => noop.ShouldThrowAsync<DivideByZeroException>("Divided By Zero"),
+            """
+            noop should have thrown System.DivideByZeroException but did not
+            """);
+
+        await ContradictionAsync(divideByZero, divide => divide.ShouldThrowAsync<DivideByZeroException>("Divided By One Minus One"),
+            """
+            divide should have thrown System.DivideByZeroException with message
+            
+                "Divided By One Minus One"
+
+            but instead the message was
+            
+                "Divided By Zero"
+            """);
+
+        await ContradictionAsync(divideByZero, divide => divide.ShouldThrowAsync<ArgumentNullException>("Argument Null"),
+            """
+            divide should have thrown System.ArgumentNullException with message
+            
+                "Argument Null"
+
+            but instead it threw System.DivideByZeroException with message
+            
+                "Divided By Zero"
+            """);
+    }
+
     class SampleA;
     class SampleB;
 
@@ -624,25 +707,56 @@ public class AssertionTests
         }
         catch (Exception exception)
         {
-            if (exception is AssertException)
-            {
-                if (exception.Message != expectedMessage)
-                    throw new Exception(
-                        $"An example assertion failed as expected, but with the wrong message.{Line}" +
-                        $"Expected Message:{Line}{Indent(expectedMessage)}{Line}" +
-                        $"Actual Message:{Line}{Indent(exception.Message)}");
-                return;
-            }
-
-            throw new Exception(
-                $"An example assertion failed as expected, but with the wrong type.{Line}" +
-                $"\t{assertion}{Line}" +
-                $"The actual value in question was:{Line}" +
-                $"\t{actual}{Line}" +
-                $"The assertion threw {exception.GetType().FullName} with message:{Line}" +
-                $"\t{exception.Message}");
+            ShouldBeAssertException(actual, expectedMessage, assertion, exception);
+            return;
         }
 
+        ShouldHaveFailedAssertion(actual, assertion);
+
+        throw new UnreachableException();
+    }
+
+    static async Task ContradictionAsync<T>(T actual, Func<T, Task> shouldThrowAsync, string expectedMessage, [CallerArgumentExpression(nameof(shouldThrowAsync))] string? assertion = null)
+    {
+        try
+        {
+            await shouldThrowAsync(actual);
+        }
+        catch (Exception exception)
+        {
+            ShouldBeAssertException(actual, expectedMessage, assertion, exception);
+            return;
+        }
+
+        ShouldHaveFailedAssertion(actual, assertion);
+
+        throw new UnreachableException();
+    }
+
+    static void ShouldBeAssertException<T>(T actual, string expectedMessage, string? assertion, Exception exception)
+    {
+        if (exception is AssertException)
+        {
+            if (exception.Message != expectedMessage)
+                throw new Exception(
+                    $"An example assertion failed as expected, but with the wrong message.{Line}" +
+                    $"Expected Message:{Line}{Indent(expectedMessage)}{Line}" +
+                    $"Actual Message:{Line}{Indent(exception.Message)}");
+
+            return;
+        }
+
+        throw new Exception(
+            $"An example assertion failed as expected, but with the wrong type.{Line}" +
+            $"\t{assertion}{Line}" +
+            $"The actual value in question was:{Line}" +
+            $"\t{actual}{Line}" +
+            $"The assertion threw {exception.GetType().FullName} with message:{Line}" +
+            $"\t{exception.Message}");
+    }
+
+    static void ShouldHaveFailedAssertion<T>(T actual, string? assertion)
+    {
         throw new Exception(
             $"An example assertion was expected to fail, but did not:{Line}" +
             $"\t{assertion}{Line}" +

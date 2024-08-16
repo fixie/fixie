@@ -657,18 +657,18 @@ public class AssertionTests
             throw new DivideByZeroException("Divided By Zero");
         };
 
-        var actualDivideByZeroException = await divideByZero.ShouldThrowAsync<DivideByZeroException>("Divided By Zero");
+        var actualDivideByZeroException = await divideByZero.ShouldThrow<DivideByZeroException>("Divided By Zero");
         actualDivideByZeroException.ShouldBe<DivideByZeroException>();
 
-        var actualException = await divideByZero.ShouldThrowAsync<Exception>("Divided By Zero");
+        var actualException = await divideByZero.ShouldThrow<Exception>("Divided By Zero");
         actualException.ShouldBe<DivideByZeroException>();
 
-        await ContradictionAsync(doNothing, noop => noop.ShouldThrowAsync<DivideByZeroException>("Divided By Zero"),
+        await Contradiction(doNothing, noop => noop.ShouldThrow<DivideByZeroException>("Divided By Zero"),
             """
             noop should have thrown System.DivideByZeroException but did not
             """);
 
-        await ContradictionAsync(divideByZero, divide => divide.ShouldThrowAsync<DivideByZeroException>("Divided By One Minus One"),
+        await Contradiction(divideByZero, divide => divide.ShouldThrow<DivideByZeroException>("Divided By One Minus One"),
             """
             divide should have thrown System.DivideByZeroException with message
             
@@ -679,7 +679,7 @@ public class AssertionTests
                 "Divided By Zero"
             """);
 
-        await ContradictionAsync(divideByZero, divide => divide.ShouldThrowAsync<ArgumentNullException>("Argument Null"),
+        await Contradiction(divideByZero, divide => divide.ShouldThrow<ArgumentNullException>("Argument Null"),
             """
             divide should have thrown System.ArgumentNullException with message
             
@@ -716,7 +716,7 @@ public class AssertionTests
         throw new UnreachableException();
     }
 
-    static async Task ContradictionAsync<T>(T actual, Func<T, Task> shouldThrowAsync, string expectedMessage, [CallerArgumentExpression(nameof(shouldThrowAsync))] string? assertion = null)
+    static async Task Contradiction<T>(T actual, Func<T, Task> shouldThrowAsync, string expectedMessage, [CallerArgumentExpression(nameof(shouldThrowAsync))] string? assertion = null)
     {
         try
         {

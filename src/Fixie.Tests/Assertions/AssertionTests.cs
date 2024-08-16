@@ -588,6 +588,17 @@ public class AssertionTests
             """);
     }
 
+    public void ShouldAssertComparisons()
+    {
+        Contradiction(3, x => x.ShouldBeGreaterThan(4), "x should be > 4 but was 3");
+        Contradiction(4, x => x.ShouldBeGreaterThan(4), "x should be > 4 but was 4");
+        5.ShouldBeGreaterThan(4);
+
+        Contradiction(3, x => x.ShouldBeGreaterThanOrEqualTo(4), "x should be >= 4 but was 3");
+        4.ShouldBeGreaterThanOrEqualTo(4);
+        5.ShouldBeGreaterThanOrEqualTo(4);
+    }
+
     class SampleA;
     class SampleB;
 

@@ -169,7 +169,7 @@ public static class AssertionExtensions
     public static void ShouldNotBeNull([NotNull] this object? actual, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
         if (actual == null)
-            throw AssertException.ForDescriptions(expression, "not null", "null");
+            throw AssertException.ForMessage(expression, "not null", "null", $"{expression} should not be null but was null");
     }
 
     static string Json<T>(T @object)

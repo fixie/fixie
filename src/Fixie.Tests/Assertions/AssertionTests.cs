@@ -463,7 +463,7 @@ public class AssertionTests
         Contradiction(nonNullObject, x => x.ShouldBe(null),
             $"x should be null but was {FullName<SampleA>()}");
         Contradiction((object?)null, x => x.ShouldNotBeNull(),
-            "x should be not null but was null");
+            "x should not be null but was null");
     }
 
     public void ShouldAssertLists()

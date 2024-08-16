@@ -12,7 +12,7 @@ public class AssertException : Exception
     public bool HasMultilineRepresentation { get; }
     readonly string message;
 
-    AssertException(string? expression, string expected, string actual)
+    AssertException(string? expression, string expected, string actual, string? message = null)
     {
         HasMultilineRepresentation = IsMultiline(expected) || IsMultiline(actual);
 
@@ -20,9 +20,16 @@ public class AssertException : Exception
         Expected = expected;
         Actual = actual;
 
-        message = HasMultilineRepresentation
-            ? MultilineMessage(Expression, Expected, Actual)
-            : ScalarMessage(Expression, Expected, Actual);
+        if (message == null)
+        {
+            this.message = HasMultilineRepresentation
+                ? MultilineMessage(Expression, Expected, Actual)
+                : ScalarMessage(Expression, Expected, Actual);
+        }
+        else
+        {
+            this.message = message;
+        }
     }
 
     public static AssertException ForValues<T>(string? expression, T expected, T actual)
@@ -38,6 +45,11 @@ public class AssertException : Exception
     public static AssertException ForLists<T>(string? expression, T[] expected, T[] actual)
     {
         return new AssertException(expression, SerializeList(expected), SerializeList(actual));
+    }
+    
+    public static AssertException ForMessage(string? expression, string expected, string actual, string message)
+    {
+        return new AssertException(expression, expected, actual, message);
     }
 
     public override string Message => message;

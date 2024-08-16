@@ -40,7 +40,7 @@ public class AppVeyorReportTests : MessagingTests
 
         fail.TestName.ShouldBe(TestClass + ".Fail");
         fail.Outcome.ShouldBe("Failed");
-        int.Parse(fail.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
+        int.Parse(fail.DurationMilliseconds).Should(x => x >= 0);
         fail.ErrorMessage.ShouldBe("'Fail' failed!");
         fail.ErrorStackTrace
             .ShouldBeStackTrace(["Fixie.Tests.FailureException", At("Fail()")]);
@@ -48,7 +48,7 @@ public class AppVeyorReportTests : MessagingTests
 
         failByAssertion.TestName.ShouldBe(TestClass + ".FailByAssertion");
         failByAssertion.Outcome.ShouldBe("Failed");
-        int.Parse(failByAssertion.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
+        int.Parse(failByAssertion.DurationMilliseconds).Should(x => x >= 0);
         failByAssertion.ErrorMessage.ShouldBe("x should be 2 but was 1");
         failByAssertion.ErrorStackTrace
             .ShouldBeStackTrace(["Fixie.Tests.Assertions.AssertException", At("FailByAssertion()")]);
@@ -56,35 +56,35 @@ public class AppVeyorReportTests : MessagingTests
 
         pass.TestName.ShouldBe(TestClass + ".Pass");
         pass.Outcome.ShouldBe("Passed");
-        int.Parse(pass.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
+        int.Parse(pass.DurationMilliseconds).Should(x => x >= 0);
         pass.ErrorMessage.ShouldBe(null);
         pass.ErrorStackTrace.ShouldBe(null);
         pass.StdOut.ShouldBe("");
 
         skip.TestName.ShouldBe(TestClass + ".Skip");
         skip.Outcome.ShouldBe("Skipped");
-        int.Parse(skip.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
+        int.Parse(skip.DurationMilliseconds).Should(x => x >= 0);
         skip.ErrorMessage.ShouldBe("⚠ Skipped with attribute.");
         skip.ErrorStackTrace.ShouldBe(null);
         skip.StdOut.ShouldBe("");
 
         shouldBeStringPassA.TestName.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"A\")");
         shouldBeStringPassA.Outcome.ShouldBe("Passed");
-        int.Parse(shouldBeStringPassA.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
+        int.Parse(shouldBeStringPassA.DurationMilliseconds).Should(x => x >= 0);
         shouldBeStringPassA.ErrorMessage.ShouldBe(null);
         shouldBeStringPassA.ErrorStackTrace.ShouldBe(null);
         shouldBeStringPassA.StdOut.ShouldBe("");
 
         shouldBeStringPassB.TestName.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"B\")");
         shouldBeStringPassB.Outcome.ShouldBe("Passed");
-        int.Parse(shouldBeStringPassB.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
+        int.Parse(shouldBeStringPassB.DurationMilliseconds).Should(x => x >= 0);
         shouldBeStringPassB.ErrorMessage.ShouldBe(null);
         shouldBeStringPassB.ErrorStackTrace.ShouldBe(null);
         shouldBeStringPassB.StdOut.ShouldBe("");
 
         shouldBeStringFail.TestName.ShouldBe(GenericTestClass + ".ShouldBeString<System.Int32>(123)");
         shouldBeStringFail.Outcome.ShouldBe("Failed");
-        int.Parse(shouldBeStringFail.DurationMilliseconds).ShouldBeGreaterThanOrEqualTo(0);
+        int.Parse(shouldBeStringFail.DurationMilliseconds).Should(x => x >= 0);
         shouldBeStringFail.ErrorMessage
             .ShouldBe("genericArgument should be typeof(string) but was typeof(int)");
         shouldBeStringFail.ErrorStackTrace

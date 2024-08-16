@@ -588,15 +588,24 @@ public class AssertionTests
             """);
     }
 
-    public void ShouldAssertComparisons()
+    public void ShouldAssertExpressions()
     {
-        Contradiction(3, x => x.ShouldBeGreaterThan(4), "x should be > 4 but was 3");
-        Contradiction(4, x => x.ShouldBeGreaterThan(4), "x should be > 4 but was 4");
-        5.ShouldBeGreaterThan(4);
+        Contradiction(3, value => value.Should(x => x > 4), "value should be > 4 but was 3");
+        Contradiction(4, value => value.Should(y => y > 4), "value should be > 4 but was 4");
+        5.Should(x => x > 4);
 
-        Contradiction(3, x => x.ShouldBeGreaterThanOrEqualTo(4), "x should be >= 4 but was 3");
-        4.ShouldBeGreaterThanOrEqualTo(4);
-        5.ShouldBeGreaterThanOrEqualTo(4);
+        Contradiction(3, value => value.Should(abc => abc >= 4), "value should be >= 4 but was 3");
+        4.Should(x => x >= 4);
+        5.Should(x => x >= 4);
+
+        Func<int, bool> someExpression = x => x >= 4;
+        Contradiction(3, value => value.Should(someExpression), "value should be someExpression but was 3");
+
+        var a1 = new SampleA();
+        var a2 = new SampleA();
+
+        a1.Should(x => x == a1);
+        Contradiction(a1, value => value.Should(x => x == a2), "value should be == a2 but was Fixie.Tests.Assertions.AssertionTests+SampleA");
     }
 
     class SampleA;

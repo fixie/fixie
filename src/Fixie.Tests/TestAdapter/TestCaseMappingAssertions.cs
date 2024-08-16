@@ -49,7 +49,7 @@ public static class TestCaseMappingAssertions
     {
         test.CodeFilePath.ShouldNotBeNull();
         test.CodeFilePath.EndsWith("MessagingTests.cs").ShouldBe(true);
-        test.LineNumber.ShouldBeGreaterThan(0);
+        test.LineNumber.Should(x => x > 0);
     }
 
     static void ShouldNotHaveSourceLocation(TestCase test)

@@ -120,9 +120,6 @@ public class EntryPoint
         if (Try(AzureReport.Create, environment, out var azure))
             yield return azure;
 
-        if (Try(AppVeyorReport.Create, environment, out var appVeyor))
-            yield return appVeyor;
-
         if (Try(TeamCityReport.Create, environment, out var teamCity))
             yield return teamCity;
 

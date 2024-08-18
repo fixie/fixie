@@ -17,20 +17,20 @@ public class XmlReport :
 
     readonly SortedDictionary<string, ClassResult> report = [];
 
-    public XmlReport(TestEnvironment environment, string absoluteOrRelativePath)
+    public XmlReport(TestEnvironment environment)
     {
         this.environment = environment;
-        save = SaveReport(environment, absoluteOrRelativePath);
+        save = SaveReport(environment);
     }
 
-    static Action<XDocument> SaveReport(TestEnvironment environment, string absoluteOrRelativePath)
+    static Action<XDocument> SaveReport(TestEnvironment environment)
     {
-        return report => Save(report, FullPath(environment, absoluteOrRelativePath));
+        return report => Save(report, FullPath(environment));
     }
 
-    static string FullPath(TestEnvironment environment, string absoluteOrRelativePath)
+    static string FullPath(TestEnvironment environment)
     {
-        return Path.Combine(environment.RootPath, absoluteOrRelativePath);
+        return Path.Combine(environment.RootPath, "TestResults.xml");
     }
 
     public Task Handle(TestSkipped message)

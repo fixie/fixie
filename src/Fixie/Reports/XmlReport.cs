@@ -18,8 +18,9 @@ public class XmlReport :
     readonly SortedDictionary<string, ClassResult> report = [];
 
     public XmlReport(TestEnvironment environment, string absoluteOrRelativePath)
-        : this(environment, SaveReport(environment, absoluteOrRelativePath))
     {
+        this.environment = environment;
+        save = SaveReport(environment, absoluteOrRelativePath);
     }
 
     static Action<XDocument> SaveReport(TestEnvironment environment, string absoluteOrRelativePath)
@@ -30,12 +31,6 @@ public class XmlReport :
     static string FullPath(TestEnvironment environment, string absoluteOrRelativePath)
     {
         return Path.Combine(environment.RootPath, absoluteOrRelativePath);
-    }
-
-    internal XmlReport(TestEnvironment environment, Action<XDocument> save)
-    {
-        this.environment = environment;
-        this.save = save;
     }
 
     public Task Handle(TestSkipped message)

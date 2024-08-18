@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
+using Fixie.Internal;
 using static System.Environment;
 
 namespace Fixie;
@@ -31,6 +32,11 @@ public class TestEnvironment
             @"^\.NETCoreApp,Version=v([\d\.]+)$",
             "net$1");
     }
+
+    /// <summary>
+    /// The name and version of the test framework.
+    /// </summary>
+    public string TestFramework => Framework.Version;
 
     /// <summary>
     /// The test assembly being executed.

@@ -4,34 +4,15 @@ using Fixie.Internal;
 namespace Fixie.Reports;
 
 /// <summary>
-/// Writes test results to the specified path, using the xUnit XML format.
+/// Writes test results using the xUnit XML format.
 /// </summary>
-public class XmlReport :
+public class XmlReport(TestEnvironment environment) :
     IHandler<TestSkipped>,
     IHandler<TestPassed>,
     IHandler<TestFailed>,
     IHandler<ExecutionCompleted>
 {
-    readonly TestEnvironment environment;
-    readonly Action<XDocument> save;
-
     readonly SortedDictionary<string, ClassResult> report = [];
-
-    public XmlReport(TestEnvironment environment)
-    {
-        this.environment = environment;
-        save = SaveReport(environment);
-    }
-
-    static Action<XDocument> SaveReport(TestEnvironment environment)
-    {
-        return report => Save(report, FullPath(environment));
-    }
-
-    static string FullPath(TestEnvironment environment)
-    {
-        return Path.Combine(environment.RootPath, "TestResults.xml");
-    }
 
     public Task Handle(TestSkipped message)
     {
@@ -65,7 +46,7 @@ public class XmlReport :
     {
         var now = DateTime.UtcNow;
 
-        save(new XDocument(
+        Save(new XDocument(
             new XElement("assemblies",
                 new XElement("assembly",
                     new XAttribute("name", environment.Assembly.Location),
@@ -91,29 +72,23 @@ public class XmlReport :
         return FormattableString.Invariant($"{duration.TotalSeconds:0.000}");
     }
 
-    static void Save(XDocument report, string path)
+    void Save(XDocument document)
     {
-        var directory = Path.GetDirectoryName(path);
-
-        if (string.IsNullOrEmpty(directory))
-            return;
-
-        Directory.CreateDirectory(directory);
+        var path = Path.Combine(environment.RootPath, "TestResults.xml");
 
         using var stream = new FileStream(path, FileMode.Create);
         using var writer = new StreamWriter(stream);
-        report.Save(writer, SaveOptions.None);
+        document.Save(writer, SaveOptions.None);
+
+        environment.Console.WriteLine($"Report: {path}");
     }
 
-    class ClassResult
+    class ClassResult(string name)
     {
-        readonly string name;
         TimeSpan duration = TimeSpan.Zero;
         readonly List<XElement> results = [];
         readonly ExecutionSummary summary = new();
 
-        public ClassResult(string name) => this.name = name;
-            
         public void Add(TestSkipped message)
         {
             duration += message.Duration;

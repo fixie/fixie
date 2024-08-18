@@ -4,9 +4,9 @@ using Fixie.Internal;
 namespace Fixie.Reports;
 
 /// <summary>
-/// Writes test results using the xUnit XML format.
+/// Writes test results using the xUnit v2 XML format.
 /// </summary>
-public class XmlReport(TestEnvironment environment) :
+public class XUnitV2XmlReport(TestEnvironment environment) :
     IHandler<TestSkipped>,
     IHandler<TestPassed>,
     IHandler<TestFailed>,

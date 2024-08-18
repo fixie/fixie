@@ -1,5 +1,4 @@
 ﻿using System.Xml.Linq;
-using Fixie.Internal;
 
 namespace Fixie.Reports;
 
@@ -87,12 +86,14 @@ public class XUnitV2XmlReport(TestEnvironment environment) :
     {
         TimeSpan duration = TimeSpan.Zero;
         readonly List<XElement> results = [];
-        readonly ExecutionSummary summary = new();
+        int passed;
+        int failed;
+        int skipped;
 
         public void Add(TestSkipped message)
         {
             duration += message.Duration;
-            summary.Add(message);
+            skipped += 1;
 
             Parse(message.Test, out var type, out var method);
 
@@ -111,7 +112,7 @@ public class XUnitV2XmlReport(TestEnvironment environment) :
         public void Add(TestPassed message)
         {
             duration += message.Duration;
-            summary.Add(message);
+            passed += 1;
 
             Parse(message.Test, out var type, out var method);
 
@@ -127,7 +128,7 @@ public class XUnitV2XmlReport(TestEnvironment environment) :
         public void Add(TestFailed message)
         {
             duration += message.Duration;
-            summary.Add(message);
+            failed += 1;
 
             Parse(message.Test, out var type, out var method);
 
@@ -149,10 +150,10 @@ public class XUnitV2XmlReport(TestEnvironment environment) :
             return new XElement("collection",
                 new XAttribute("time", Seconds(duration)),
                 new XAttribute("name", name),
-                new XAttribute("total", summary.Total),
-                new XAttribute("passed", summary.Passed),
-                new XAttribute("failed", summary.Failed),
-                new XAttribute("skipped", summary.Skipped),
+                new XAttribute("total", passed + failed + skipped),
+                new XAttribute("passed", passed),
+                new XAttribute("failed", failed),
+                new XAttribute("skipped", skipped),
                 results);
         }
     }

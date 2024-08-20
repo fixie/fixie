@@ -33,16 +33,16 @@ class TeamCityReport :
 
     public Task Handle(TestSkipped message)
     {
-        TestStarted(message);
+        Message("##teamcity[testStarted name='{0}']", message.TestCase);
         Message("##teamcity[testIgnored name='{0}' message='{1}']", message.TestCase, message.Reason);
-        TestFinished(message);
+        Message("##teamcity[testFinished name='{0}' duration='{1}']", message.TestCase, $"{message.Duration.TotalMilliseconds:0}");
         return Task.CompletedTask;
     }
 
     public Task Handle(TestPassed message)
     {
-        TestStarted(message);
-        TestFinished(message);
+        Message("##teamcity[testStarted name='{0}']", message.TestCase);
+        Message("##teamcity[testFinished name='{0}' duration='{1}']", message.TestCase, $"{message.Duration.TotalMilliseconds:0}");
         return Task.CompletedTask;
     }
 
@@ -53,9 +53,9 @@ class TeamCityReport :
             NewLine +
             message.Reason.StackTraceSummary();
 
-        TestStarted(message);
+        Message("##teamcity[testStarted name='{0}']", message.TestCase);
         Message("##teamcity[testFailed name='{0}' message='{1}' details='{2}']", message.TestCase, message.Reason.Message, details);
-        TestFinished(message);
+        Message("##teamcity[testFinished name='{0}' duration='{1}']", message.TestCase, $"{message.Duration.TotalMilliseconds:0}");
         return Task.CompletedTask;
     }
 
@@ -63,16 +63,6 @@ class TeamCityReport :
     {
         Message("##teamcity[testSuiteFinished name='{0}']", environment.Assembly.GetName().Name);
         return Task.CompletedTask;
-    }
-
-    void TestStarted(TestCompleted message)
-    {
-        Message("##teamcity[testStarted name='{0}']", message.TestCase);
-    }
-
-    void TestFinished(TestCompleted message)
-    {
-        Message("##teamcity[testFinished name='{0}' duration='{1}']", message.TestCase, $"{message.Duration.TotalMilliseconds:0}");
     }
 
     void Message(string format, params string?[] args)

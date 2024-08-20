@@ -27,7 +27,7 @@ class TeamCityReport :
 
     public Task Handle(ExecutionStarted message)
     {
-        var assembly = environment.Assembly.GetName().Name;
+        var assembly = Encode(environment.Assembly.GetName().Name);
         
         Message("##teamcity[testSuiteStarted name='{0}']", assembly);
         
@@ -36,9 +36,9 @@ class TeamCityReport :
 
     public Task Handle(TestSkipped message)
     {
-        var testCase = message.TestCase;
-        var reason = message.Reason;
-        var duration = $"{message.Duration.TotalMilliseconds:0}";
+        var testCase = Encode(message.TestCase);
+        var reason = Encode(message.Reason);
+        var duration = Encode($"{message.Duration.TotalMilliseconds:0}");
         
         Message("##teamcity[testStarted name='{0}']", testCase);
         Message("##teamcity[testIgnored name='{0}' message='{1}']", testCase, reason);
@@ -49,8 +49,8 @@ class TeamCityReport :
 
     public Task Handle(TestPassed message)
     {
-        var testCase = message.TestCase;
-        var duration = $"{message.Duration.TotalMilliseconds:0}";
+        var testCase = Encode(message.TestCase);
+        var duration = Encode($"{message.Duration.TotalMilliseconds:0}");
         
         Message("##teamcity[testStarted name='{0}']", testCase);
         Message("##teamcity[testFinished name='{0}' duration='{1}']", testCase, duration);
@@ -60,13 +60,13 @@ class TeamCityReport :
 
     public Task Handle(TestFailed message)
     {
-        var testCase = message.TestCase;
-        var reason = message.Reason.Message;
+        var testCase = Encode(message.TestCase);
+        var reason = Encode(message.Reason.Message);
         var details =
-            message.Reason.GetType().FullName +
-            NewLine +
-            message.Reason.StackTraceSummary();
-        var duration = $"{message.Duration.TotalMilliseconds:0}";
+            Encode(message.Reason.GetType().FullName +
+                   NewLine +
+                   message.Reason.StackTraceSummary());
+        var duration = Encode($"{message.Duration.TotalMilliseconds:0}");
 
         Message("##teamcity[testStarted name='{0}']", testCase);
         Message("##teamcity[testFailed name='{0}' message='{1}' details='{2}']", testCase, reason, details);
@@ -77,17 +77,16 @@ class TeamCityReport :
 
     public Task Handle(ExecutionCompleted message)
     {
-        var assembly = environment.Assembly.GetName().Name;
+        var assembly = Encode(environment.Assembly.GetName().Name);
         
         Message("##teamcity[testSuiteFinished name='{0}']", assembly);
         
         return Task.CompletedTask;
     }
 
-    void Message(string format, params string?[] args)
+    void Message(string format, params object?[] args)
     {
-        var encodedArgs = args.Select(Encode).Cast<object>().ToArray();
-        environment.Console.WriteLine(format, encodedArgs);
+        environment.Console.WriteLine(format, args);
     }
 
     static string Encode(string? value)

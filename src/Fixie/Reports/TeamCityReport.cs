@@ -28,8 +28,8 @@ class TeamCityReport :
     public Task Handle(ExecutionStarted message)
     {
         var assembly = Encode(environment.Assembly.GetName().Name);
-        
-        Message("##teamcity[testSuiteStarted name='{0}']", assembly);
+
+        environment.Console.WriteLine($"##teamcity[testSuiteStarted name='{assembly}']");
         
         return Task.CompletedTask;
     }
@@ -39,10 +39,10 @@ class TeamCityReport :
         var testCase = Encode(message.TestCase);
         var reason = Encode(message.Reason);
         var duration = Encode($"{message.Duration.TotalMilliseconds:0}");
-        
-        Message("##teamcity[testStarted name='{0}']", testCase);
-        Message("##teamcity[testIgnored name='{0}' message='{1}']", testCase, reason);
-        Message("##teamcity[testFinished name='{0}' duration='{1}']", testCase, duration);
+
+        environment.Console.WriteLine($"##teamcity[testStarted name='{testCase}']");
+        environment.Console.WriteLine($"##teamcity[testIgnored name='{testCase}' message='{reason}']");
+        environment.Console.WriteLine($"##teamcity[testFinished name='{testCase}' duration='{duration}']");
         
         return Task.CompletedTask;
     }
@@ -51,9 +51,9 @@ class TeamCityReport :
     {
         var testCase = Encode(message.TestCase);
         var duration = Encode($"{message.Duration.TotalMilliseconds:0}");
-        
-        Message("##teamcity[testStarted name='{0}']", testCase);
-        Message("##teamcity[testFinished name='{0}' duration='{1}']", testCase, duration);
+
+        environment.Console.WriteLine($"##teamcity[testStarted name='{testCase}']");
+        environment.Console.WriteLine($"##teamcity[testFinished name='{testCase}' duration='{duration}']");
         
         return Task.CompletedTask;
     }
@@ -68,9 +68,9 @@ class TeamCityReport :
                    message.Reason.StackTraceSummary());
         var duration = Encode($"{message.Duration.TotalMilliseconds:0}");
 
-        Message("##teamcity[testStarted name='{0}']", testCase);
-        Message("##teamcity[testFailed name='{0}' message='{1}' details='{2}']", testCase, reason, details);
-        Message("##teamcity[testFinished name='{0}' duration='{1}']", testCase, duration);
+        environment.Console.WriteLine($"##teamcity[testStarted name='{testCase}']");
+        environment.Console.WriteLine($"##teamcity[testFailed name='{testCase}' message='{reason}' details='{details}']");
+        environment.Console.WriteLine($"##teamcity[testFinished name='{testCase}' duration='{duration}']");
         
         return Task.CompletedTask;
     }
@@ -78,15 +78,10 @@ class TeamCityReport :
     public Task Handle(ExecutionCompleted message)
     {
         var assembly = Encode(environment.Assembly.GetName().Name);
-        
-        Message("##teamcity[testSuiteFinished name='{0}']", assembly);
+
+        environment.Console.WriteLine($"##teamcity[testSuiteFinished name='{assembly}']");
         
         return Task.CompletedTask;
-    }
-
-    void Message(string format, params object?[] args)
-    {
-        environment.Console.WriteLine(format, args);
     }
 
     static string Encode(string? value)

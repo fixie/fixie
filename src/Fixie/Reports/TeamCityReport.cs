@@ -101,24 +101,14 @@ class TeamCityReport :
                 case ']': builder.Append("|]"); break;
                 case '\n': builder.Append("|n"); break;
                 case '\r': builder.Append("|r"); break;
-                default:
-                    if (RequiresHexEscape(ch))
-                    {
-                        builder.Append("|0x");
-                        builder.Append(((int) ch).ToString("x4"));
-                    }
-                    else
-                    {
-                        builder.Append(ch);
-                    }
-
+                case > '\x007f': // Hex escape is required.
+                    builder.Append("|0x");
+                    builder.Append(((int)ch).ToString("x4"));
                     break;
+                default: builder.Append(ch); break;
             }
         }
 
         return builder.ToString();
     }
-
-    static bool RequiresHexEscape(char ch)
-        => ch > '\x007f';
 }

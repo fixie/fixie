@@ -27,14 +27,14 @@ class TeamCityReport :
 
     public Task Handle(ExecutionStarted message)
     {
-        Message("testSuiteStarted name='{0}'", environment.Assembly.GetName().Name);
+        Message("##teamcity[testSuiteStarted name='{0}']", environment.Assembly.GetName().Name);
         return Task.CompletedTask;
     }
 
     public Task Handle(TestSkipped message)
     {
         TestStarted(message);
-        Message("testIgnored name='{0}' message='{1}'", message.TestCase, message.Reason);
+        Message("##teamcity[testIgnored name='{0}' message='{1}']", message.TestCase, message.Reason);
         TestFinished(message);
         return Task.CompletedTask;
     }
@@ -54,31 +54,31 @@ class TeamCityReport :
             message.Reason.StackTraceSummary();
 
         TestStarted(message);
-        Message("testFailed name='{0}' message='{1}' details='{2}'", message.TestCase, message.Reason.Message, details);
+        Message("##teamcity[testFailed name='{0}' message='{1}' details='{2}']", message.TestCase, message.Reason.Message, details);
         TestFinished(message);
         return Task.CompletedTask;
     }
 
     public Task Handle(ExecutionCompleted message)
     {
-        Message("testSuiteFinished name='{0}'", environment.Assembly.GetName().Name);
+        Message("##teamcity[testSuiteFinished name='{0}']", environment.Assembly.GetName().Name);
         return Task.CompletedTask;
     }
 
     void TestStarted(TestCompleted message)
     {
-        Message("testStarted name='{0}'", message.TestCase);
+        Message("##teamcity[testStarted name='{0}']", message.TestCase);
     }
 
     void TestFinished(TestCompleted message)
     {
-        Message("testFinished name='{0}' duration='{1}'", message.TestCase, $"{message.Duration.TotalMilliseconds:0}");
+        Message("##teamcity[testFinished name='{0}' duration='{1}']", message.TestCase, $"{message.Duration.TotalMilliseconds:0}");
     }
 
     void Message(string format, params string?[] args)
     {
         var encodedArgs = args.Select(Encode).Cast<object>().ToArray();
-        environment.Console.WriteLine("##teamcity[" + format + "]", encodedArgs);
+        environment.Console.WriteLine(format, encodedArgs);
     }
 
     static string Encode(string? value)

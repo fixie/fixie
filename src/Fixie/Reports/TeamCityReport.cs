@@ -38,11 +38,11 @@ class TeamCityReport :
     {
         var testCase = Encode(message.TestCase);
         var reason = Encode(message.Reason);
-        var duration = Encode($"{message.Duration.TotalMilliseconds:0}");
+        var duration = message.Duration.TotalMilliseconds;
 
         environment.Console.WriteLine($"##teamcity[testStarted name='{testCase}']");
         environment.Console.WriteLine($"##teamcity[testIgnored name='{testCase}' message='{reason}']");
-        environment.Console.WriteLine($"##teamcity[testFinished name='{testCase}' duration='{duration}']");
+        environment.Console.WriteLine($"##teamcity[testFinished name='{testCase}' duration='{duration:0}']");
         
         return Task.CompletedTask;
     }
@@ -50,10 +50,10 @@ class TeamCityReport :
     public Task Handle(TestPassed message)
     {
         var testCase = Encode(message.TestCase);
-        var duration = Encode($"{message.Duration.TotalMilliseconds:0}");
+        var duration = message.Duration.TotalMilliseconds;
 
         environment.Console.WriteLine($"##teamcity[testStarted name='{testCase}']");
-        environment.Console.WriteLine($"##teamcity[testFinished name='{testCase}' duration='{duration}']");
+        environment.Console.WriteLine($"##teamcity[testFinished name='{testCase}' duration='{duration:0}']");
         
         return Task.CompletedTask;
     }
@@ -66,11 +66,11 @@ class TeamCityReport :
             Encode(message.Reason.GetType().FullName +
                    NewLine +
                    message.Reason.StackTraceSummary());
-        var duration = Encode($"{message.Duration.TotalMilliseconds:0}");
+        var duration = message.Duration.TotalMilliseconds;
 
         environment.Console.WriteLine($"##teamcity[testStarted name='{testCase}']");
         environment.Console.WriteLine($"##teamcity[testFailed name='{testCase}' message='{reason}' details='{details}']");
-        environment.Console.WriteLine($"##teamcity[testFinished name='{testCase}' duration='{duration}']");
+        environment.Console.WriteLine($"##teamcity[testFinished name='{testCase}' duration='{duration:0}']");
         
         return Task.CompletedTask;
     }

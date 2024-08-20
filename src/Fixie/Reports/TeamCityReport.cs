@@ -27,41 +27,60 @@ class TeamCityReport :
 
     public Task Handle(ExecutionStarted message)
     {
-        Message("##teamcity[testSuiteStarted name='{0}']", environment.Assembly.GetName().Name);
+        var assembly = environment.Assembly.GetName().Name;
+        
+        Message("##teamcity[testSuiteStarted name='{0}']", assembly);
+        
         return Task.CompletedTask;
     }
 
     public Task Handle(TestSkipped message)
     {
-        Message("##teamcity[testStarted name='{0}']", message.TestCase);
-        Message("##teamcity[testIgnored name='{0}' message='{1}']", message.TestCase, message.Reason);
-        Message("##teamcity[testFinished name='{0}' duration='{1}']", message.TestCase, $"{message.Duration.TotalMilliseconds:0}");
+        var testCase = message.TestCase;
+        var reason = message.Reason;
+        var duration = $"{message.Duration.TotalMilliseconds:0}";
+        
+        Message("##teamcity[testStarted name='{0}']", testCase);
+        Message("##teamcity[testIgnored name='{0}' message='{1}']", testCase, reason);
+        Message("##teamcity[testFinished name='{0}' duration='{1}']", testCase, duration);
+        
         return Task.CompletedTask;
     }
 
     public Task Handle(TestPassed message)
     {
-        Message("##teamcity[testStarted name='{0}']", message.TestCase);
-        Message("##teamcity[testFinished name='{0}' duration='{1}']", message.TestCase, $"{message.Duration.TotalMilliseconds:0}");
+        var testCase = message.TestCase;
+        var duration = $"{message.Duration.TotalMilliseconds:0}";
+        
+        Message("##teamcity[testStarted name='{0}']", testCase);
+        Message("##teamcity[testFinished name='{0}' duration='{1}']", testCase, duration);
+        
         return Task.CompletedTask;
     }
 
     public Task Handle(TestFailed message)
     {
+        var testCase = message.TestCase;
+        var reason = message.Reason.Message;
         var details =
             message.Reason.GetType().FullName +
             NewLine +
             message.Reason.StackTraceSummary();
+        var duration = $"{message.Duration.TotalMilliseconds:0}";
 
-        Message("##teamcity[testStarted name='{0}']", message.TestCase);
-        Message("##teamcity[testFailed name='{0}' message='{1}' details='{2}']", message.TestCase, message.Reason.Message, details);
-        Message("##teamcity[testFinished name='{0}' duration='{1}']", message.TestCase, $"{message.Duration.TotalMilliseconds:0}");
+        Message("##teamcity[testStarted name='{0}']", testCase);
+        Message("##teamcity[testFailed name='{0}' message='{1}' details='{2}']", testCase, reason, details);
+        Message("##teamcity[testFinished name='{0}' duration='{1}']", testCase, duration);
+        
         return Task.CompletedTask;
     }
 
     public Task Handle(ExecutionCompleted message)
     {
-        Message("##teamcity[testSuiteFinished name='{0}']", environment.Assembly.GetName().Name);
+        var assembly = environment.Assembly.GetName().Name;
+        
+        Message("##teamcity[testSuiteFinished name='{0}']", assembly);
+        
         return Task.CompletedTask;
     }
 

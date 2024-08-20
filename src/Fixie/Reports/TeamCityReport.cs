@@ -93,20 +93,23 @@ class TeamCityReport :
 
         foreach (var ch in value)
         {
-            switch (ch)
+            var escapeSequence = ch switch
             {
-                case '|': builder.Append("||"); break;
-                case '\'': builder.Append("|'"); break;
-                case '[': builder.Append("|["); break;
-                case ']': builder.Append("|]"); break;
-                case '\n': builder.Append("|n"); break;
-                case '\r': builder.Append("|r"); break;
-                case > '\x007f': // Hex escape is required.
-                    builder.Append("|0x");
-                    builder.Append(((int)ch).ToString("x4"));
-                    break;
-                default: builder.Append(ch); break;
-            }
+                '|' => "||",
+                '\'' => "|'",
+                '[' => "|[",
+                ']' => "|]",
+                '\n' => "|n",
+                '\r' => "|r",
+                > '\x007f' => // Hex escape is required.
+                    "|0x" + ((int)ch).ToString("x4"),
+                _ => null
+            };
+
+            if (escapeSequence == null)
+                builder.Append(ch);
+            else
+                builder.Append(escapeSequence);
         }
 
         return builder.ToString();

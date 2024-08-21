@@ -3,26 +3,19 @@ using static System.Environment;
 
 namespace Fixie.Reports;
 
-class TeamCityReport :
+class TeamCityReport(TestEnvironment environment) :
     IHandler<ExecutionStarted>,
     IHandler<TestSkipped>,
     IHandler<TestPassed>,
     IHandler<TestFailed>,
     IHandler<ExecutionCompleted>
 {
-    readonly TestEnvironment environment;
-
     internal static TeamCityReport? Create(TestEnvironment environment)
     {
         if (GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null)
             return new TeamCityReport(environment);
 
         return null;
-    }
-
-    public TeamCityReport(TestEnvironment environment)
-    {
-        this.environment = environment;
     }
 
     public Task Handle(ExecutionStarted message)

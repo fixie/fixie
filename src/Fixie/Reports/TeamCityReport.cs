@@ -3,15 +3,13 @@ using static System.Environment;
 
 namespace Fixie.Reports;
 
-class TeamCityReport :
+class TeamCityReport(TestEnvironment environment) :
     IHandler<ExecutionStarted>,
     IHandler<TestSkipped>,
     IHandler<TestPassed>,
     IHandler<TestFailed>,
     IHandler<ExecutionCompleted>
 {
-    readonly TestEnvironment environment;
-
     internal static TeamCityReport? Create(TestEnvironment environment)
     {
         if (GetEnvironmentVariable("TEAMCITY_PROJECT_NAME") != null)
@@ -20,65 +18,63 @@ class TeamCityReport :
         return null;
     }
 
-    public TeamCityReport(TestEnvironment environment)
-    {
-        this.environment = environment;
-    }
-
     public Task Handle(ExecutionStarted message)
     {
-        Message("testSuiteStarted name='{0}'", environment.Assembly.GetName().Name);
+        var assembly = Encode(environment.Assembly.GetName().Name);
+
+        environment.Console.WriteLine($"##teamcity[testSuiteStarted name='{assembly}']");
+        
         return Task.CompletedTask;
     }
 
     public Task Handle(TestSkipped message)
     {
-        TestStarted(message);
-        Message("testIgnored name='{0}' message='{1}'", message.TestCase, message.Reason);
-        TestFinished(message);
+        var testCase = Encode(message.TestCase);
+        var reason = Encode(message.Reason);
+        var duration = message.Duration.TotalMilliseconds;
+
+        environment.Console.WriteLine($"##teamcity[testStarted name='{testCase}']");
+        environment.Console.WriteLine($"##teamcity[testIgnored name='{testCase}' message='{reason}']");
+        environment.Console.WriteLine($"##teamcity[testFinished name='{testCase}' duration='{duration:0}']");
+        
         return Task.CompletedTask;
     }
 
     public Task Handle(TestPassed message)
     {
-        TestStarted(message);
-        TestFinished(message);
+        var testCase = Encode(message.TestCase);
+        var duration = message.Duration.TotalMilliseconds;
+
+        environment.Console.WriteLine($"##teamcity[testStarted name='{testCase}']");
+        environment.Console.WriteLine($"##teamcity[testFinished name='{testCase}' duration='{duration:0}']");
+        
         return Task.CompletedTask;
     }
 
     public Task Handle(TestFailed message)
     {
+        var testCase = Encode(message.TestCase);
+        var reason = Encode(message.Reason.Message);
         var details =
-            message.Reason.GetType().FullName +
-            NewLine +
-            message.Reason.StackTraceSummary();
+            Encode(message.Reason.GetType().FullName +
+                   NewLine +
+                   message.Reason.StackTraceSummary());
+        var duration = message.Duration.TotalMilliseconds;
 
-        TestStarted(message);
-        Message("testFailed name='{0}' message='{1}' details='{2}'", message.TestCase, message.Reason.Message, details);
-        TestFinished(message);
+        environment.Console.WriteLine($"##teamcity[testStarted name='{testCase}']");
+        environment.Console.WriteLine($"##teamcity[testFailed name='{testCase}' message='{reason}' details='{details}']");
+        environment.Console.WriteLine($"##teamcity[testFinished name='{testCase}' duration='{duration:0}']");
+        
         return Task.CompletedTask;
     }
 
     public Task Handle(ExecutionCompleted message)
     {
-        Message("testSuiteFinished name='{0}'", environment.Assembly.GetName().Name);
+        var assembly = Encode(environment.Assembly.GetName().Name);
+
+        environment.Console.WriteLine($"##teamcity[testSuiteFinished name='{assembly}']");
+        
         return Task.CompletedTask;
-    }
-
-    void TestStarted(TestCompleted message)
-    {
-        Message("testStarted name='{0}'", message.TestCase);
-    }
-
-    void TestFinished(TestCompleted message)
-    {
-        Message("testFinished name='{0}' duration='{1}'", message.TestCase, $"{message.Duration.TotalMilliseconds:0}");
-    }
-
-    void Message(string format, params string?[] args)
-    {
-        var encodedArgs = args.Select(Encode).Cast<object>().ToArray();
-        environment.Console.WriteLine("##teamcity[" + format + "]", encodedArgs);
     }
 
     static string Encode(string? value)
@@ -90,32 +86,25 @@ class TeamCityReport :
 
         foreach (var ch in value)
         {
-            switch (ch)
+            var escapeSequence = ch switch
             {
-                case '|': builder.Append("||"); break;
-                case '\'': builder.Append("|'"); break;
-                case '[': builder.Append("|["); break;
-                case ']': builder.Append("|]"); break;
-                case '\n': builder.Append("|n"); break;
-                case '\r': builder.Append("|r"); break;
-                default:
-                    if (RequiresHexEscape(ch))
-                    {
-                        builder.Append("|0x");
-                        builder.Append(((int) ch).ToString("x4"));
-                    }
-                    else
-                    {
-                        builder.Append(ch);
-                    }
+                '|' => "||",
+                '\'' => "|'",
+                '[' => "|[",
+                ']' => "|]",
+                '\n' => "|n",
+                '\r' => "|r",
+                > '\x007f' => // Hex escape is required.
+                    "|0x" + ((int)ch).ToString("x4"),
+                _ => null
+            };
 
-                    break;
-            }
+            if (escapeSequence == null)
+                builder.Append(ch);
+            else
+                builder.Append(escapeSequence);
         }
 
         return builder.ToString();
     }
-
-    static bool RequiresHexEscape(char ch)
-        => ch > '\x007f';
 }

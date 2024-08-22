@@ -6,14 +6,8 @@ namespace Fixie.Tests;
 
 public static class Utility
 {
-    public static TestEnvironment GetTestEnvironment(TextWriter console)
-    {
-        return new TestEnvironment(
-            typeof(TestProject).Assembly,
-            null,
-            console,
-            Directory.GetCurrentDirectory());
-    }
+    public static TestEnvironment GetTestEnvironment(TextWriter console) =>
+        new(typeof(TestProject).Assembly, null, console, customArguments: []);
 
     public const string TargetFrameworkVersion = "8.0";
 
@@ -66,7 +60,7 @@ public static class Utility
         if (candidateTypes.Length == 0)
             throw new InvalidOperationException("At least one type must be specified.");
 
-        var environment = new TestEnvironment(candidateTypes[0].Assembly, null, console, Directory.GetCurrentDirectory());
+        var environment = GetTestEnvironment(console);
         var runner = new Runner(environment, report);
         var configuration = new TestConfiguration();
         configuration.Conventions.Add(discovery, execution);

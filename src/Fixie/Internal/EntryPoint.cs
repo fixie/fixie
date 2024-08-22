@@ -18,9 +18,8 @@ public class EntryPoint
     public static async Task<int> Main(Assembly assembly, string[] customArguments)
     {
         var console = Console.Out;
-        var rootPath = Directory.GetCurrentDirectory();
         var targetFramework = GetEnvironmentVariable("FIXIE_TARGET_FRAMEWORK");
-        var environment = new TestEnvironment(assembly, targetFramework, console, rootPath, customArguments);
+        var environment = new TestEnvironment(assembly, targetFramework, console, customArguments);
 
         using var boundary = new ConsoleRedirectionBoundary();
 

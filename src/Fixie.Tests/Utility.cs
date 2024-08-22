@@ -12,7 +12,8 @@ public static class Utility
             typeof(TestProject).Assembly,
             null,
             console,
-            Directory.GetCurrentDirectory());
+            Directory.GetCurrentDirectory(),
+            customArguments: []);
     }
 
     public const string TargetFrameworkVersion = "8.0";

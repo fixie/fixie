@@ -8,9 +8,6 @@ namespace Fixie;
 
 public class TestEnvironment
 {
-    internal TestEnvironment(Assembly assembly, string? targetFramework, TextWriter console, string rootPath)
-        : this(assembly, targetFramework, console, rootPath, []) { }
-
     internal TestEnvironment(Assembly assembly, string? targetFramework, TextWriter console, string rootPath,
         IReadOnlyList<string> customArguments)
     {

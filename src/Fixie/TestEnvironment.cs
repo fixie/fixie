@@ -8,14 +8,13 @@ namespace Fixie;
 
 public class TestEnvironment
 {
-    internal TestEnvironment(Assembly assembly, string? targetFramework, TextWriter console, string rootPath,
-        IReadOnlyList<string> customArguments)
+    internal TestEnvironment(Assembly assembly, string? targetFramework, TextWriter console, IReadOnlyList<string> customArguments)
     {
         TargetFramework = targetFramework ?? InferTargetFramework(assembly);
         Assembly = assembly;
         CustomArguments = customArguments;
         Console = console;
-        RootPath = rootPath;
+        RootPath = Path.GetDirectoryName(assembly.Location) ?? "";
     }
 
     string? InferTargetFramework(Assembly assembly)

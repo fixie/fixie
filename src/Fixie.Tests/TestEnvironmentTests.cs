@@ -12,7 +12,7 @@ public class TestEnvironmentTests
         var currentDirectory = Directory.GetCurrentDirectory();
         string[] customArguments = ["argumentA", "argumentB"];
         
-        var environment = new TestEnvironment(assembly, targetFrameworkVersion, console, currentDirectory, customArguments);
+        var environment = new TestEnvironment(assembly, targetFrameworkVersion, console, customArguments);
 
         environment.TestFramework.ShouldBe(Framework.Version);
         environment.Assembly.ShouldBe(assembly);
@@ -29,7 +29,7 @@ public class TestEnvironmentTests
 
         string? targetFramework = null;
         
-        var environment = new TestEnvironment(typeof(TestProject).Assembly, targetFramework, console, Directory.GetCurrentDirectory(), []);
+        var environment = new TestEnvironment(typeof(TestProject).Assembly, targetFramework, console, []);
 
         environment.TargetFramework.ShouldBe($"net{Utility.TargetFrameworkVersion}");
     }

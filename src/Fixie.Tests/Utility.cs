@@ -6,15 +6,8 @@ namespace Fixie.Tests;
 
 public static class Utility
 {
-    public static TestEnvironment GetTestEnvironment(TextWriter console)
-    {
-        return new TestEnvironment(
-            typeof(TestProject).Assembly,
-            null,
-            console,
-            Directory.GetCurrentDirectory(),
-            customArguments: []);
-    }
+    public static TestEnvironment GetTestEnvironment(TextWriter console) =>
+        new(typeof(TestProject).Assembly, null, console, customArguments: []);
 
     public const string TargetFrameworkVersion = "8.0";
 

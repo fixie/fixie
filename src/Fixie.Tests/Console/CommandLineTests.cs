@@ -18,10 +18,9 @@ public class CommandLineTests
         runnerArguments.ShouldBe(["Example.Tests"]);
         customArguments.ShouldBe(["custom"]);
 
-        //Characterization coverage of undesirable behavior.
         CommandLine.Partition(["Example.Tests", "--", "--", "customA", "--", "--", "customB"], out runnerArguments, out customArguments);
         runnerArguments.ShouldBe(["Example.Tests"]);
-        customArguments.ShouldBe(["customA", "customB"]);
+        customArguments.ShouldBe(["--", "customA", "--", "--", "customB"]);
 
         CommandLine.Partition(["--", "custom"], out runnerArguments, out customArguments);
         runnerArguments.ShouldBe([]);
@@ -37,6 +36,10 @@ public class CommandLineTests
 
         CommandLine.Partition([], out runnerArguments, out customArguments);
         runnerArguments.ShouldBe([]);
+        customArguments.ShouldBe([]);
+
+        CommandLine.Partition(["Example.Tests"], out runnerArguments, out customArguments);
+        runnerArguments.ShouldBe(["Example.Tests"]);
         customArguments.ShouldBe([]);
 
         CommandLine.Partition(["Example.Tests", "unexpectedCustom"], out runnerArguments, out customArguments);

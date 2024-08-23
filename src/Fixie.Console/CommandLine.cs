@@ -7,25 +7,17 @@ public class CommandLine
 
     public static void Partition(string[] arguments, out string[] runnerArguments, out string[] customArguments)
     {
-        List<string> runnerArgumentsList = [];
-        List<string> customArgumentsList = [];
+        var index = Array.IndexOf(arguments, "--");
 
-        bool separatorFound = false;
-        foreach (var arg in arguments)
+        if (index >= 0)
         {
-            if (arg == "--")
-            {
-                separatorFound = true;
-                continue;
-            }
-
-            if (separatorFound)
-                customArgumentsList.Add(arg);
-            else
-                runnerArgumentsList.Add(arg);
+            runnerArguments = arguments[..index];
+            customArguments = arguments[(index + 1)..];
         }
-
-        runnerArguments = runnerArgumentsList.ToArray();
-        customArguments = customArgumentsList.ToArray();
+        else
+        {
+            runnerArguments = [..arguments];
+            customArguments = [];
+        }
     }
 }

@@ -35,6 +35,10 @@ public class CommandLineTests
         runnerArguments.ShouldBe([]);
         customArguments.ShouldBe([]);
 
+        CommandLine.Partition([], out runnerArguments, out customArguments);
+        runnerArguments.ShouldBe([]);
+        customArguments.ShouldBe([]);
+
         CommandLine.Partition(["Example.Tests", "unexpectedCustom"], out runnerArguments, out customArguments);
         runnerArguments.ShouldBe(["Example.Tests", "unexpectedCustom"]);
         customArguments.ShouldBe([]);

@@ -128,13 +128,13 @@ class Runner
 
         foreach (var @class in classes)
         {
-            var methods = methodDiscoverer.TestMethods(@class);
+            IEnumerable<MethodInfo> methods = methodDiscoverer.TestMethods(@class);
 
             if (selectedTests.Count > 0)
-                methods = methods.Where(method => selectedTests.Contains(method.TestName())).ToList();
+                methods = methods.Where(method => selectedTests.Contains(method.TestName()));
 
             if (testPattern != null)
-                methods = methods.Where(method => testPattern.Matches(method.TestName())).ToList();
+                methods = methods.Where(method => testPattern.Matches(method.TestName()));
 
             var testMethods = methods
                 .Select(method => new Test(channelWriter, method))

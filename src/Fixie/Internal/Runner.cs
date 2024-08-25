@@ -149,14 +149,12 @@ class Runner
             if (testPattern != null)
                 methods = methods.Where(method => testPattern.Matches(method.TestName())).ToList();
 
-            if (methods.Count > 0)
-            {
-                var testMethods = methods
-                    .Select(method => new Test(channelWriter, method))
-                    .ToList();
+            var testMethods = methods
+                .Select(method => new Test(channelWriter, method))
+                .ToList();
 
+            if (testMethods.Count > 0)
                 testClasses.Add(new TestClass(@class, testMethods));
-            }
         }
 
         return new TestSuite(testClasses);

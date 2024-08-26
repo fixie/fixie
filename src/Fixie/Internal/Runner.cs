@@ -125,38 +125,23 @@ class Runner
         var methodDiscoverer = new MethodDiscoverer(discovery);
 
         var testClasses = new List<TestClass>(selectedTests.Count > 0 ? 0 : classes.Count);
-        List<MethodInfo> selectionWorkingList = [];
 
         foreach (var @class in classes)
         {
-            var methods = methodDiscoverer.TestMethods(@class);
+            IEnumerable<MethodInfo> methods = methodDiscoverer.TestMethods(@class);
 
             if (selectedTests.Count > 0)
-            {
-                selectionWorkingList.AddRange(methods.Where(method => selectedTests.Contains(method.TestName())));
-
-                if (selectionWorkingList.Count == 0)
-                {
-                    methods = [];
-                }
-                else
-                {
-                    methods = selectionWorkingList;
-                    selectionWorkingList = [];
-                }
-            }
+                methods = methods.Where(method => selectedTests.Contains(method.TestName()));
 
             if (testPattern != null)
-                methods = methods.Where(method => testPattern.Matches(method.TestName())).ToList();
+                methods = methods.Where(method => testPattern.Matches(method.TestName()));
 
-            if (methods.Count > 0)
-            {
-                var testMethods = methods
-                    .Select(method => new Test(channelWriter, method))
-                    .ToList();
+            var testMethods = methods
+                .Select(method => new Test(channelWriter, method))
+                .ToList();
 
+            if (testMethods.Count > 0)
                 testClasses.Add(new TestClass(@class, testMethods));
-            }
         }
 
         return new TestSuite(testClasses);

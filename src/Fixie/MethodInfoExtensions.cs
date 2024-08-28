@@ -141,7 +141,7 @@ public static class MethodInfoExtensions
     [DoesNotReturn]
     static void ThrowForUnsupportedAwaitable(MethodInfo method)
         => throw new NotSupportedException(
-            $"The return type of method {method.Name} is an unsupported awaitable type. " +
+            $"The return type of method {Signature(method)} is an unsupported awaitable type. " +
             "To ensure the reliability of the test runner, declare " +
             "the method return type as `Task`, `Task<T>`, `ValueTask`, " +
             "or `ValueTask<T>`.");

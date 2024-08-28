@@ -100,13 +100,13 @@ public class ReturnTypeTests : InstrumentedExecutionTests
 
         output.ShouldHaveResults(
             "UnsupportedReturnTypeDeclarationsTestClass.AsyncEnumerable failed: " +
-            "The return type of method AsyncEnumerable is an unsupported awaitable type. " +
+            "The return type of method AsyncEnumerable() is an unsupported awaitable type. " +
             "To ensure the reliability of the test runner, declare " +
             "the method return type as `Task`, `Task<T>`, `ValueTask`, " +
             "or `ValueTask<T>`.",
 
             "UnsupportedReturnTypeDeclarationsTestClass.AsyncEnumerator failed: " +
-            "The return type of method AsyncEnumerator is an unsupported awaitable type. " +
+            "The return type of method AsyncEnumerator() is an unsupported awaitable type. " +
             "To ensure the reliability of the test runner, declare " +
             "the method return type as `Task`, `Task<T>`, `ValueTask`, " +
             "or `ValueTask<T>`.",
@@ -117,7 +117,7 @@ public class ReturnTypeTests : InstrumentedExecutionTests
             "the method as `async Task`.",
 
             "UnsupportedReturnTypeDeclarationsTestClass.UntrustworthyAwaitable failed: " +
-            "The return type of method UntrustworthyAwaitable is an unsupported awaitable type. " +
+            "The return type of method UntrustworthyAwaitable() is an unsupported awaitable type. " +
             "To ensure the reliability of the test runner, declare " +
             "the method return type as `Task`, `Task<T>`, `ValueTask`, " +
             "or `ValueTask<T>`."

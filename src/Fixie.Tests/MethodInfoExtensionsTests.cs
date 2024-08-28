@@ -79,12 +79,12 @@ public class MethodInfoExtensionsTests : InstrumentedExecutionTests
 
             "GenericTestClass.ConstrainedArgs<System.Int32, System.Char>(1, 'a', System.Int32, System.Char) passed",
             "GenericTestClass.ConstrainedArgs<System.Int32, System.Char>(2, 'b', System.Int32, System.Int32) failed: typeof(T2) should be typeof(int) but was typeof(char)",
-            "GenericTestClass.ConstrainedArgs<T1, T2>(1, null, System.Int32, System.Object) failed: The type parameters for generic method ConstrainedArgs could not be resolved.",
-            "GenericTestClass.ConstrainedArgs<T1, T2>(null, 2, System.Object, System.Int32) failed: The type parameters for generic method ConstrainedArgs could not be resolved.",
+            "GenericTestClass.ConstrainedArgs<T1, T2>(1, null, System.Int32, System.Object) failed: The type parameters for generic method ConstrainedArgs<T1, T2>(T1, T2, System.Type, System.Type) could not be resolved.",
+            "GenericTestClass.ConstrainedArgs<T1, T2>(null, 2, System.Object, System.Int32) failed: The type parameters for generic method ConstrainedArgs<T1, T2>(T1, T2, System.Type, System.Type) could not be resolved.",
 
             "GenericTestClass.NullableValueTypeArgs<System.Int32, System.Int32>(1, 2, System.Int32, System.Int32) passed",
             "GenericTestClass.NullableValueTypeArgs<System.Char, System.Double>('a', 3, System.Char, System.Double) passed",
-            "GenericTestClass.NullableValueTypeArgs<T1, T2>(1, null, System.Int32, System.Object) failed: The type parameters for generic method NullableValueTypeArgs could not be resolved.");
+            "GenericTestClass.NullableValueTypeArgs<T1, T2>(1, null, System.Int32, System.Object) failed: The type parameters for generic method NullableValueTypeArgs<T1, T2>(T1, System.Nullable`1[T2], System.Type, System.Type) could not be resolved.");
 
         output.ShouldHaveLifecycle("Args", "Args", "ConstrainedArgs", "ConstrainedArgs", "NullableValueTypeArgs", "NullableValueTypeArgs");
     }
@@ -109,7 +109,7 @@ public class MethodInfoExtensionsTests : InstrumentedExecutionTests
             "AsyncTestClass.GenericAsyncValueTaskWithResult passed",
             "AsyncTestClass.GenericTaskFail failed: One or more errors occurred. (Attempted to divide by zero.)",
             "AsyncTestClass.GenericTaskWithResult passed",
-            "AsyncTestClass.NullTask failed: The asynchronous method NullTask returned null, " +
+            "AsyncTestClass.NullTask failed: The asynchronous method NullTask() returned null, " +
             "but a non-null awaitable object was expected.");
 
         output.ShouldHaveLifecycle(
@@ -142,7 +142,7 @@ public class MethodInfoExtensionsTests : InstrumentedExecutionTests
             "FSharpAsyncTestClass.AsyncPass passed",
             "FSharpAsyncTestClass.FailBeforeAsync failed: 'FailBeforeAsync' failed!",
             "FSharpAsyncTestClass.FailFromAsync failed: result should be 0 but was 3",
-            "FSharpAsyncTestClass.NullAsync failed: The asynchronous method NullAsync returned null, " +
+            "FSharpAsyncTestClass.NullAsync failed: The asynchronous method NullAsync() returned null, " +
             "but a non-null awaitable object was expected.");
 
         output.ShouldHaveLifecycle(
@@ -158,7 +158,7 @@ public class MethodInfoExtensionsTests : InstrumentedExecutionTests
         var output = await Run<FailDueToNonStartedTaskTestClass, MethodInfoAccessingExecution>();
 
         output.ShouldHaveResults(
-            "FailDueToNonStartedTaskTestClass.Test failed: The method Test returned a non-started task, which cannot " +
+            "FailDueToNonStartedTaskTestClass.Test failed: The method Test() returned a non-started task, which cannot " +
             "be awaited. Consider using Task.Run or Task.Factory.StartNew.");
 
         output.ShouldHaveLifecycle("Test");
@@ -170,24 +170,24 @@ public class MethodInfoExtensionsTests : InstrumentedExecutionTests
 
         output.ShouldHaveResults(
             "UnsupportedReturnTypeDeclarationsTestClass.AsyncEnumerable failed: " +
-            "The return type of method AsyncEnumerable is an unsupported awaitable type. " +
+            "The return type of method AsyncEnumerable() is an unsupported awaitable type. " +
             "To ensure the reliability of the test runner, declare " +
             "the method return type as `Task`, `Task<T>`, `ValueTask`, " +
             "or `ValueTask<T>`.",
 
             "UnsupportedReturnTypeDeclarationsTestClass.AsyncEnumerator failed: " +
-            "The return type of method AsyncEnumerator is an unsupported awaitable type. " +
+            "The return type of method AsyncEnumerator() is an unsupported awaitable type. " +
             "To ensure the reliability of the test runner, declare " +
             "the method return type as `Task`, `Task<T>`, `ValueTask`, " +
             "or `ValueTask<T>`.",
 
             "UnsupportedReturnTypeDeclarationsTestClass.AsyncVoid failed: " +
-            "The method AsyncVoid is declared as `async void`, which is not supported. " +
+            "The method AsyncVoid() is declared as `async void`, which is not supported. " +
             "To ensure the reliability of the test runner, declare " +
             "the method as `async Task`.",
 
             "UnsupportedReturnTypeDeclarationsTestClass.UntrustworthyAwaitable failed: " +
-            "The return type of method UntrustworthyAwaitable is an unsupported awaitable type. " +
+            "The return type of method UntrustworthyAwaitable() is an unsupported awaitable type. " +
             "To ensure the reliability of the test runner, declare " +
             "the method return type as `Task`, `Task<T>`, `ValueTask`, " +
             "or `ValueTask<T>`."

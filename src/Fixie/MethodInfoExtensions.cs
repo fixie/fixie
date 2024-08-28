@@ -116,35 +116,47 @@ public static class MethodInfoExtensions
     [DoesNotReturn]
     static void ThrowForAsyncVoid(MethodInfo resolvedMethod)
         => throw new NotSupportedException(
-            $"The method {resolvedMethod.Name} is declared as `async void`, " +
+            $"The method {Signature(resolvedMethod)} is declared as `async void`, " +
             "which is not supported. To ensure the reliability of the test " +
             "runner, declare the method as `async Task`.");
 
     [DoesNotReturn]
     static void ThrowForUnresolvedTypeParameters(MethodInfo resolvedMethod)
         => throw new InvalidOperationException(
-            $"The type parameters for generic method {resolvedMethod.Name} " +
+            $"The type parameters for generic method {Signature(resolvedMethod)} " +
             "could not be resolved.");
 
     [DoesNotReturn]
     static void ThrowForNullAwaitable(MethodInfo method)
         => throw new NullReferenceException(
-            $"The asynchronous method {method.Name} returned null, but " +
+            $"The asynchronous method {Signature(method)} returned null, but " +
             "a non-null awaitable object was expected.");
 
     [DoesNotReturn]
     static void ThrowForNonStartedTask(MethodInfo resolvedMethod)
         => throw new InvalidOperationException(
-            $"The method {resolvedMethod.Name} returned a non-started task, which " +
+            $"The method {Signature(resolvedMethod)} returned a non-started task, which " +
             "cannot be awaited. Consider using Task.Run or Task.Factory.StartNew.");
 
     [DoesNotReturn]
     static void ThrowForUnsupportedAwaitable(MethodInfo method)
         => throw new NotSupportedException(
-            $"The return type of method {method.Name} is an unsupported awaitable type. " +
+            $"The return type of method {Signature(method)} is an unsupported awaitable type. " +
             "To ensure the reliability of the test runner, declare " +
             "the method return type as `Task`, `Task<T>`, `ValueTask`, " +
             "or `ValueTask<T>`.");
+
+    static string Signature(MethodInfo method)
+    {
+        var description = method.Name;
+
+        if (method.IsGenericMethod)
+            description += $"<{string.Join(", ", method.GetGenericArguments().Select(x => x.IsGenericParameter ? x.Name : x.FullName))}>";
+
+        description += $"({string.Join(", ", method.GetParameters().Select(x => $"{x.ParameterType}"))})";
+
+        return description;
+    }
 
     static bool HasAsyncKeyword(this MethodInfo method)
     {

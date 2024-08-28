@@ -129,7 +129,7 @@ public static class MethodInfoExtensions
     [DoesNotReturn]
     static void ThrowForNullAwaitable(MethodInfo method)
         => throw new NullReferenceException(
-            $"The asynchronous method {method.Name} returned null, but " +
+            $"The asynchronous method {Signature(method)} returned null, but " +
             "a non-null awaitable object was expected.");
 
     [DoesNotReturn]

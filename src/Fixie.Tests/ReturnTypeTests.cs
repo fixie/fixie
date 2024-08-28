@@ -43,7 +43,7 @@ public class ReturnTypeTests : InstrumentedExecutionTests
             "AsyncTestClass.GenericAsyncValueTaskWithResult passed",
             "AsyncTestClass.GenericTaskFail failed: One or more errors occurred. (Attempted to divide by zero.)",
             "AsyncTestClass.GenericTaskWithResult passed",
-            "AsyncTestClass.NullTask failed: The asynchronous method NullTask returned null, " +
+            "AsyncTestClass.NullTask failed: The asynchronous method NullTask() returned null, " +
             "but a non-null awaitable object was expected.");
 
         output.ShouldHaveLifecycle(
@@ -73,7 +73,7 @@ public class ReturnTypeTests : InstrumentedExecutionTests
             "FSharpAsyncTestClass.AsyncPass passed",
             "FSharpAsyncTestClass.FailBeforeAsync failed: 'FailBeforeAsync' failed!",
             "FSharpAsyncTestClass.FailFromAsync failed: result should be 0 but was 3",
-            "FSharpAsyncTestClass.NullAsync failed: The asynchronous method NullAsync returned null, " +
+            "FSharpAsyncTestClass.NullAsync failed: The asynchronous method NullAsync() returned null, " +
             "but a non-null awaitable object was expected.");
 
         output.ShouldHaveLifecycle(

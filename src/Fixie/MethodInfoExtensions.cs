@@ -123,7 +123,7 @@ public static class MethodInfoExtensions
     [DoesNotReturn]
     static void ThrowForUnresolvedTypeParameters(MethodInfo resolvedMethod)
         => throw new InvalidOperationException(
-            $"The type parameters for generic method {resolvedMethod.Name} " +
+            $"The type parameters for generic method {Signature(resolvedMethod)} " +
             "could not be resolved.");
 
     [DoesNotReturn]
@@ -157,6 +157,7 @@ public static class MethodInfoExtensions
 
         return description;
     }
+
     static bool HasAsyncKeyword(this MethodInfo method)
     {
         return method.Has<AsyncStateMachineAttribute>();

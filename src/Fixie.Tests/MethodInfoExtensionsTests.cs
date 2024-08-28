@@ -158,7 +158,7 @@ public class MethodInfoExtensionsTests : InstrumentedExecutionTests
         var output = await Run<FailDueToNonStartedTaskTestClass, MethodInfoAccessingExecution>();
 
         output.ShouldHaveResults(
-            "FailDueToNonStartedTaskTestClass.Test failed: The method Test returned a non-started task, which cannot " +
+            "FailDueToNonStartedTaskTestClass.Test failed: The method Test() returned a non-started task, which cannot " +
             "be awaited. Consider using Task.Run or Task.Factory.StartNew.");
 
         output.ShouldHaveLifecycle("Test");

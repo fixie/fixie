@@ -135,7 +135,7 @@ public static class MethodInfoExtensions
     [DoesNotReturn]
     static void ThrowForNonStartedTask(MethodInfo resolvedMethod)
         => throw new InvalidOperationException(
-            $"The method {resolvedMethod.Name} returned a non-started task, which " +
+            $"The method {Signature(resolvedMethod)} returned a non-started task, which " +
             "cannot be awaited. Consider using Task.Run or Task.Factory.StartNew.");
 
     [DoesNotReturn]

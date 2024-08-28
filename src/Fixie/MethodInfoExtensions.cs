@@ -146,6 +146,17 @@ public static class MethodInfoExtensions
             "the method return type as `Task`, `Task<T>`, `ValueTask`, " +
             "or `ValueTask<T>`.");
 
+    static string Signature(MethodInfo method)
+    {
+        var description = method.Name;
+
+        if (method.IsGenericMethod)
+            description += $"<{string.Join(", ", method.GetGenericArguments().Select(x => x.IsGenericParameter ? x.Name : x.FullName))}>";
+
+        description += $"({string.Join(", ", method.GetParameters().Select(x => $"{x.ParameterType}"))})";
+
+        return description;
+    }
     static bool HasAsyncKeyword(this MethodInfo method)
     {
         return method.Has<AsyncStateMachineAttribute>();

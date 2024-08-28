@@ -116,7 +116,7 @@ public static class MethodInfoExtensions
     [DoesNotReturn]
     static void ThrowForAsyncVoid(MethodInfo resolvedMethod)
         => throw new NotSupportedException(
-            $"The method {resolvedMethod.Name} is declared as `async void`, " +
+            $"The method {Signature(resolvedMethod)} is declared as `async void`, " +
             "which is not supported. To ensure the reliability of the test " +
             "runner, declare the method as `async Task`.");
 

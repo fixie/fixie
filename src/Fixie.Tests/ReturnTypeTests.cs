@@ -112,7 +112,7 @@ public class ReturnTypeTests : InstrumentedExecutionTests
             "or `ValueTask<T>`.",
 
             "UnsupportedReturnTypeDeclarationsTestClass.AsyncVoid failed: " +
-            "The method AsyncVoid is declared as `async void`, which is not supported. " +
+            "The method AsyncVoid() is declared as `async void`, which is not supported. " +
             "To ensure the reliability of the test runner, declare " +
             "the method as `async Task`.",
 

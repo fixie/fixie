@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-	  <PackageReference Include="DiffEngine" />
+    <PackageReference Include="DiffEngine" />
   </ItemGroup>
 
   <ItemGroup>

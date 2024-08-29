@@ -1,31 +1,31 @@
 ﻿<Project>
-    <PropertyGroup>
-        <Product>Fixie</Product>
-        <Authors>Fixie, Patrick Lioi</Authors>
-        <Copyright>Copyright (c) 2013 Patrick Lioi</Copyright>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageProjectUrl>https://fixie.github.io</PackageProjectUrl>
-        <PackageIcon>icon.png</PackageIcon>
-        <RepositoryUrl>https://github.com/fixie/fixie</RepositoryUrl>
-        <IncludeSymbols>true</IncludeSymbols>
-        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <UseArtifactsOutput>true</UseArtifactsOutput>
-        <MinVerMinimumMajorMinor>4.0</MinVerMinimumMajorMinor>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <NoWarn>1591</NoWarn>
-        <WarningsNotAsErrors>162,612,618</WarningsNotAsErrors>
-        <!--
+  <PropertyGroup>
+    <Product>Fixie</Product>
+    <Authors>Fixie, Patrick Lioi</Authors>
+    <Copyright>Copyright (c) 2013 Patrick Lioi</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://fixie.github.io</PackageProjectUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <RepositoryUrl>https://github.com/fixie/fixie</RepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UseArtifactsOutput>true</UseArtifactsOutput>
+    <MinVerMinimumMajorMinor>4.0</MinVerMinimumMajorMinor>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>1591</NoWarn>
+    <WarningsNotAsErrors>162,612,618</WarningsNotAsErrors>
+    <!--
             CS0162: Unreachable code detected
             CS0612: '...' is obsolete
             CS0618: '...' is obsolete: "..."
             CS1591: Missing XML comment for publicly visible type or member '...'
         -->
-    </PropertyGroup>
+  </PropertyGroup>
 
-    <!-- Enable Deterministic Builds -->
-    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
-        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-    </PropertyGroup>
+  <!-- Enable Deterministic Builds -->
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
 </Project>

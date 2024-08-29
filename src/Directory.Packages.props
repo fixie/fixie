@@ -1,11 +1,11 @@
 ﻿<Project>
-	<PropertyGroup>
-		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-	</PropertyGroup>
-	<ItemGroup>
-		<PackageVersion Include="Mono.Cecil" Version="0.11.5" />
-		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-		<PackageVersion Include="DiffEngine" Version="13.0.2" />
-		<GlobalPackageReference Include="MinVer" Version="5.0.0" />
-	</ItemGroup>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="Mono.Cecil" Version="0.11.5" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageVersion Include="DiffEngine" Version="13.0.2" />
+    <GlobalPackageReference Include="MinVer" Version="5.0.0" />
+  </ItemGroup>
 </Project>

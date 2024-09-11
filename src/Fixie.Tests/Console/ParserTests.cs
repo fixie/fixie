@@ -1,9 +1,24 @@
-﻿using Fixie.Console;
+﻿using System.Runtime.CompilerServices;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Fixie.Console;
 
 namespace Fixie.Tests.Console;
 
 public class ParserTests
 {
+    static readonly JsonSerializerOptions JsonSerializerOptions;
+
+    static ParserTests()
+    {
+        JsonSerializerOptions = new JsonSerializerOptions
+        {
+            WriteIndented = true
+        };
+
+        JsonSerializerOptions.Converters.Add(new StringRepresentation<Type>());
+    }
+
     enum Level { Information, Warning, Error }
 
     class Empty { }
@@ -506,7 +521,7 @@ public class ParserTests
         public void ShouldSucceed(T expectedModel)
         {
             var model = CommandLine.Parse<T>(arguments);
-            model.ShouldMatch(expectedModel);
+            ShouldMatch(model, expectedModel);
         }
 
         public void ShouldFail(string expectedExceptionMessage)
@@ -514,6 +529,34 @@ public class ParserTests
             Action shouldThrow = () => CommandLine.Parse<T>(arguments);
 
             shouldThrow.ShouldThrow<CommandLineException>(expectedExceptionMessage);
+        }
+    }
+
+    static void ShouldMatch<T>(T actual, T expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
+    {
+        var actualJson = Json(actual);
+        var expectedJson = Json(expected);
+            
+        if (actualJson != expectedJson)
+            throw AssertException.ForDescriptions(expression, expectedJson, actualJson);
+    }
+
+    static string Json<T>(T @object)
+    {
+        return JsonSerializer.Serialize(@object, JsonSerializerOptions);
+    }
+
+    class StringRepresentation<T> : JsonConverter<T>
+    {
+        public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            => throw new NotImplementedException();
+
+        public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
+        {
+            if (value is null)
+                writer.WriteNullValue();
+            else
+                writer.WriteStringValue(value.ToString());
         }
     }
 }

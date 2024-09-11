@@ -1,26 +1,12 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace Fixie.Tests.Assertions;
 
 public static class AssertionExtensions
 {
-    static readonly JsonSerializerOptions JsonSerializerOptions;
-
-    static AssertionExtensions()
-    {
-        JsonSerializerOptions = new JsonSerializerOptions
-        {
-            WriteIndented = true
-        };
-
-        JsonSerializerOptions.Converters.Add(new StringRepresentation<Type>());
-    }
-
     public static void ShouldBe(this string? actual, string? expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
         if (actual != expected)
@@ -88,7 +74,7 @@ public static class AssertionExtensions
             return ShouldBeException<TException>(expectedMessage, expression, actual);
         }
 
-        ShouldHaveThrow<TException>(expression);
+        ShouldHaveThrown<TException>(expression);
 
         throw new UnreachableException();
     }
@@ -104,7 +90,7 @@ public static class AssertionExtensions
             return ShouldBeException<TException>(expectedMessage, expression, actual);
         }
 
-        ShouldHaveThrow<TException>(expression);
+        ShouldHaveThrown<TException>(expression);
         
         throw new UnreachableException();
     }
@@ -122,7 +108,7 @@ public static class AssertionExtensions
         throw AssertException.ForException(expression, typeof(TException), expectedMessage, actual.GetType(), actual.Message);
     }
 
-    static void ShouldHaveThrow<TException>(string? expression) where TException : Exception
+    static void ShouldHaveThrown<TException>(string? expression) where TException : Exception
     {
         var expectedType = typeof(TException).FullName!;
 
@@ -156,15 +142,6 @@ public static class AssertionExtensions
         return expectationBody;
     }
 
-    public static void ShouldMatch<T>(this T actual, T expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
-    {
-        var actualJson = Json(actual);
-        var expectedJson = Json(expected);
-            
-        if (actualJson != expectedJson)
-            throw AssertException.ForDescriptions(expression, expectedJson, actualJson);
-    }
-
     public static void ShouldSatisfy<T>(this IEnumerable<T> actual, Action<T>[] itemExpectations, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
         var actualItems = actual.ToArray();
@@ -190,24 +167,5 @@ public static class AssertionExtensions
     {
         if (actual == null)
             throw AssertException.ForMessage(expression, "not null", "null", $"{expression} should not be null but was null");
-    }
-
-    static string Json<T>(T @object)
-    {
-        return JsonSerializer.Serialize(@object, JsonSerializerOptions);
-    }
-
-    class StringRepresentation<T> : JsonConverter<T>
-    {
-        public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            => throw new NotImplementedException();
-
-        public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
-        {
-            if (value is null)
-                writer.WriteNullValue();
-            else
-                writer.WriteStringValue(value.ToString());
-        }
     }
 }

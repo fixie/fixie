@@ -74,7 +74,7 @@ public static class AssertionExtensions
             return ShouldBeException<TException>(expectedMessage, expression, actual);
         }
 
-        ShouldHaveThrow<TException>(expression);
+        ShouldHaveThrown<TException>(expression);
 
         throw new UnreachableException();
     }
@@ -90,7 +90,7 @@ public static class AssertionExtensions
             return ShouldBeException<TException>(expectedMessage, expression, actual);
         }
 
-        ShouldHaveThrow<TException>(expression);
+        ShouldHaveThrown<TException>(expression);
         
         throw new UnreachableException();
     }
@@ -108,7 +108,7 @@ public static class AssertionExtensions
         throw AssertException.ForException(expression, typeof(TException), expectedMessage, actual.GetType(), actual.Message);
     }
 
-    static void ShouldHaveThrow<TException>(string? expression) where TException : Exception
+    static void ShouldHaveThrown<TException>(string? expression) where TException : Exception
     {
         var expectedType = typeof(TException).FullName!;
 

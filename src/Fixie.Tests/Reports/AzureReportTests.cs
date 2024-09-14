@@ -1,7 +1,7 @@
 ﻿using Fixie.Reports;
 using static Fixie.Tests.Utility;
 using static System.Text.Json.JsonSerializer;
-using Fixie.Tests.Assertions;
+using Fixie.Assertions;
 namespace Fixie.Tests.Reports;
 
 public class AzureReportTests : MessagingTests

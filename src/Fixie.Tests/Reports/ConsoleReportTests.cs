@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Fixie.Reports;
 using static Fixie.Tests.Utility;
-using Fixie.Tests.Assertions;
+using Fixie.Assertions;
 namespace Fixie.Tests.Reports;
 
 public class ConsoleReportTests : MessagingTests

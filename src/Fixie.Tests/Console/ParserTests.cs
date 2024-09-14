@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Fixie.Console;
-using Fixie.Tests.Assertions;
+using Fixie.Assertions;
 namespace Fixie.Tests.Console;
 
 public class ParserTests

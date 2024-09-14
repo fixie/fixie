@@ -19,7 +19,7 @@ public class TeamCityReportTests : MessagingTests
                  ##teamcity[testFailed name='{TestClass}.Fail' message='|'Fail|' failed!' details='Fixie.Tests.FailureException{eol}{At("Fail()")}']
                  ##teamcity[testFinished name='{TestClass}.Fail' duration='#']
                  ##teamcity[testStarted name='{TestClass}.FailByAssertion']
-                 ##teamcity[testFailed name='{TestClass}.FailByAssertion' message='x should be 2 but was 1' details='Fixie.Tests.Assertions.AssertException{eol}{At("FailByAssertion()")}']
+                 ##teamcity[testFailed name='{TestClass}.FailByAssertion' message='x should be 2 but was 1' details='Fixie.Assertions.AssertException{eol}{At("FailByAssertion()")}']
                  ##teamcity[testFinished name='{TestClass}.FailByAssertion' duration='#']
                  ##teamcity[testStarted name='{TestClass}.Pass']
                  ##teamcity[testFinished name='{TestClass}.Pass' duration='#']
@@ -31,7 +31,7 @@ public class TeamCityReportTests : MessagingTests
                  ##teamcity[testStarted name='{GenericTestClass}.ShouldBeString<System.String>("B")']
                  ##teamcity[testFinished name='{GenericTestClass}.ShouldBeString<System.String>("B")' duration='#']
                  ##teamcity[testStarted name='{GenericTestClass}.ShouldBeString<System.Int32>(123)']
-                 ##teamcity[testFailed name='{GenericTestClass}.ShouldBeString<System.Int32>(123)' message='genericArgument should be typeof(string) but was typeof(int)' details='Fixie.Tests.Assertions.AssertException{eol}{At<SampleGenericTestClass>("ShouldBeString|[T|](T genericArgument)")}']
+                 ##teamcity[testFailed name='{GenericTestClass}.ShouldBeString<System.Int32>(123)' message='genericArgument should be typeof(string) but was typeof(int)' details='Fixie.Assertions.AssertException{eol}{At<SampleGenericTestClass>("ShouldBeString|[T|](T genericArgument)")}']
                  ##teamcity[testFinished name='{GenericTestClass}.ShouldBeString<System.Int32>(123)' duration='#']
                  ##teamcity[testSuiteFinished name='Fixie.Tests']
                  

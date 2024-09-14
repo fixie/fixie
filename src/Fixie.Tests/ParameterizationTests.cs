@@ -1,5 +1,5 @@
 ﻿namespace Fixie.Tests;
-using Fixie.Tests.Assertions;
+using Fixie.Assertions;
 public class ParameterizationTests : InstrumentedExecutionTests
 {
     class ParameterizedExecution : IExecution

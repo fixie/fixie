@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 using Fixie.Internal;
 using Fixie.Tests.Reports;
 using static System.Environment;
-using Fixie.Tests.Assertions;
+using Fixie.Assertions;
 namespace Fixie.Tests.TestAdapter;
 
 using TestResult = Microsoft.VisualStudio.TestPlatform.ObjectModel.TestResult;

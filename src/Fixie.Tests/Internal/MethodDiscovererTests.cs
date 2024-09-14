@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 using Fixie.Internal;
-using Fixie.Tests.Assertions;
+using Fixie.Assertions;
 namespace Fixie.Tests.Internal;
 
 public class MethodDiscovererTests

@@ -1,7 +1,7 @@
 ﻿using Fixie.Internal;
 using Fixie.Reports;
 using static Fixie.Tests.Utility;
-using Fixie.Tests.Assertions;
+using Fixie.Assertions;
 namespace Fixie.Tests.Internal;
 
 public class BusTests

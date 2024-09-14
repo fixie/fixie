@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using Microsoft.FSharp.Control;
 using static System.Environment;
-using Fixie.Tests.Assertions;
+using Fixie.Assertions;
 namespace Fixie.Tests;
 
 public class ReturnTypeTests : InstrumentedExecutionTests

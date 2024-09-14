@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using Fixie.Reports;
 using static Fixie.Tests.Utility;
-using Fixie.Tests.Assertions;
+using Fixie.Assertions;
 namespace Fixie.Tests;
 
 public class StackTracePresentationTests

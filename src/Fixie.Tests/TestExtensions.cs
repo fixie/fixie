@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using Fixie.Tests.Assertions;
+using Fixie.Assertions;
 namespace Fixie.Tests;
 
 static class TestExtensions

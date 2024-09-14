@@ -1,5 +1,5 @@
 ﻿using Fixie.Console;
-using Fixie.Tests.Assertions;
+using Fixie.Assertions;
 namespace Fixie.Tests.Console;
 
 public class CommandLineTests

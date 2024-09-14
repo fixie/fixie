@@ -1,5 +1,5 @@
 using System.Runtime.CompilerServices;
-using Fixie.Tests.Assertions;
+using Fixie.Assertions;
 namespace Fixie.Tests;
 
 public abstract class InstrumentedExecutionTests

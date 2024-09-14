@@ -1,5 +1,5 @@
 ﻿using static Fixie.Internal.Maybe;
-using Fixie.Tests.Assertions;
+using Fixie.Assertions;
 namespace Fixie.Tests.Internal;
 
 public class MaybeTests

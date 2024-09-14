@@ -27,7 +27,7 @@ public class RunnerTests
 
         console.ToString().ShouldBe("");
 
-        report.Entries.ShouldBe([
+        report.Entries.ShouldMatch([
             Self + "+PassTestClass.PassA discovered",
             Self + "+PassTestClass.PassB discovered",
             Self + "+PassFailTestClass.Fail discovered",
@@ -60,7 +60,7 @@ public class RunnerTests
 
         console.ToString().ShouldBe("");
 
-        report.Entries.ShouldBe([
+        report.Entries.ShouldMatch([
             Self + "+PassTestClass.PassA passed",
             Self + "+PassTestClass.PassB passed",
             Self + "+PassFailTestClass.Fail failed: 'Fail' failed!",

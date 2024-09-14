@@ -54,7 +54,7 @@ public abstract class InstrumentedExecutionTests
         {
             var namespaceQualifiedExpectation = expected.Select(x => namespaceQualifiedTestClass + "+" + x).ToArray();
 
-            results.ShouldBe(namespaceQualifiedExpectation);
+            results.ShouldMatch(namespaceQualifiedExpectation);
         }
     }
 

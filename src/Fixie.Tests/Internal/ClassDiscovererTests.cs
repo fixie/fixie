@@ -66,7 +66,7 @@ public class ClassDiscovererTests
         var discovery = new DefaultDiscovery();
 
         DiscoveredTestClasses(discovery)
-            .ShouldBe([typeof(NameEndsWithTests)]);
+            .ShouldMatch([typeof(NameEndsWithTests)]);
     }
 
     public void ShouldSupportMaximalDiscoveryOfConcreteClasses()
@@ -74,7 +74,7 @@ public class ClassDiscovererTests
         var discovery = new MaximumDiscovery();
 
         DiscoveredTestClasses(discovery)
-            .ShouldBe([
+            .ShouldMatch([
                 typeof(StaticClass),
                 typeof(DefaultConstructor),
                 typeof(NoDefaultConstructor),
@@ -98,7 +98,7 @@ public class ClassDiscovererTests
         var discovery = new MaximumDiscovery();
 
         DiscoveredTestClasses(discovery, nested)
-            .ShouldBe([
+            .ShouldMatch([
                 typeof(StaticClass),
                 typeof(DefaultConstructor),
                 typeof(NoDefaultConstructor),
@@ -114,7 +114,7 @@ public class ClassDiscovererTests
         var discovery = new NarrowDiscovery();
 
         DiscoveredTestClasses(discovery)
-            .ShouldBe([
+            .ShouldMatch([
                 typeof(NameEndsWithTests),
                 typeof(InheritanceSampleBase),
                 typeof(InheritanceSample)

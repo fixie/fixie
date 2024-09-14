@@ -44,7 +44,7 @@ public class MethodDiscovererTests
         var discovery = new DefaultDiscovery();
 
         DiscoveredTestMethods<Sample>(discovery)
-            .ShouldBe([
+            .ShouldMatch([
                 "PublicInstanceNoArgsVoid()",
                 "PublicInstanceNoArgsWithReturn()",
                 "PublicInstanceWithArgsVoid(x)",
@@ -52,7 +52,7 @@ public class MethodDiscovererTests
             ]);
 
         DiscoveredTestMethods<AsyncSample>(discovery)
-            .ShouldBe([
+            .ShouldMatch([
                 "PublicInstanceNoArgsVoid()",
                 "PublicInstanceNoArgsWithReturn()",
                 "PublicInstanceWithArgsVoid(x)",
@@ -65,7 +65,7 @@ public class MethodDiscovererTests
         var discovery = new MaximumDiscovery();
 
         DiscoveredTestMethods<Sample>(discovery)
-            .ShouldBe([
+            .ShouldMatch([
                 "PublicInstanceNoArgsVoid()",
                 "PublicInstanceNoArgsWithReturn()",
                 "PublicInstanceWithArgsVoid(x)",
@@ -78,7 +78,7 @@ public class MethodDiscovererTests
             ]);
 
         DiscoveredTestMethods<AsyncSample>(discovery)
-            .ShouldBe([
+            .ShouldMatch([
                 "PublicInstanceNoArgsVoid()",
                 "PublicInstanceNoArgsWithReturn()",
                 "PublicInstanceWithArgsVoid(x)",
@@ -96,7 +96,7 @@ public class MethodDiscovererTests
         var discovery = new NarrowDiscovery();
 
         DiscoveredTestMethods<Sample>(discovery)
-            .ShouldBe(["PublicInstanceNoArgsVoid()"]);
+            .ShouldMatch(["PublicInstanceNoArgsVoid()"]);
     }
 
     public void ShouldFailWithClearExplanationWhenDiscoveryThrows()

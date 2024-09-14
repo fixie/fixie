@@ -19,7 +19,7 @@ public class TestEnvironmentTests
         environment.TargetFramework.ShouldBe(targetFrameworkVersion);
         environment.Console.ShouldBe(console);
         environment.RootPath.ShouldBe(currentDirectory);
-        environment.CustomArguments.ShouldBe(["argumentA", "argumentB"]);
+        environment.CustomArguments.ShouldMatch(["argumentA", "argumentB"]);
         environment.IsDevelopment().ShouldBe(!environment.IsContinuousIntegration());
     }
 

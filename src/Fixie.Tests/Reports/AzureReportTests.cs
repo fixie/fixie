@@ -112,7 +112,7 @@ public class AzureReportTests : MessagingTests
         failByAssertion.durationInMs.Should(x => x >= 0);
         failByAssertion.errorMessage.ShouldBe("x should be 2 but was 1");
         failByAssertion.stackTrace
-            .ShouldBeStackTrace(["Fixie.Tests.Assertions.AssertException", At("FailByAssertion()")]);
+            .ShouldBeStackTrace(["Fixie.Assertions.AssertException", At("FailByAssertion()")]);
 
         pass.automatedTestName.ShouldBe(TestClass + ".Pass");
         pass.testCaseTitle.ShouldBe(TestClass + ".Pass");
@@ -149,7 +149,7 @@ public class AzureReportTests : MessagingTests
         shouldBeStringFail.errorMessage.ShouldBe("genericArgument should be typeof(string) but was typeof(int)");
         shouldBeStringFail.stackTrace
             .ShouldBeStackTrace([
-                "Fixie.Tests.Assertions.AssertException",
+                "Fixie.Assertions.AssertException",
                 At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")
             ]);
 

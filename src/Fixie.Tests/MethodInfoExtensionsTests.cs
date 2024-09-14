@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Microsoft.FSharp.Control;
-using static System.Environment;
+
 using static Fixie.Tests.Utility;
 
 namespace Fixie.Tests;

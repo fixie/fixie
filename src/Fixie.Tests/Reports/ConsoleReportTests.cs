@@ -26,7 +26,7 @@ public class ConsoleReportTests : MessagingTests
 
                  x should be 2 but was 1
 
-                 Fixie.Tests.Assertions.AssertException
+                 Fixie.Assertions.AssertException
                  {At("FailByAssertion()")}
 
                  Test '{TestClass}.Skip' skipped:
@@ -36,7 +36,7 @@ public class ConsoleReportTests : MessagingTests
 
                  genericArgument should be typeof(string) but was typeof(int)
 
-                 Fixie.Tests.Assertions.AssertException
+                 Fixie.Assertions.AssertException
                  {At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")}
 
                  3 passed, 3 failed, 1 skipped, took 1.23 seconds
@@ -65,7 +65,7 @@ public class ConsoleReportTests : MessagingTests
 
                  x should be 2 but was 1
 
-                 Fixie.Tests.Assertions.AssertException
+                 Fixie.Assertions.AssertException
                  {At("FailByAssertion()")}
 
                  Test '{TestClass}.Pass' passed
@@ -80,7 +80,7 @@ public class ConsoleReportTests : MessagingTests
 
                  genericArgument should be typeof(string) but was typeof(int)
 
-                 Fixie.Tests.Assertions.AssertException
+                 Fixie.Assertions.AssertException
                  {At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")}
 
                  3 passed, 3 failed, 1 skipped, took 1.23 seconds

@@ -1,6 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 using Microsoft.FSharp.Control;
-using static System.Environment;
 
 namespace Fixie.Tests;
 

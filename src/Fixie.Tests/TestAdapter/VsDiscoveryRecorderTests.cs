@@ -21,7 +21,7 @@ public class VsDiscoveryRecorderTests : MessagingTests
 
         RecordAnticipatedPipeMessages(vsDiscoveryRecorder);
 
-        log.Messages.ShouldBe([]);
+        log.Messages.ShouldMatch([]);
 
         discoverySink.TestCases.ShouldSatisfy([
             x => x.ShouldBeDiscoveryTimeTest(TestClass + ".Fail", assemblyPath),

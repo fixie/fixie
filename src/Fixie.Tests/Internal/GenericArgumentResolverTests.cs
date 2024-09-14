@@ -7,13 +7,13 @@ public class GenericArgumentResolverTests
     public void ShouldResolveNothingWhenThereAreNoInputParameters()
     {
         Resolve("NoParameters")
-            .ShouldBe([]);
+            .ShouldMatch([]);
     }
 
     public void ShouldResolveNothingWhenThereAreNoGenericParameters()
     {
         Resolve("NoGenericArguments", 0, "")
-            .ShouldBe([]);
+            .ShouldMatch([]);
     }
 
     public void ShouldNotResolveWhenGenericTypeHasNoMatchingParameters()
@@ -31,28 +31,28 @@ public class GenericArgumentResolverTests
     public void ShouldResolveToConcreteTypeOfValueWhenGenericTypeHasOneNonNullMatchingParameter()
     {
         Resolve("OneMatchingParameter", 1.2m)
-            .ShouldBe([typeof(decimal)]);
+            .ShouldMatch([typeof(decimal)]);
 
         Resolve("OneMatchingParameter", "string")
-            .ShouldBe([typeof(string)]);
+            .ShouldMatch([typeof(string)]);
     }
 
     public void ShouldResolveToFirstConcreteTypeWhenGenericTypeHasMultipleMatchingParametersOfInconsistentConcreteTypes()
     {
         Resolve("MultipleMatchingParameter", 1.2m, "string", 0)
-            .ShouldBe([typeof(decimal)]);
+            .ShouldMatch([typeof(decimal)]);
         
         Resolve("MultipleMatchingParameter", 1.2m, "string a", "string b")
-            .ShouldBe([typeof(decimal)]);
+            .ShouldMatch([typeof(decimal)]);
     }
 
     public void ShouldResolveToConcreteTypeOfValuesWhenGenericTypeHasMultipleMatchingParametersOfTheExactSameConcreteType()
     {
         Resolve("MultipleMatchingParameter", 1.2m, 2.3m, 3.4m)
-            .ShouldBe([typeof(decimal)]);
+            .ShouldMatch([typeof(decimal)]);
 
         Resolve("MultipleMatchingParameter", "string a", "string b", "string c")
-            .ShouldBe([typeof(string)]);
+            .ShouldMatch([typeof(string)]);
     }
 
     public void ShouldNotResolveWhenGenericTypeHasMultipleMatchingParametersButAllAreNull()
@@ -64,25 +64,25 @@ public class GenericArgumentResolverTests
     public void ShouldTreatNullsAsTypeCompatibleWithReferenceTypes()
     {
         Resolve("MultipleMatchingParameter", null, "string b", "string c")
-            .ShouldBe([typeof(string)]);
+            .ShouldMatch([typeof(string)]);
 
         Resolve("MultipleMatchingParameter", "string a", null, "string c")
-            .ShouldBe([typeof(string)]);
+            .ShouldMatch([typeof(string)]);
 
         Resolve("MultipleMatchingParameter", "string a", "string b", null)
-            .ShouldBe([typeof(string)]);
+            .ShouldMatch([typeof(string)]);
     }
 
     public void ShouldIgnoreNullAsTypeIncompatibleWithValueTypes()
     {
         Resolve("MultipleMatchingParameter", null, 2.3m, 3.4m)
-            .ShouldBe([typeof(decimal)]);
+            .ShouldMatch([typeof(decimal)]);
 
         Resolve("MultipleMatchingParameter", 1.2m, null, 3.4m)
-            .ShouldBe([typeof(decimal)]);
+            .ShouldMatch([typeof(decimal)]);
 
         Resolve("MultipleMatchingParameter", 1.2m, 2.3m, null)
-            .ShouldBe([typeof(decimal)]);
+            .ShouldMatch([typeof(decimal)]);
     }
 
     public void ShouldResolveGenericArgumentsIfAndOnlyIfTheyCanAllBeResolved()
@@ -150,16 +150,16 @@ public class GenericArgumentResolverTests
             ]);
 
         Resolve("MultipleSatisfiableGenericArguments", false, 1.2m, "string", 0)
-            .ShouldBe([typeof(bool), typeof(decimal)]);
+            .ShouldMatch([typeof(bool), typeof(decimal)]);
 
         Resolve("MultipleSatisfiableGenericArguments", false, 1.2m, "string a", "string b")
-            .ShouldBe([typeof(bool), typeof(decimal)]);
+            .ShouldMatch([typeof(bool), typeof(decimal)]);
 
         Resolve("MultipleSatisfiableGenericArguments", false, 1.2m, 2.3m, 3.4m)
-            .ShouldBe([typeof(bool), typeof(decimal)]);
+            .ShouldMatch([typeof(bool), typeof(decimal)]);
 
         Resolve("MultipleSatisfiableGenericArguments", false, "string a", "string b", "string c")
-            .ShouldBe([typeof(bool), typeof(string)]);
+            .ShouldMatch([typeof(bool), typeof(string)]);
 
         Resolve("MultipleSatisfiableGenericArguments", false, null, null, null)
             .ShouldSatisfy([
@@ -168,10 +168,10 @@ public class GenericArgumentResolverTests
             ]);
         
         Resolve("MultipleSatisfiableGenericArguments", false, "string a", "string b", null)
-            .ShouldBe([typeof(bool), typeof(string)]);
+            .ShouldMatch([typeof(bool), typeof(string)]);
 
         Resolve("MultipleSatisfiableGenericArguments", false, 1.2m, 2.3m, null)
-            .ShouldBe([typeof(bool), typeof(decimal)]);
+            .ShouldMatch([typeof(bool), typeof(decimal)]);
     }
 
     public void ShouldNotResolveWhenInputParameterCountIsLessThanDeclaredParameterCount()
@@ -183,48 +183,48 @@ public class GenericArgumentResolverTests
     public void ShouldAttemptReasonableResolutionByIgnoringExcessParametersWhenInputParameterCountIsGreaterThanDeclaredParameterCount()
     {
         Resolve("MultipleMatchingParameter", 1, 2, 3, 4)
-            .ShouldBe([typeof(int)]);
+            .ShouldMatch([typeof(int)]);
     }
 
     public void ShouldResolveGenericArgumentsWhenGenericConstraintsAreSatisfied()
     {
         Resolve("ConstrainedGeneric", 1)
-            .ShouldBe([typeof(int)]);
+            .ShouldMatch([typeof(int)]);
 
         Resolve("ConstrainedGeneric", true)
-            .ShouldBe([typeof(bool)]);
+            .ShouldMatch([typeof(bool)]);
     }
 
     public void ShouldResolveGenericTypeParametersAppearingWithinComplexParameterTypes()
     {
         Resolve("CompoundGenericParameter", new KeyValuePair<int, string>(1, "A"))
-            .ShouldBe([typeof(int), typeof(string)]);
+            .ShouldMatch([typeof(int), typeof(string)]);
 
         Resolve("CompoundGenericParameter", new KeyValuePair<string, int>("A", 1))
-            .ShouldBe([typeof(string), typeof(int)]);
+            .ShouldMatch([typeof(string), typeof(int)]);
 
         Resolve("GenericFuncParameter", 5, new Func<int, int>(i => i * 2), 10)
-            .ShouldBe([typeof(int)]);
+            .ShouldMatch([typeof(int)]);
 
         Resolve("GenericFuncParameter", 5, new Func<int, string>(i => i.ToString()), "5")
-            .ShouldBe([typeof(string)]);
+            .ShouldMatch([typeof(string)]);
 
         //We select string as our T, though the char argument would fail to cast at runtime,
         //causing this test to fail.
         Resolve("GenericFuncParameter", 5, new Func<int, string>(i => i.ToString()), '5')
-            .ShouldBe([typeof(string)]);
+            .ShouldMatch([typeof(string)]);
     }
 
     public void ShouldResolveGenericTypeParametersAppearingWithinArrays()
     {
         Resolve("GenericArrayResolution", new[] {1}, "A")
-            .ShouldBe([typeof(int), typeof(string)]);
+            .ShouldMatch([typeof(int), typeof(string)]);
 
         Resolve("GenericArrayResolution", new[] {"B"}, 2)
-            .ShouldBe([typeof(string), typeof(int)]);
+            .ShouldMatch([typeof(string), typeof(int)]);
 
         Resolve("GenericArrayResolution", new[] {"C"}, new[] {3})
-            .ShouldBe([typeof(string), typeof(int[])]);
+            .ShouldMatch([typeof(string), typeof(int[])]);
 
         Resolve("GenericArrayResolution", 0, 1)
             .ShouldSatisfy([
@@ -236,22 +236,22 @@ public class GenericArgumentResolverTests
     public void ShouldResolveNullableValueTypeParametersWithConcreteValueTypes()
     {
         Resolve("NullableValueTypeResolution", 1, 2, 3, 4)
-            .ShouldBe([typeof(int), typeof(int)]);
+            .ShouldMatch([typeof(int), typeof(int)]);
 
         Resolve("NullableValueTypeResolution", 'a', 2.0d, 3.0d, 4)
-            .ShouldBe([typeof(char), typeof(double)]);
+            .ShouldMatch([typeof(char), typeof(double)]);
         
         Resolve("NullableValueTypeResolution", 'a', 2.0d, 3, 4)
-            .ShouldBe([typeof(char), typeof(double)]);
+            .ShouldMatch([typeof(char), typeof(double)]);
         
         Resolve("NullableValueTypeResolution", 'a', 2, 3.03, 4)
-            .ShouldBe([typeof(char), typeof(int)]);
+            .ShouldMatch([typeof(char), typeof(int)]);
 
         Resolve("NullableValueTypeResolution", 'a', null, 3.03, 4)
-            .ShouldBe([typeof(char), typeof(double)]);
+            .ShouldMatch([typeof(char), typeof(double)]);
 
         Resolve("NullableValueTypeResolution", 'a', 2, null, 4)
-            .ShouldBe([typeof(char), typeof(int)]);
+            .ShouldMatch([typeof(char), typeof(int)]);
 
         Resolve("NullableValueTypeResolution", null, 2, 3, 4)
             .ShouldSatisfy([

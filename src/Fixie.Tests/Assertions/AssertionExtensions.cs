@@ -123,7 +123,7 @@ public static class AssertionExtensions
             if (expectationBody != null)
                 expectationBody = DropTrivialLambdaPrefix(expectationBody);
 
-            throw AssertException.ForDescriptions(expression, expectationBody, actual?.ToString());
+            throw new AssertException(expression, expectationBody ?? "null", actual?.ToString() ?? "null");
         }
     }
 
@@ -147,7 +147,7 @@ public static class AssertionExtensions
         var actualItems = actual.ToArray();
 
         if (actualItems.Length != itemExpectations.Length)
-            throw AssertException.ForDescriptions(
+            throw new AssertException(
                 expression,
                 $"{itemExpectations.Length} items",
                 $"{actualItems.Length} items");

@@ -538,7 +538,7 @@ public class ParserTests
         var expectedJson = Json(expected);
             
         if (actualJson != expectedJson)
-            throw AssertException.ForDescriptions(expression, expectedJson, actualJson);
+            throw new AssertException(expression, expectedJson, actualJson);
     }
 
     static string Json<T>(T @object)

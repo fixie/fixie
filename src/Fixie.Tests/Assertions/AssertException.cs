@@ -12,7 +12,7 @@ public class AssertException : Exception
     public bool HasMultilineRepresentation { get; }
     readonly string message;
 
-    AssertException(string? expression, string expected, string actual, string? message = null)
+    public AssertException(string? expression, string expected, string actual, string? message = null)
     {
         HasMultilineRepresentation = IsMultiline(expected) || IsMultiline(actual);
 
@@ -37,6 +37,7 @@ public class AssertException : Exception
         return new AssertException(expression, SerializeByType(expected), SerializeByType(actual));
     }
 
+    [Obsolete]
     public static AssertException ForDescriptions(string? expression, string? expectationDescription, string? actualDescription)
     {
         return new AssertException(expression, expectationDescription ?? "null", actualDescription ?? "null");

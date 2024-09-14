@@ -1,6 +1,6 @@
 using Fixie.Internal;
 using static Fixie.Tests.Utility;
-
+using Fixie.Tests.Assertions;
 namespace Fixie.Tests.Internal;
 
 public class RunnerTests

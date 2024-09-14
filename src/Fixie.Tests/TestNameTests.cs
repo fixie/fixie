@@ -1,5 +1,5 @@
 ﻿namespace Fixie.Tests;
-
+using Fixie.Tests.Assertions;
 public class TestNameTests
 {
     public void CanRepresentMethodsDeclaredInChildClasses()

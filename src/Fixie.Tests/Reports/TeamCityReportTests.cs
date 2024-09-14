@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using Fixie.Reports;
-
+using Fixie.Tests.Assertions;
 namespace Fixie.Tests.Reports;
 
 public class TeamCityReportTests : MessagingTests

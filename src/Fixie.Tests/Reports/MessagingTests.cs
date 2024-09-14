@@ -1,6 +1,6 @@
 ﻿using Fixie.Reports;
 using static Fixie.Tests.Utility;
-
+using Fixie.Tests.Assertions;
 namespace Fixie.Tests.Reports;
 
 public abstract class MessagingTests

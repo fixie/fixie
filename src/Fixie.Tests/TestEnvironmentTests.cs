@@ -1,5 +1,5 @@
 ﻿using Fixie.Internal;
-
+using Fixie.Tests.Assertions;
 namespace Fixie.Tests;
 
 public class TestEnvironmentTests

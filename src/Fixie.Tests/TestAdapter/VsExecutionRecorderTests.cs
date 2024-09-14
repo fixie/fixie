@@ -74,7 +74,7 @@ public class VsExecutionRecorderTests : MessagingTests
         failByAssertion.Outcome.ShouldBe(TestOutcome.Failed);
         failByAssertion.ErrorMessage.ShouldBe("x should be 2 but was 1");
         failByAssertion.ErrorStackTrace
-            .ShouldBeStackTrace(["Fixie.Tests.Assertions.AssertException", At("FailByAssertion()")]);
+            .ShouldBeStackTrace(["Fixie.Assertions.AssertException", At("FailByAssertion()")]);
         failByAssertion.DisplayName.ShouldBe(TestClass+".FailByAssertion");
         failByAssertion.Messages.ShouldMatch([]);
         failByAssertion.Duration.ShouldBe(TimeSpan.FromMilliseconds(103));
@@ -129,7 +129,7 @@ public class VsExecutionRecorderTests : MessagingTests
         shouldBeStringFail.ErrorMessage.ShouldBe("genericArgument should be typeof(string) but was typeof(int)");
         shouldBeStringFail.ErrorStackTrace
             .ShouldBeStackTrace([
-                "Fixie.Tests.Assertions.AssertException",
+                "Fixie.Assertions.AssertException",
                 At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")
             ]);
         shouldBeStringFail.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString<System.Int32>(123)");
@@ -169,7 +169,7 @@ public class VsExecutionRecorderTests : MessagingTests
             DurationInMilliseconds = 103,
             Reason = new PipeMessage.Exception
             {
-                Type = "Fixie.Tests.Assertions.AssertException",
+                Type = "Fixie.Assertions.AssertException",
                 Message = "x should be 2 but was 1",
                 StackTrace = At("FailByAssertion()")
             }
@@ -231,7 +231,7 @@ public class VsExecutionRecorderTests : MessagingTests
             DurationInMilliseconds = 107,
             Reason = new PipeMessage.Exception
             {
-                Type = "Fixie.Tests.Assertions.AssertException",
+                Type = "Fixie.Assertions.AssertException",
                 Message = "genericArgument should be typeof(string) but was typeof(int)",
                 StackTrace = At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")
             }

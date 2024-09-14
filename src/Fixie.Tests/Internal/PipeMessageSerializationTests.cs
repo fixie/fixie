@@ -66,7 +66,7 @@ public class PipeMessageSerializationTests : MessagingTests
             {
                 Reason = new PipeMessage.Exception
                 {
-                    Type = "Fixie.Tests.Assertions.AssertException",
+                    Type = "Fixie.Assertions.AssertException",
                     Message = "Expected: System.String\nActual:   System.Int32",
                     StackTrace = At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")
                 },
@@ -74,7 +74,7 @@ public class PipeMessageSerializationTests : MessagingTests
                 TestCase = GenericTestClass + ".ShouldBeString<System.Int32>(123)",
                 DurationInMilliseconds = 123.456d
             },
-            "{\"Reason\":{\"Type\":\"Fixie.Tests.Assertions.AssertException\",\"Message\":\"Expected: System.String\\nActual:   System.Int32\",\"StackTrace\":\"" + at + "\"},\"Test\":\"Fixie.Tests.Reports.MessagingTests\\u002BSampleGenericTestClass.ShouldBeString\",\"TestCase\":\"Fixie.Tests.Reports.MessagingTests\\u002BSampleGenericTestClass.ShouldBeString\\u003CSystem.Int32\\u003E(123)\",\"DurationInMilliseconds\":123.456}");
+            "{\"Reason\":{\"Type\":\"Fixie.Assertions.AssertException\",\"Message\":\"Expected: System.String\\nActual:   System.Int32\",\"StackTrace\":\"" + at + "\"},\"Test\":\"Fixie.Tests.Reports.MessagingTests\\u002BSampleGenericTestClass.ShouldBeString\",\"TestCase\":\"Fixie.Tests.Reports.MessagingTests\\u002BSampleGenericTestClass.ShouldBeString\\u003CSystem.Int32\\u003E(123)\",\"DurationInMilliseconds\":123.456}");
     }
 
     public void ShouldSerializeExceptionMessage()
@@ -83,11 +83,11 @@ public class PipeMessageSerializationTests : MessagingTests
 
         Expect(new PipeMessage.Exception
             {
-                Type = "Fixie.Tests.Assertions.AssertException",
+                Type = "Fixie.Assertions.AssertException",
                 Message = "Expected: System.String\nActual:   System.Int32",
                 StackTrace = At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")
             },
-            "{\"Type\":\"Fixie.Tests.Assertions.AssertException\",\"Message\":\"Expected: System.String\\nActual:   System.Int32\",\"StackTrace\":\"" + at + "\"}");
+            "{\"Type\":\"Fixie.Assertions.AssertException\",\"Message\":\"Expected: System.String\\nActual:   System.Int32\",\"StackTrace\":\"" + at + "\"}");
     }
 
     public void ShouldSerializeEndOfPipeMessage()

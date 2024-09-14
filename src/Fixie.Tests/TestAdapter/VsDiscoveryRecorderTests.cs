@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 using Fixie.Tests.Reports;
 using static System.IO.Directory;
-using Fixie.Assertions;
+
 namespace Fixie.Tests.TestAdapter;
 
 public class VsDiscoveryRecorderTests : MessagingTests

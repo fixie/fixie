@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Microsoft.FSharp.Control;
-using static System.Environment;
+
 using static Fixie.Tests.Utility;
-using Fixie.Assertions;
+
 namespace Fixie.Tests;
 
 public class MethodInfoExtensionsTests : InstrumentedExecutionTests

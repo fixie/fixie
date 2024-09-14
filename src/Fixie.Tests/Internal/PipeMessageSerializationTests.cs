@@ -1,6 +1,6 @@
 ﻿using Fixie.Internal;
 using Fixie.Tests.Reports;
-using Fixie.Assertions;
+
 namespace Fixie.Tests.Internal;
 
 public class PipeMessageSerializationTests : MessagingTests

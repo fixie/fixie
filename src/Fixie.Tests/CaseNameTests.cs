@@ -1,5 +1,4 @@
-﻿using Fixie.Assertions;
-namespace Fixie.Tests;
+﻿namespace Fixie.Tests;
 
 public class CaseNameTests
 {

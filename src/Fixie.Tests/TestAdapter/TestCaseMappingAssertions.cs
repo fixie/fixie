@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using Fixie.Assertions;
+
 namespace Fixie.Tests.TestAdapter;
 
 public static class TestCaseMappingAssertions

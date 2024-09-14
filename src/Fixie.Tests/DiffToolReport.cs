@@ -1,6 +1,6 @@
 ﻿using Fixie.Reports;
 using DiffEngine;
-using Fixie.Assertions;
+
 namespace Fixie.Tests;
 
 class DiffToolReport : IHandler<TestFailed>, IHandler<ExecutionCompleted>

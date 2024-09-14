@@ -1,5 +1,5 @@
 ﻿using Fixie.Reports;
-using Fixie.Assertions;
+
 namespace Fixie.Tests.Reports;
 
 public class LifecycleMessageTests : MessagingTests

@@ -1,5 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using Fixie.Assertions;
 
 namespace Fixie.Tests;
 

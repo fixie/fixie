@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using Fixie.Internal;
-using Fixie.Assertions;
+
 namespace Fixie.Tests.Internal;
 
 public class ClassDiscovererTests

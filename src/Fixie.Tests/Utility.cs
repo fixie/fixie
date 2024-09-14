@@ -29,7 +29,7 @@ public static class Utility
         return At(type, method, absolutePath);
     }
 
-    public static string At(Type type, string method, string path)
+    static string At(Type type, string method, string path)
     {
         var typeFullName = type.FullName ??
                            throw new Exception($"Expected type {type.Name} to have a non-null FullName.");

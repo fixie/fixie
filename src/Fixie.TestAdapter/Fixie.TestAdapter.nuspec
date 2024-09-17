@@ -24,7 +24,7 @@
   </metadata>
   <files>
     <file target="" src="..\..\README.md" />
-    <file target="" src="..\..\LICENSE.md" />
+    <file target="LICENSE" src="..\..\LICENSE" />
     <file target="icon.png" src="..\..\img\fixie_256.png" />
 
     <!-- Run-Time Assets -->

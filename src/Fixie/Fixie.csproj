@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <None Include="..\..\README.md" Pack="true" PackagePath="" Visible="false" />
-    <None Include="..\..\LICENSE.md" Pack="true" PackagePath="" Visible="false" />
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="" Visible="false" />
     <None Include="..\..\img\fixie_256.png" Pack="true" PackagePath="icon.png" Visible="false" />
     <None Include="..\..\build\**" Pack="true" PackagePath="build" Visible="false" />
     <None Include="..\..\buildMultiTargeting\**" Pack="true" PackagePath="buildMultiTargeting" Visible="false" />

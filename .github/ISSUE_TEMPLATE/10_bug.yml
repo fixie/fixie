@@ -1,0 +1,23 @@
+name: 🐞 Bug Report
+description: Something is not working as expected.
+body:
+- type: textarea
+  attributes:
+    label: Description
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Expected Behavior
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Actual Behavior
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Steps To Reproduce
+  validations:
+    required: false

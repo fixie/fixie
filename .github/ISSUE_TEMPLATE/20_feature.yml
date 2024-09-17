@@ -1,0 +1,22 @@
+name: 💡 Feature Request
+description: Something is missing.
+body:
+- type: markdown
+  attributes:
+    value: |
+      ⚠ **Most feature requests will be closed with little or no explanation.**
+      
+      Fixie's primary feature is that it does not accrete features. The driving design goal is to provide minimal APIs with flexible and idiomatic customization mechanisms *so that adding new features won't even be necessary*. If something feels like a missing feature, the real missing feature may be some broader change to the customization mechanisms.
+      
+      If the vision for this project makes it insufficient for your needs, we encourage you to reach for an alternative framework with a larger scope.
+- type: checkboxes
+  attributes:
+    label: Want to submit a feature request anyway?
+    options:
+    - label: I'd like to start the discussion, knowing that it's likely to be rejected. I won't take it personally.
+      required: true
+- type: textarea
+  attributes:
+    label: Description
+  validations:
+    required: true

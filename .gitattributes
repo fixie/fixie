@@ -1,6 +1,5 @@
 *.md text
 
-*.cmd text
 *.ps1 text
 *.yml text
 *.json text
@@ -8,15 +7,11 @@
 *.sln text
 *.sln.DotSettings text
 *.csproj text
-*.projitems text
-*.shproj text
 *.cs text diff=csharp
 *.fs text
 
 *.props text
 *.targets text
 *.nuspec text
-
-*.xml text
 
 *.png binary

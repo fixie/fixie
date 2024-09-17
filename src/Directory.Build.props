@@ -1,5 +1,11 @@
 ﻿<Project>
   <PropertyGroup>
+    <UseArtifactsOutput>true</UseArtifactsOutput>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <Product>Fixie</Product>
     <Authors>Fixie, Patrick Lioi</Authors>
     <Copyright>Copyright (c) 2013 Patrick Lioi</Copyright>
@@ -7,11 +13,12 @@
     <PackageProjectUrl>https://fixie.github.io</PackageProjectUrl>
     <PackageIcon>icon.png</PackageIcon>
     <RepositoryUrl>https://github.com/fixie/fixie</RepositoryUrl>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <UseArtifactsOutput>true</UseArtifactsOutput>
     <MinVerMinimumMajorMinor>4.0</MinVerMinimumMajorMinor>
   </PropertyGroup>
 
@@ -39,10 +46,5 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>1591</NoWarn>
     <WarningsNotAsErrors>162,612,618</WarningsNotAsErrors>
-  </PropertyGroup>
-
-  <!-- Enable Deterministic Builds -->
-  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
-    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
 </Project>

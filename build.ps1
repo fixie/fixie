@@ -1,4 +1,4 @@
-﻿param([switch]$pack)
+param([switch]$pack)
 
 $ErrorActionPreference = "Stop"
 

@@ -1,6 +1,6 @@
 *.png binary
 *.md text
-
+*.config text
 *.json text
 *.ps1 text
 *.yml text

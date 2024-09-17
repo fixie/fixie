@@ -18,13 +18,13 @@ jobs:
         dotnet-version: |
           8.0
     - run: dotnet --info
-    - name: Build and Test
+    - name: Build
       env:
         DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION: true
         TERM: xterm
       run: pwsh ./build.ps1 --pack
-    - name: Release to NuGet
+    - name: Publish to NuGet
       env:
         PACKAGE_URL: https://api.nuget.org/v3/index.json
         PACKAGE_API_KEY: ${{ secrets.NUGET_API_KEY }}
-      run: pwsh ./release.ps1
+      run: pwsh ./publish.ps1

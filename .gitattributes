@@ -1,17 +1,17 @@
+*.png binary
 *.md text
 
+*.json text
 *.ps1 text
 *.yml text
-*.json text
 
 *.sln text
 *.sln.DotSettings text
-*.csproj text
-*.cs text diff=csharp
-*.fs text
 
 *.props text
 *.targets text
-*.nuspec text
 
-*.png binary
+*.csproj text
+*.cs text diff=csharp
+*.fs text
+*.nuspec text

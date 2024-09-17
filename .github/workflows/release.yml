@@ -2,29 +2,29 @@ name: Release
 on:
   push:
     tags:
-    - '*.*.*'
+      - '*.*.*'
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        filter: tree:0
-    - name: .NET SDK
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: |
-          8.0
-    - run: dotnet --info
-    - name: Build
-      env:
-        DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION: true
-        TERM: xterm
-      run: pwsh ./build.ps1 --pack
-    - name: Publish to NuGet
-      env:
-        PACKAGE_URL: https://api.nuget.org/v3/index.json
-        PACKAGE_API_KEY: ${{ secrets.NUGET_API_KEY }}
-      run: pwsh ./publish.ps1
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: tree:0
+      - name: .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0
+      - run: dotnet --info
+      - name: Build
+        env:
+          DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION: true
+          TERM: xterm
+        run: pwsh ./build.ps1 --pack
+      - name: Publish to NuGet
+        env:
+          PACKAGE_URL: https://api.nuget.org/v3/index.json
+          PACKAGE_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: pwsh ./publish.ps1

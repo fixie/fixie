@@ -34,13 +34,13 @@ public class LifecycleMessageTests : MessagingTests
 
         pass.Test.ShouldBe(TestClass + ".Pass");
         pass.TestCase.ShouldBe(TestClass + ".Pass");
-        pass.Duration.Should(x => x >= TimeSpan.Zero);
+        pass.Duration.ShouldSatisfy(x => x >= TimeSpan.Zero);
 
         failStarted.Test.ShouldBe(TestClass + ".Fail");
 
         fail.Test.ShouldBe(TestClass + ".Fail");
         fail.TestCase.ShouldBe(TestClass + ".Fail");
-        fail.Duration.Should(x => x >= TimeSpan.Zero);
+        fail.Duration.ShouldSatisfy(x => x >= TimeSpan.Zero);
         fail.Reason.ShouldBe<FailureException>();
         fail.Reason.StackTraceSummary()
             .ShouldBeStackTrace([At("Fail()")]);
@@ -50,40 +50,40 @@ public class LifecycleMessageTests : MessagingTests
 
         failByAssertion.Test.ShouldBe(TestClass + ".FailByAssertion");
         failByAssertion.TestCase.ShouldBe(TestClass + ".FailByAssertion");
-        failByAssertion.Duration.Should(x => x >= TimeSpan.Zero);
+        failByAssertion.Duration.ShouldSatisfy(x => x >= TimeSpan.Zero);
         failByAssertion.Reason.ShouldBe<AssertException>();
         failByAssertion.Reason.StackTraceSummary()
             .ShouldBeStackTrace([At("FailByAssertion()")]);
-        failByAssertion.Reason.Message.ShouldBe("x should be 2 but was 1");
+        failByAssertion.Reason.Message.ShouldBe(xShouldBe2ButWas1);
 
         skip.Test.ShouldBe(TestClass + ".Skip");
         skip.TestCase.ShouldBe(TestClass + ".Skip");
-        skip.Duration.Should(x => x >= TimeSpan.Zero);
+        skip.Duration.ShouldSatisfy(x => x >= TimeSpan.Zero);
         skip.Reason.ShouldBe("⚠ Skipped with attribute.");
 
         shouldBeStringPassAStarted.Test.ShouldBe(GenericTestClass + ".ShouldBeString");
 
         shouldBeStringPassA.Test.ShouldBe(GenericTestClass + ".ShouldBeString");
         shouldBeStringPassA.TestCase.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"A\")");
-        shouldBeStringPassA.Duration.Should(x => x >= TimeSpan.Zero);
+        shouldBeStringPassA.Duration.ShouldSatisfy(x => x >= TimeSpan.Zero);
 
         shouldBeStringPassBStarted.Test.ShouldBe(GenericTestClass + ".ShouldBeString");
 
         shouldBeStringPassB.Test.ShouldBe(GenericTestClass + ".ShouldBeString");
         shouldBeStringPassB.TestCase.ShouldBe(GenericTestClass + ".ShouldBeString<System.String>(\"B\")");
-        shouldBeStringPassB.Duration.Should(x => x >= TimeSpan.Zero);
+        shouldBeStringPassB.Duration.ShouldSatisfy(x => x >= TimeSpan.Zero);
 
         shouldBeStringFailStarted.Test.ShouldBe(GenericTestClass + ".ShouldBeString");
 
         shouldBeStringFail.Test.ShouldBe(GenericTestClass + ".ShouldBeString");
         shouldBeStringFail.TestCase.ShouldBe(GenericTestClass + ".ShouldBeString<System.Int32>(123)");
-        shouldBeStringFail.Duration.Should(x => x >= TimeSpan.Zero);
+        shouldBeStringFail.Duration.ShouldSatisfy(x => x >= TimeSpan.Zero);
         shouldBeStringFail.Reason.ShouldBe<AssertException>();
         shouldBeStringFail.Reason.StackTraceSummary()
             .ShouldBeStackTrace([At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")]);
-        shouldBeStringFail.Reason.Message.ShouldBe("genericArgument should be typeof(string) but was typeof(int)");
+        shouldBeStringFail.Reason.Message.ShouldBe(genericArgumentShouldMatchStringButWasInt);
 
-        executionCompleted.Duration.Should(x => x >= TimeSpan.Zero);
+        executionCompleted.Duration.ShouldSatisfy(x => x >= TimeSpan.Zero);
         executionCompleted.Failed.ShouldBe(3);
         executionCompleted.Skipped.ShouldBe(1);
         executionCompleted.Passed.ShouldBe(3);

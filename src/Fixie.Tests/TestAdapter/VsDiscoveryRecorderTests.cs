@@ -23,7 +23,7 @@ public class VsDiscoveryRecorderTests : MessagingTests
 
         log.Messages.ShouldMatch([]);
 
-        discoverySink.TestCases.ShouldSatisfy([
+        discoverySink.TestCases.ItemsShouldSatisfy([
             x => x.ShouldBeDiscoveryTimeTest(TestClass + ".Fail", assemblyPath),
             x => x.ShouldBeDiscoveryTimeTest(TestClass + ".FailByAssertion", assemblyPath),
             x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Pass", assemblyPath),
@@ -46,7 +46,7 @@ public class VsDiscoveryRecorderTests : MessagingTests
         var expectedError =
             $"Error: {typeof(FileNotFoundException).FullName}: " +
             $"Could not find file '{Path.Combine(GetCurrentDirectory(), invalidAssemblyPath)}'.";
-        log.Messages.ShouldSatisfy([
+        log.Messages.ItemsShouldSatisfy([
             x => x.Contains(expectedError).ShouldBe(true),
             x => x.Contains(expectedError).ShouldBe(true),
             x => x.Contains(expectedError).ShouldBe(true),
@@ -54,7 +54,7 @@ public class VsDiscoveryRecorderTests : MessagingTests
             x => x.Contains(expectedError).ShouldBe(true)
         ]);
 
-        discoverySink.TestCases.ShouldSatisfy([
+        discoverySink.TestCases.ItemsShouldSatisfy([
             x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Fail", invalidAssemblyPath),
             x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".FailByAssertion", invalidAssemblyPath),
             x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Pass", invalidAssemblyPath),

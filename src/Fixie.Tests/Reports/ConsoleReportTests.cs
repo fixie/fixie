@@ -24,9 +24,9 @@ public class ConsoleReportTests : MessagingTests
 
                  Test '{TestClass}.FailByAssertion' failed:
 
-                 x should be 2 but was 1
+                 {xShouldBe2ButWas1}
 
-                 Fixie.Assertions.AssertException
+                 Fixie.Assertions.ComparisonException
                  {At("FailByAssertion()")}
 
                  Test '{TestClass}.Skip' skipped:
@@ -34,7 +34,7 @@ public class ConsoleReportTests : MessagingTests
 
                  Test '{GenericTestClass}.ShouldBeString<System.Int32>(123)' failed:
 
-                 genericArgument should be typeof(string) but was typeof(int)
+                 {genericArgumentShouldMatchStringButWasInt}
 
                  Fixie.Assertions.AssertException
                  {At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")}
@@ -63,9 +63,9 @@ public class ConsoleReportTests : MessagingTests
 
                  Test '{TestClass}.FailByAssertion' failed:
 
-                 x should be 2 but was 1
+                 {xShouldBe2ButWas1}
 
-                 Fixie.Assertions.AssertException
+                 Fixie.Assertions.ComparisonException
                  {At("FailByAssertion()")}
 
                  Test '{TestClass}.Pass' passed
@@ -78,7 +78,7 @@ public class ConsoleReportTests : MessagingTests
 
                  Test '{GenericTestClass}.ShouldBeString<System.Int32>(123)' failed:
 
-                 genericArgument should be typeof(string) but was typeof(int)
+                 {genericArgumentShouldMatchStringButWasInt}
 
                  Fixie.Assertions.AssertException
                  {At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")}

@@ -29,7 +29,7 @@ public class VsExecutionRecorderTests : MessagingTests
         {
             if (message is TestResult result)
             {
-                result.Traits.ShouldMatch([]);
+                result.Traits.ToArray().ShouldMatch([]);
                 result.Attachments.ShouldMatch([]);
                 result.ComputerName.ShouldBe(MachineName);
             }
@@ -72,7 +72,7 @@ public class VsExecutionRecorderTests : MessagingTests
         failByAssertion.TestCase.ShouldBeExecutionTimeTest(TestClass+".FailByAssertion", assemblyPath);
         failByAssertion.TestCase.DisplayName.ShouldBe(TestClass+".FailByAssertion");
         failByAssertion.Outcome.ShouldBe(TestOutcome.Failed);
-        failByAssertion.ErrorMessage.ShouldBe("x should be 2 but was 1");
+        failByAssertion.ErrorMessage.ShouldBe(xShouldBe2ButWas1);
         failByAssertion.ErrorStackTrace
             .ShouldBeStackTrace(["Fixie.Assertions.AssertException", At("FailByAssertion()")]);
         failByAssertion.DisplayName.ShouldBe(TestClass+".FailByAssertion");
@@ -126,7 +126,7 @@ public class VsExecutionRecorderTests : MessagingTests
         shouldBeStringFail.TestCase.ShouldBeExecutionTimeTest(GenericTestClass+".ShouldBeString", assemblyPath);
         shouldBeStringFail.TestCase.DisplayName.ShouldBe(GenericTestClass+".ShouldBeString");
         shouldBeStringFail.Outcome.ShouldBe(TestOutcome.Failed);
-        shouldBeStringFail.ErrorMessage.ShouldBe("genericArgument should be typeof(string) but was typeof(int)");
+        shouldBeStringFail.ErrorMessage.ShouldBe(genericArgumentShouldMatchStringButWasInt);
         shouldBeStringFail.ErrorStackTrace
             .ShouldBeStackTrace([
                 "Fixie.Assertions.AssertException",
@@ -170,7 +170,7 @@ public class VsExecutionRecorderTests : MessagingTests
             Reason = new PipeMessage.Exception
             {
                 Type = "Fixie.Assertions.AssertException",
-                Message = "x should be 2 but was 1",
+                Message = xShouldBe2ButWas1,
                 StackTrace = At("FailByAssertion()")
             }
         }));
@@ -232,7 +232,7 @@ public class VsExecutionRecorderTests : MessagingTests
             Reason = new PipeMessage.Exception
             {
                 Type = "Fixie.Assertions.AssertException",
-                Message = "genericArgument should be typeof(string) but was typeof(int)",
+                Message = genericArgumentShouldMatchStringButWasInt,
                 StackTrace = At<SampleGenericTestClass>("ShouldBeString[T](T genericArgument)")
             }
         }));

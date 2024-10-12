@@ -125,7 +125,7 @@ public class ClassDiscovererTests
     {
         var discovery = new BuggyDiscovery();
 
-        Action attemptFaultyDiscovery = () => DiscoveredTestClasses(discovery);
+        var attemptFaultyDiscovery = () => DiscoveredTestClasses(discovery);
 
         var exception = attemptFaultyDiscovery.ShouldThrow<Exception>(
             "Exception thrown during test class discovery. " +

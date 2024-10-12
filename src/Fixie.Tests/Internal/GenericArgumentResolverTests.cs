@@ -19,13 +19,13 @@ public class GenericArgumentResolverTests
     public void ShouldNotResolveWhenGenericTypeHasNoMatchingParameters()
     {
         Resolve("NoMatchingParameters", 0, "")
-            .ShouldSatisfy([x => x.ShouldBeGenericTypeParameter("T")]);
+            .ItemsShouldSatisfy([x => x.ShouldBeGenericTypeParameter("T")]);
     }
 
     public void ShouldNotResolveWhenGenericTypeHasOneNullMatchingParameter()
     {
         Resolve("OneMatchingParameter", new object?[] {null})
-            .ShouldSatisfy([t => t.ShouldBeGenericTypeParameter("T")]);
+            .ItemsShouldSatisfy([t => t.ShouldBeGenericTypeParameter("T")]);
     }
         
     public void ShouldResolveToConcreteTypeOfValueWhenGenericTypeHasOneNonNullMatchingParameter()
@@ -58,7 +58,7 @@ public class GenericArgumentResolverTests
     public void ShouldNotResolveWhenGenericTypeHasMultipleMatchingParametersButAllAreNull()
     {
         Resolve("MultipleMatchingParameter", null, null, null)
-            .ShouldSatisfy([x => x.ShouldBeGenericTypeParameter("T")]);
+            .ItemsShouldSatisfy([x => x.ShouldBeGenericTypeParameter("T")]);
     }
 
     public void ShouldTreatNullsAsTypeCompatibleWithReferenceTypes()
@@ -88,63 +88,63 @@ public class GenericArgumentResolverTests
     public void ShouldResolveGenericArgumentsIfAndOnlyIfTheyCanAllBeResolved()
     {
         Resolve("MultipleUnsatisfiableGenericArguments", null, 1.2m, "string", 0)
-            .ShouldSatisfy([
+            .ItemsShouldSatisfy([
                 x => x.ShouldBeGenericTypeParameter("TNoMatch"),
                 x => x.ShouldBeGenericTypeParameter("TOneMatch"),
                 x => x.ShouldBeGenericTypeParameter("TMultipleMatch")
             ]);
 
         Resolve("MultipleUnsatisfiableGenericArguments", false, 1.2m, "string", 0)
-            .ShouldSatisfy([
+            .ItemsShouldSatisfy([
                 x => x.ShouldBeGenericTypeParameter("TNoMatch"),
                 x => x.ShouldBeGenericTypeParameter("TOneMatch"),
                 x => x.ShouldBeGenericTypeParameter("TMultipleMatch")
             ]);
 
         Resolve("MultipleUnsatisfiableGenericArguments", false, 1.2m, "string a", "string b")
-            .ShouldSatisfy([
+            .ItemsShouldSatisfy([
                 x => x.ShouldBeGenericTypeParameter("TNoMatch"),
                 x => x.ShouldBeGenericTypeParameter("TOneMatch"),
                 x => x.ShouldBeGenericTypeParameter("TMultipleMatch")
             ]);
 
         Resolve("MultipleUnsatisfiableGenericArguments", false, 1.2m, 2.3m, 3.4m)
-            .ShouldSatisfy([
+            .ItemsShouldSatisfy([
                 x => x.ShouldBeGenericTypeParameter("TNoMatch"),
                 x => x.ShouldBeGenericTypeParameter("TOneMatch"),
                 x => x.ShouldBeGenericTypeParameter("TMultipleMatch")
             ]);
 
         Resolve("MultipleUnsatisfiableGenericArguments", false, "string a", "string b", "string c")
-            .ShouldSatisfy([
+            .ItemsShouldSatisfy([
                 x => x.ShouldBeGenericTypeParameter("TNoMatch"),
                 x => x.ShouldBeGenericTypeParameter("TOneMatch"),
                 x => x.ShouldBeGenericTypeParameter("TMultipleMatch")
             ]);
 
         Resolve("MultipleUnsatisfiableGenericArguments", false, null, null, null)
-            .ShouldSatisfy([
+            .ItemsShouldSatisfy([
                 x => x.ShouldBeGenericTypeParameter("TNoMatch"),
                 x => x.ShouldBeGenericTypeParameter("TOneMatch"),
                 x => x.ShouldBeGenericTypeParameter("TMultipleMatch")
             ]);
 
         Resolve("MultipleUnsatisfiableGenericArguments", false, "string a", "string b", null)
-            .ShouldSatisfy([
+            .ItemsShouldSatisfy([
                 x => x.ShouldBeGenericTypeParameter("TNoMatch"),
                 x => x.ShouldBeGenericTypeParameter("TOneMatch"),
                 x => x.ShouldBeGenericTypeParameter("TMultipleMatch")
             ]);
 
         Resolve("MultipleUnsatisfiableGenericArguments", false, 1.2m, 2.3m, null)
-            .ShouldSatisfy([
+            .ItemsShouldSatisfy([
                 x => x.ShouldBeGenericTypeParameter("TNoMatch"),
                 x => x.ShouldBeGenericTypeParameter("TOneMatch"),
                 x => x.ShouldBeGenericTypeParameter("TMultipleMatch")
             ]);
 
         Resolve("MultipleSatisfiableGenericArguments", null, 1.2m, "string", 0)
-            .ShouldSatisfy([
+            .ItemsShouldSatisfy([
                 x => x.ShouldBeGenericTypeParameter("TOneMatch"),
                 x => x.ShouldBeGenericTypeParameter("TMultipleMatch")
             ]);
@@ -162,7 +162,7 @@ public class GenericArgumentResolverTests
             .ShouldMatch([typeof(bool), typeof(string)]);
 
         Resolve("MultipleSatisfiableGenericArguments", false, null, null, null)
-            .ShouldSatisfy([
+            .ItemsShouldSatisfy([
                 x => x.ShouldBeGenericTypeParameter("TOneMatch"),
                 x => x.ShouldBeGenericTypeParameter("TMultipleMatch")
             ]);
@@ -177,7 +177,7 @@ public class GenericArgumentResolverTests
     public void ShouldNotResolveWhenInputParameterCountIsLessThanDeclaredParameterCount()
     {
         Resolve("MultipleMatchingParameter", 1, 2)
-            .ShouldSatisfy([x => x.ShouldBeGenericTypeParameter("T")]);
+            .ItemsShouldSatisfy([x => x.ShouldBeGenericTypeParameter("T")]);
     }
 
     public void ShouldAttemptReasonableResolutionByIgnoringExcessParametersWhenInputParameterCountIsGreaterThanDeclaredParameterCount()
@@ -227,7 +227,7 @@ public class GenericArgumentResolverTests
             .ShouldMatch([typeof(string), typeof(int[])]);
 
         Resolve("GenericArrayResolution", 0, 1)
-            .ShouldSatisfy([
+            .ItemsShouldSatisfy([
                 x => x.ShouldBeGenericTypeParameter("T1"),
                 x => x.ShouldBeGenericTypeParameter("T2")
             ]);
@@ -254,7 +254,7 @@ public class GenericArgumentResolverTests
             .ShouldMatch([typeof(char), typeof(int)]);
 
         Resolve("NullableValueTypeResolution", null, 2, 3, 4)
-            .ShouldSatisfy([
+            .ItemsShouldSatisfy([
                 x => x.ShouldBeGenericTypeParameter("T1"),
                 x => x.ShouldBeGenericTypeParameter("T2")
             ]);

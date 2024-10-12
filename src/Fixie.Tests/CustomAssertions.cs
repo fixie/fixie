@@ -4,7 +4,7 @@ namespace Fixie.Tests;
 
 public static class CustomAssertions
 {
-    public static void ShouldSatisfy<T>(this IEnumerable<T> actual, Action<T>[] itemExpectations, [CallerArgumentExpression(nameof(actual))] string? expression = null)
+    public static void ItemsShouldSatisfy<T>(this IEnumerable<T> actual, Action<T>[] itemExpectations, [CallerArgumentExpression(nameof(actual))] string? expression = null)
     {
         var actualItems = actual.ToArray();
 

@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using System.Text.Json;
-using Fixie.Console;
+﻿using Fixie.Console;
 
 namespace Fixie.Tests.Console;
 

@@ -29,7 +29,7 @@ static class TestExtensions
         return Regex.Replace(multiline, @"\.cs:line \d+", ".cs:line #");
     }
 
-    public static void ShouldBeStackTrace(this string? actual, string[] expected, [CallerArgumentExpression(nameof(actual))] string? expression = null)
+    public static void ShouldBeStackTrace(this string? actual, string[] expected, [CallerArgumentExpression(nameof(actual))] string expression = default!)
     {
         actual.ShouldNotBeNull();
         actual

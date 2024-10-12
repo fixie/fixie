@@ -41,7 +41,7 @@ public static class TestCaseMappingAssertions
 
     static void ShouldUseDefaultsForUnmappedProperties(TestCase test)
     {
-        test.Traits.ShouldMatch([]);
+        test.Traits.ToArray().ShouldMatch([]);
         test.ExecutorUri.ToString().ShouldBe("executor://fixie.testadapter/");
     }
 
@@ -49,7 +49,7 @@ public static class TestCaseMappingAssertions
     {
         test.CodeFilePath.ShouldNotBeNull();
         test.CodeFilePath.EndsWith("MessagingTests.cs").ShouldBe(true);
-        test.LineNumber.Should(x => x > 0);
+        test.LineNumber.ShouldSatisfy(x => x > 0);
     }
 
     static void ShouldNotHaveSourceLocation(TestCase test)

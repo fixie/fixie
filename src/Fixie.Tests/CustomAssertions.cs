@@ -10,9 +10,7 @@ public static class CustomAssertions
 
         if (actualItems.Length != itemExpectations.Length)
             throw new AssertException(
-                expression,
-                $"{itemExpectations.Length} items",
-                $"{actualItems.Length} items");
+                $"{expression} should have {itemExpectations.Length} items but has {actualItems.Length} items.");
 
         for (var i = 0; i < actualItems.Length; i++)
             itemExpectations[i](actualItems[i]);

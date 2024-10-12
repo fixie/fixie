@@ -140,4 +140,15 @@ public abstract class InstrumentedExecutionTests
             return new Output(GetType().FullName!, state.Console.ToString() ?? "", results.ToArray());
         }
     }
+
+    protected string resultShouldBe0ButWas3 =
+        """
+        result should be
+
+            0
+
+        but was
+
+            3
+        """;
 }

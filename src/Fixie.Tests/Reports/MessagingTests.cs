@@ -102,6 +102,17 @@ public abstract class MessagingTests
         }
     }
 
+    protected string xShouldBe2ButWas1 =
+        """
+        x should be
+        
+            2
+        
+        but was
+        
+            1
+        """;
+
     protected class SampleGenericTestClass
     {
         [Input("A")]
@@ -112,6 +123,17 @@ public abstract class MessagingTests
             genericArgument.ShouldBe<string>();
         }
     }
+
+    protected string genericArgumentShouldMatchStringButWasInt =
+        """
+        genericArgument should match the type pattern
+        
+            is string
+        
+        but was
+        
+            int
+        """;
 
     class EmptyTestClass
     {

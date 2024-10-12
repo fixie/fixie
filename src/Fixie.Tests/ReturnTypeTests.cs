@@ -30,8 +30,8 @@ public class ReturnTypeTests : InstrumentedExecutionTests
             "AsyncTestClass.AwaitTaskThenPass passed",
             "AsyncTestClass.AwaitValueTaskThenPass passed",
             "AsyncTestClass.CompleteTaskThenPass passed",
-            "AsyncTestClass.FailAfterAwaitTask failed: result should be 0 but was 3",
-            "AsyncTestClass.FailAfterAwaitValueTask failed: result should be 0 but was 3",
+            "AsyncTestClass.FailAfterAwaitTask failed: " + resultShouldBe0ButWas3,
+            "AsyncTestClass.FailAfterAwaitValueTask failed: " + resultShouldBe0ButWas3,
             "AsyncTestClass.FailBeforeAwaitTask failed: 'FailBeforeAwaitTask' failed!",
             "AsyncTestClass.FailBeforeAwaitValueTask failed: 'FailBeforeAwaitValueTask' failed!",
             "AsyncTestClass.FailDuringAwaitTask failed: Attempted to divide by zero.",
@@ -71,7 +71,7 @@ public class ReturnTypeTests : InstrumentedExecutionTests
         output.ShouldHaveResults(
             "FSharpAsyncTestClass.AsyncPass passed",
             "FSharpAsyncTestClass.FailBeforeAsync failed: 'FailBeforeAsync' failed!",
-            "FSharpAsyncTestClass.FailFromAsync failed: result should be 0 but was 3",
+            "FSharpAsyncTestClass.FailFromAsync failed: " + resultShouldBe0ButWas3,
             "FSharpAsyncTestClass.NullAsync failed: The asynchronous method NullAsync() returned null, " +
             "but a non-null awaitable object was expected.");
 

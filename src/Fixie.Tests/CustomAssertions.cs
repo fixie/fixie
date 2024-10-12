@@ -4,7 +4,7 @@ namespace Fixie.Tests;
 
 public static class CustomAssertions
 {
-    public static void ItemsShouldSatisfy<T>(this IEnumerable<T> actual, Action<T>[] itemExpectations, [CallerArgumentExpression(nameof(actual))] string? expression = null)
+    public static void ItemsShouldSatisfy<T>(this IEnumerable<T> actual, Action<T>[] itemExpectations, [CallerArgumentExpression(nameof(actual))] string expression = default!)
     {
         var actualItems = actual.ToArray();
 
@@ -16,7 +16,7 @@ public static class CustomAssertions
             itemExpectations[i](actualItems[i]);
     }
 
-    public static void ShouldBeGenericTypeParameter(this Type actual, string expectedName, [CallerArgumentExpression(nameof(actual))] string? expression = null)
+    public static void ShouldBeGenericTypeParameter(this Type actual, string expectedName, [CallerArgumentExpression(nameof(actual))] string expression = default!)
     {
         actual.IsGenericParameter.ShouldBe(true);
         actual.FullName.ShouldBe(null);

@@ -513,7 +513,7 @@ public class ParserTests
 
         public void ShouldFail(string expectedExceptionMessage)
         {
-            Action shouldThrow = () => CommandLine.Parse<T>(arguments);
+            var shouldThrow = () => CommandLine.Parse<T>(arguments);
 
             shouldThrow.ShouldThrow<CommandLineException>(expectedExceptionMessage);
         }

@@ -103,7 +103,7 @@ public class MethodDiscovererTests
     {
         var discovery = new BuggyDiscovery();
 
-        Action attemptFaultyDiscovery = () => DiscoveredTestMethods<Sample>(discovery);
+        var attemptFaultyDiscovery = () => DiscoveredTestMethods<Sample>(discovery);
 
         var exception = attemptFaultyDiscovery.ShouldThrow<Exception>(
             "Exception thrown during test method discovery. " +

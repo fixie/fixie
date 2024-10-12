@@ -97,7 +97,7 @@ public class PipeMessageSerializationTests : MessagingTests
 
     public void ShouldThrowForNullDeserialization()
     {
-        Action nullMessage = () => PipeMessage.Deserialize<PipeMessage.TestFailed>("null");
+        var nullMessage = () => PipeMessage.Deserialize<PipeMessage.TestFailed>("null");
         nullMessage.ShouldThrow<Exception>("Message of type Fixie.Internal.PipeMessage+TestFailed was unexpectedly null.");
     }
 

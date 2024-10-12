@@ -263,8 +263,8 @@ public class GenericArgumentResolverTests
     public void ShouldLeaveGenericTypeParameterWhenGenericTypeParametersCannotBeResolved()
     {
         var unresolved = Resolve("ConstrainedGeneric", "Incompatible").Single();
-        unresolved.Name.ShouldBe("T");
-        unresolved.IsGenericParameter.ShouldBe(true);
+        
+        unresolved.ShouldBeGenericTypeParameter("T");
     }
 
     static IEnumerable<Type> Resolve(string methodName, params object?[] parameters)

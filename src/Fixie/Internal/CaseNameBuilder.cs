@@ -30,6 +30,9 @@ static class CaseNameBuilder
         if (parameter is string s)
             return ShortStringLiteral(s);
 
+        if (parameter is bool b)
+            return b ? "true" : "false";
+
         var displayString = Convert.ToString(parameter, CultureInfo.InvariantCulture);
 
         if (displayString == null)

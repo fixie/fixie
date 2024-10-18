@@ -22,7 +22,7 @@ public class CaseNameTests
         });
 
         ShouldHaveNames(output,
-            "ParameterizedTestClass.Parameterized(123, True, 'a', \"with \\\"quotes\\\"\", \"long \\\"string\\\" g...\", null, Fixie.Tests.CaseNameTests, Fixie.Tests.CaseNameTests+ObjectWithNullStringRepresentation)");
+            "ParameterizedTestClass.Parameterized(123, true, 'a', \"with \\\"quotes\\\"\", \"long \\\"string\\\" g...\", null, Fixie.Tests.CaseNameTests, Fixie.Tests.CaseNameTests+ObjectWithNullStringRepresentation)");
     }
 
     public async Task ShouldIncludeEscapeSequencesInNameWhenTheUnderlyingMethodHasCharParameters()
@@ -139,8 +139,8 @@ public class CaseNameTests
         });
 
         ShouldHaveNames(output,
-            "GenericTestClass.Generic<System.Boolean, System.String>(123, True, \"a\", \"b\")",
-            "GenericTestClass.Generic<System.Boolean, System.Int32>(123, True, 1, null)",
+            "GenericTestClass.Generic<System.Boolean, System.String>(123, true, \"a\", \"b\")",
+            "GenericTestClass.Generic<System.Boolean, System.Int32>(123, true, 1, null)",
             "GenericTestClass.Generic<System.Decimal, System.String>(123, 1.23, \"a\", null)"
         );
     }
@@ -156,7 +156,7 @@ public class CaseNameTests
 
         ShouldHaveNames(output,
             "ConstrainedGenericTestClass.ConstrainedGeneric<System.Int32>(1)",
-            "ConstrainedGenericTestClass.ConstrainedGeneric<System.Boolean>(True)",
+            "ConstrainedGenericTestClass.ConstrainedGeneric<System.Boolean>(true)",
             "ConstrainedGenericTestClass.ConstrainedGeneric<T>(\"Incompatible\")"
         );
     }

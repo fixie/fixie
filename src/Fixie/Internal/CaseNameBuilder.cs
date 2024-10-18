@@ -40,7 +40,7 @@ static class CaseNameBuilder
 
     static string CharacterLiteral(char ch)
     {
-        return "'" + ch.Escape(Literal.Character) + "'";
+        return "'" + Escape(ch, Literal.Character) + "'";
     }
 
     static string ShortStringLiteral(string s)
@@ -55,14 +55,14 @@ static class CaseNameBuilder
         sb.Append('"');
 
         foreach (var ch in s)
-            sb.Append(ch.Escape(Literal.String));
+            sb.Append(Escape(ch, Literal.String));
 
         sb.Append('"');
 
         return  sb.ToString();
     }
 
-    static string Escape(this char ch, Literal literal) =>
+    static string Escape(char ch, Literal literal) =>
         ch switch
         {
             '\0' => @"\0",

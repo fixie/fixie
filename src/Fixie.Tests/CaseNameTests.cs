@@ -1,4 +1,4 @@
-﻿namespace Fixie.Tests;
+namespace Fixie.Tests;
 
 public class CaseNameTests
 {
@@ -213,11 +213,6 @@ public class CaseNameTests
 
     void ShouldHaveNames(IEnumerable<string> actual, params string[] expected)
     {
-        const int variants = 4;
-
-        var actualArray = actual.ToArray();
-        actualArray.Length.ShouldBe(expected.Length * variants);
-
         var expectedVariants = expected.Select(name => new[]
         {
             name.Contains("Incompatible")
@@ -230,8 +225,7 @@ public class CaseNameTests
 
         var fullyQualifiedExpectation = expectedVariants.Select(x => GetType().FullName + "+" + x).ToArray();
 
-        foreach (var (first, second) in actualArray.Zip(fullyQualifiedExpectation))
-            first.ShouldBe(second);
+        actual.ToArray().ShouldMatch(fullyQualifiedExpectation);
     }
 
     class ObjectWithNullStringRepresentation

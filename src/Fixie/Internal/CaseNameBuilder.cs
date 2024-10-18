@@ -62,18 +62,18 @@ static class CaseNameBuilder
     {
         switch (ch)
         {
-            case '\"': return literal == Literal.String ? @"\""" : char.ToString(ch);
-            case '\'': return literal == Literal.Character ? @"\'" : char.ToString(ch);
-
-            case '\\': return @"\\";
             case '\0': return @"\0";
             case '\a': return @"\a";
             case '\b': return @"\b";
-            case '\f': return @"\f";
-            case '\n': return @"\n";
-            case '\r': return @"\r";
             case '\t': return @"\t";
+            case '\n': return @"\n";
             case '\v': return @"\v";
+            case '\f': return @"\f";
+            case '\r': return @"\r";
+
+            case '\"': return literal == Literal.String ? @"\""" : char.ToString(ch);
+            case '\'': return literal == Literal.Character ? @"\'" : char.ToString(ch);
+            case '\\': return @"\\";
 
             case '\u0085': //Next Line
             case '\u2028': //Line Separator

@@ -58,32 +58,26 @@ static class CaseNameBuilder
         return "\"" + sb + "\"";
     }
 
-    static string Escape(this char ch, Literal literal)
-    {
-        switch (ch)
+    static string Escape(this char ch, Literal literal) =>
+        ch switch
         {
-            case '\0': return @"\0";
-            case '\a': return @"\a";
-            case '\b': return @"\b";
-            case '\t': return @"\t";
-            case '\n': return @"\n";
-            case '\v': return @"\v";
-            case '\f': return @"\f";
-            case '\r': return @"\r";
+            '\0' => @"\0",
+            '\a' => @"\a",
+            '\b' => @"\b",
+            '\t' => @"\t",
+            '\n' => @"\n",
+            '\v' => @"\v",
+            '\f' => @"\f",
+            '\r' => @"\r",
+            '\"' => literal == Literal.String ? @"\""" : char.ToString(ch),
+            '\'' => literal == Literal.Character ? @"\'" : char.ToString(ch),
+            '\\' => @"\\",
 
-            case '\"': return literal == Literal.String ? @"\""" : char.ToString(ch);
-            case '\'': return literal == Literal.Character ? @"\'" : char.ToString(ch);
-            case '\\': return @"\\";
+            //Paragraph Separator, Line Separator, Next Line
+            '\u0085' or '\u2028' or '\u2029' => $"\\u{(int)ch:X4}",
 
-            case '\u0085': //Next Line
-            case '\u2028': //Line Separator
-            case '\u2029': //Paragraph Separator
-                return $"\\u{(int)ch:X4}";
-
-            default:
-                return char.ToString(ch);
-        }
-    }
+            _ => char.ToString(ch)
+        };
 
     enum Literal { Character, String }
 }

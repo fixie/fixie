@@ -27,10 +27,6 @@ public class CaseNameTests
 
     public async Task ShouldIncludeEscapeSequencesInNameWhenTheUnderlyingMethodHasCharParameters()
     {
-        // Unicode characters 0085, 2028, and 2029 represent line endings Next Line, Line Separator, and Paragraph Separator, respectively.
-        // Just like \r and \n, we escape these in order to present a readable string literal. All other unicode sequences pass through
-        // with no additional special treatment.
-
         // \uxxxx - Unicode escape sequence for character with hex value xxxx.
         // \xn[n][n][n] - Unicode escape sequence for character with hex value nnnn (variable length version of \uxxxx).
         // \Uxxxxxxxx - Unicode escape sequence for character with hex value xxxxxxxx (for generating surrogates).
@@ -60,21 +56,9 @@ public class CaseNameTests
         });
 
         var unicodeEscapeExpectations = UnicodeEscapedCharacters()
-            .Select(c =>
-            {
-                if (c is not ('\u0085' or '\u2028' or '\u2029'))
-                {
-                    // Characterization coverage of undesirable behavior. Note many control
-                    // characters and whitespace characters fail to be escaped.
-                    return $"""
-                            CharParametersTestClass.Char('{c}')
-                            """;
-                }
-
-                return $"""
-                        CharParametersTestClass.Char('\u{(int)c:X4}')
-                        """;
-            });
+            .Select(c => $"""
+                          CharParametersTestClass.Char('\u{(int)c:X4}')
+                          """);
 
         ShouldHaveNames(output, [
             "CharParametersTestClass.Char('\"')",
@@ -122,10 +106,6 @@ public class CaseNameTests
 
     public async Task ShouldIncludeEscapeSequencesInNameWhenTheUnderlyingMethodHasStringParameters()
     {
-        // Unicode characters 0085, 2028, and 2029 represent line endings Next Line, Line Separator, and Paragraph Separator, respectively.
-        // Just like \r and \n, we escape these in order to present a readable string literal. All other unicode sequences pass through
-        // with no additional special treatment.
-
         // \uxxxx - Unicode escape sequence for character with hex value xxxx.
         // \xn[n][n][n] - Unicode escape sequence for character with hex value nnnn (variable length version of \uxxxx).
         // \Uxxxxxxxx - Unicode escape sequence for character with hex value xxxxxxxx (for generating surrogates).
@@ -152,25 +132,22 @@ public class CaseNameTests
             "StringParametersTestClass.String(\" \\0 \\0 \\0 \\0 \")",
             "StringParametersTestClass.String(\" \\u0085 \\u0085 \\u0085 \\u2028 \\u2029 ☺ \")",
             "StringParametersTestClass.String(\" \\0 \\u0085 \\u2028 \\u2029 ☺ \")",
-
-            // Characterization coverage of undesirable behavior. Note many control
-            // characters and whitespace characters fail to be escaped.
-            "StringParametersTestClass.String(\"\u0001 \u0002 \u0003 \u0004 \u0005\")",
-            "StringParametersTestClass.String(\"\u0006 \u000E \u000F \u0010 \u0011\")",
-            "StringParametersTestClass.String(\"\u0012 \u0013 \u0014 \u0015 \u0016\")",
-            "StringParametersTestClass.String(\"\u0017 \u0018 \u0019 \u001A \u001B\")",
-            "StringParametersTestClass.String(\"\u001C \u001D \u001E \u001F \u007F\")",
-            "StringParametersTestClass.String(\"\u0080 \u0081 \u0082 \u0083 \u0084\")",
-            "StringParametersTestClass.String(\"\\u0085 \u0086 \u0087 \u0088 \u0089\")",
-            "StringParametersTestClass.String(\"\u008A \u008B \u008C \u008D \u008E\")",
-            "StringParametersTestClass.String(\"\u008F \u0090 \u0091 \u0092 \u0093\")",
-            "StringParametersTestClass.String(\"\u0094 \u0095 \u0096 \u0097 \u0098\")",
-            "StringParametersTestClass.String(\"\u0099 \u009A \u009B \u009C \u009D\")",
-            "StringParametersTestClass.String(\"\u009E \u009F \\u0085 \u00A0 \u1680\")",
-            "StringParametersTestClass.String(\"\u2000 \u2001 \u2002 \u2003 \u2004\")",
-            "StringParametersTestClass.String(\"\u2005 \u2006 \u2007 \u2008 \u2009\")",
-            "StringParametersTestClass.String(\"\u200A \\u2028 \\u2029 \u202F \u205F\")",
-            "StringParametersTestClass.String(\"\u3000\")"
+            "StringParametersTestClass.String(\"\\u0001 \\u0002 \\u0003 \\u0004 \\u0005\")",
+            "StringParametersTestClass.String(\"\\u0006 \\u000E \\u000F \\u0010 \\u0011\")",
+            "StringParametersTestClass.String(\"\\u0012 \\u0013 \\u0014 \\u0015 \\u0016\")",
+            "StringParametersTestClass.String(\"\\u0017 \\u0018 \\u0019 \\u001A \\u001B\")",
+            "StringParametersTestClass.String(\"\\u001C \\u001D \\u001E \\u001F \\u007F\")",
+            "StringParametersTestClass.String(\"\\u0080 \\u0081 \\u0082 \\u0083 \\u0084\")",
+            "StringParametersTestClass.String(\"\\u0085 \\u0086 \\u0087 \\u0088 \\u0089\")",
+            "StringParametersTestClass.String(\"\\u008A \\u008B \\u008C \\u008D \\u008E\")",
+            "StringParametersTestClass.String(\"\\u008F \\u0090 \\u0091 \\u0092 \\u0093\")",
+            "StringParametersTestClass.String(\"\\u0094 \\u0095 \\u0096 \\u0097 \\u0098\")",
+            "StringParametersTestClass.String(\"\\u0099 \\u009A \\u009B \\u009C \\u009D\")",
+            "StringParametersTestClass.String(\"\\u009E \\u009F \\u0085 \\u00A0 \\u1680\")",
+            "StringParametersTestClass.String(\"\\u2000 \\u2001 \\u2002 \\u2003 \\u2004\")",
+            "StringParametersTestClass.String(\"\\u2005 \\u2006 \\u2007 \\u2008 \\u2009\")",
+            "StringParametersTestClass.String(\"\\u200A \\u2028 \\u2029 \\u202F \\u205F\")",
+            "StringParametersTestClass.String(\"\\u3000\")"
         );
     }
 

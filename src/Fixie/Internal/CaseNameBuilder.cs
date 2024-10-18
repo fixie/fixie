@@ -76,13 +76,11 @@ static class CaseNameBuilder
             '\v' => @"\v",
             '\f' => @"\f",
             '\r' => @"\r",
+            ' ' => " ",
             '\"' => literal == Literal.String ? @"\""" : char.ToString(ch),
             '\'' => literal == Literal.Character ? @"\'" : char.ToString(ch),
             '\\' => @"\\",
-
-            //Paragraph Separator, Line Separator, Next Line
-            '\u0085' or '\u2028' or '\u2029' => $"\\u{(int)ch:X4}",
-
+            _ when (char.IsControl(ch) || char.IsWhiteSpace(ch)) => $"\\u{(int)ch:X4}",
             _ => char.ToString(ch)
         };
 

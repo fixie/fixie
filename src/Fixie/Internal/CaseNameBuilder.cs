@@ -78,8 +78,7 @@ static class CaseNameBuilder
             case '\u0085': //Next Line
             case '\u2028': //Line Separator
             case '\u2029': //Paragraph Separator
-                var digits = (int)ch;
-                return $"\\u{digits:X4}";
+                return $"\\u{(int)ch:X4}";
 
             default:
                 return char.ToString(ch);

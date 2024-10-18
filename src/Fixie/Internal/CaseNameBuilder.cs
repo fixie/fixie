@@ -51,11 +51,15 @@ static class CaseNameBuilder
             s = s.Substring(0, trimLength) + "...";
 
         var sb = new StringBuilder();
+        
+        sb.Append('"');
 
         foreach (var ch in s)
             sb.Append(ch.Escape(Literal.String));
 
-        return "\"" + sb + "\"";
+        sb.Append('"');
+
+        return  sb.ToString();
     }
 
     static string Escape(this char ch, Literal literal) =>

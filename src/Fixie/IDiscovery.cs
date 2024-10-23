@@ -14,3 +14,12 @@ public interface IDiscovery
     /// </summary>
     IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods);
 }
+
+public sealed class DefaultDiscovery : IDiscovery
+{
+    public IEnumerable<Type> TestClasses(IEnumerable<Type> concreteClasses)
+        => concreteClasses.Where(x => x.Name.EndsWith("Tests"));
+
+    public IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods)
+        => publicMethods.Where(x => !x.IsStatic);
+}

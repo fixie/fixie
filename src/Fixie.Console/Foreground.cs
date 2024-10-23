@@ -9,4 +9,6 @@ class Foreground : IDisposable
     public static Foreground Red => new(ConsoleColor.Red);
 
     public static Foreground Yellow => new(ConsoleColor.Yellow);
+
+    public static Foreground Green => new(ConsoleColor.Green);
 }

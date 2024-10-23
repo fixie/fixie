@@ -20,7 +20,8 @@ try
     {
         if (options.ShouldBuild)
         {
-            WriteLine($"Building {Path.GetFileNameWithoutExtension(testProject)}...");
+            using (Foreground.Green)
+                WriteLine($"Building {Path.GetFileNameWithoutExtension(testProject)}");
             
             var exitCode = RunTarget(testProject, "Build", options.Configuration);
             

@@ -1,4 +1,4 @@
-﻿namespace Fixie;
+namespace Fixie;
 
 public interface IExecution
 {
@@ -14,5 +14,13 @@ public sealed class DefaultExecution : IExecution
     {
         foreach (var test in testSuite.Tests)
             await test.Run();
+    }
+}
+
+public sealed class ParallelExecution : IExecution
+{
+    public async Task Run(TestSuite testSuite)
+    {
+        await Parallel.ForEachAsync(testSuite.Tests, async (test, _) => await test.Run());
     }
 }

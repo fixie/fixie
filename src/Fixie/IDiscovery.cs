@@ -15,6 +15,9 @@ public interface IDiscovery
     IEnumerable<MethodInfo> TestMethods(IEnumerable<MethodInfo> publicMethods);
 }
 
+/// <summary>
+/// Discover test methods as the public instance methods on classes where the class name ends with "Tests".
+/// </summary>
 public sealed class DefaultDiscovery : IDiscovery
 {
     public IEnumerable<Type> TestClasses(IEnumerable<Type> concreteClasses)

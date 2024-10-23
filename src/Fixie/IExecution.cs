@@ -1,4 +1,4 @@
-namespace Fixie;
+﻿namespace Fixie;
 
 public interface IExecution
 {
@@ -8,6 +8,9 @@ public interface IExecution
     Task Run(TestSuite testSuite);
 }
 
+/// <summary>
+/// Run tests sequentially, instantiating the test class once per test method.
+/// </summary>
 public sealed class DefaultExecution : IExecution
 {
     public async Task Run(TestSuite testSuite)
@@ -17,6 +20,14 @@ public sealed class DefaultExecution : IExecution
     }
 }
 
+/// <summary>
+/// Run tests in parallel, instantiating the test class once per test method.
+/// 
+/// <para>
+/// Use with extreme caution, as unintentionally dependent tests may
+/// interfere with each other.
+/// </para>
+/// </summary>
 public sealed class ParallelExecution : IExecution
 {
     public async Task Run(TestSuite testSuite)

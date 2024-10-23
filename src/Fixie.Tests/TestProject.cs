@@ -9,12 +9,4 @@ class TestProject : ITestProject
         if (environment.IsDevelopment())
             configuration.Reports.Add<DiffToolReport>();
     }
-
-    class ParallelExecution : IExecution
-    {
-        public async Task Run(TestSuite testSuite)
-        {
-            await Parallel.ForEachAsync(testSuite.Tests, async (test, _) => await test.Run());
-        }
-    }
 }

@@ -76,6 +76,11 @@ static class CaseNameBuilder
             '\v' => @"\v",
             '\f' => @"\f",
             '\r' => @"\r",
+
+            #if NET9_0_OR_GREATER
+            '\e' => @"\e",
+            #endif
+
             ' ' => " ",
             '\"' => literal == Literal.String ? @"\""" : char.ToString(ch),
             '\'' => literal == Literal.Character ? @"\'" : char.ToString(ch),

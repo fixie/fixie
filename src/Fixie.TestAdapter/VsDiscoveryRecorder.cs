@@ -25,11 +25,9 @@ class VsDiscoveryRecorder
     {
         var test = testDiscovered.Test;
 
-        SourceLocation? sourceLocation = null;
-
         try
         {
-            sourceLocationProvider.TryGetSourceLocation(test, out sourceLocation);
+            sourceLocationProvider.TryGetSourceLocation(test, out _);
         }
         catch (Exception exception)
         {
@@ -40,12 +38,6 @@ class VsDiscoveryRecorder
         {
             DisplayName = test
         };
-
-        if (sourceLocation != null)
-        {
-            discoveredTest.CodeFilePath = sourceLocation.CodeFilePath;
-            discoveredTest.LineNumber = sourceLocation.LineNumber;
-        }
 
         discoverySink.SendTestCase(discoveredTest);
     }

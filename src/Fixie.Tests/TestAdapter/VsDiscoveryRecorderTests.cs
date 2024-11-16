@@ -24,11 +24,11 @@ public class VsDiscoveryRecorderTests : MessagingTests
         log.Messages.ShouldMatch([]);
 
         discoverySink.TestCases.ItemsShouldSatisfy([
-            x => x.ShouldBeDiscoveryTimeTest(TestClass + ".Fail", assemblyPath),
-            x => x.ShouldBeDiscoveryTimeTest(TestClass + ".FailByAssertion", assemblyPath),
+            x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Fail", assemblyPath),
+            x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".FailByAssertion", assemblyPath),
             x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Pass", assemblyPath),
-            x => x.ShouldBeDiscoveryTimeTest(TestClass + ".Skip", assemblyPath),
-            x => x.ShouldBeDiscoveryTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath)
+            x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Skip", assemblyPath),
+            x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(GenericTestClass + ".ShouldBeString", assemblyPath)
         ]);
     }
 

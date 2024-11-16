@@ -74,7 +74,7 @@ static class TestAssembly
 
         var environmentVariables = new Dictionary<string, string?>
         {
-            ["FIXIE_NAMED_PIPE"] = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE")
+            //Was: ["FIXIE_NAMED_PIPE"] = Environment.GetEnvironmentVariable("FIXIE_NAMED_PIPE")
         };
 
         var filePath = FindDotnet();

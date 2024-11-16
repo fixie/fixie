@@ -10,15 +10,6 @@ public static class TestCaseMappingAssertions
 
         ShouldUseDefaultsForUnmappedProperties(test);
 
-        ShouldHaveSourceLocation(test);
-    }
-
-    public static void ShouldBeDiscoveryTimeTestMissingSourceLocation(this TestCase test, string expectedFullyQualifiedName, string expectedSource)
-    {
-        ShouldHaveIdentity(test, expectedFullyQualifiedName, expectedSource);
-
-        ShouldUseDefaultsForUnmappedProperties(test);
-
         ShouldNotHaveSourceLocation(test);
     }
 
@@ -43,13 +34,6 @@ public static class TestCaseMappingAssertions
     {
         test.Traits.ToArray().ShouldMatch([]);
         test.ExecutorUri.ToString().ShouldBe("executor://fixie.testadapter/");
-    }
-
-    static void ShouldHaveSourceLocation(TestCase test)
-    {
-        test.CodeFilePath.ShouldNotBeNull();
-        test.CodeFilePath.EndsWith("MessagingTests.cs").ShouldBe(true);
-        test.LineNumber.ShouldSatisfy(x => x > 0);
     }
 
     static void ShouldNotHaveSourceLocation(TestCase test)

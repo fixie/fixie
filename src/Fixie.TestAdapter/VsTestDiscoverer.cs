@@ -48,7 +48,7 @@ class VsTestDiscoverer : ITestDiscoverer
 
             pipe.Send<PipeMessage.DiscoverTests>();
 
-            var recorder = new VsDiscoveryRecorder(log, discoverySink, assemblyPath);
+            var recorder = new VsDiscoveryRecorder(discoverySink, assemblyPath);
 
             while (true)
             {

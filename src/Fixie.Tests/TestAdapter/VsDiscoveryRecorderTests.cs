@@ -24,11 +24,11 @@ public class VsDiscoveryRecorderTests : MessagingTests
         log.Messages.ShouldMatch([]);
 
         discoverySink.TestCases.ItemsShouldSatisfy([
-            x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Fail", assemblyPath),
-            x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".FailByAssertion", assemblyPath),
-            x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Pass", assemblyPath),
-            x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Skip", assemblyPath),
-            x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(GenericTestClass + ".ShouldBeString", assemblyPath)
+            x => x.ShouldBeDiscoveryTimeTest(TestClass + ".Fail", assemblyPath),
+            x => x.ShouldBeDiscoveryTimeTest(TestClass + ".FailByAssertion", assemblyPath),
+            x => x.ShouldBeDiscoveryTimeTest(TestClass + ".Pass", assemblyPath),
+            x => x.ShouldBeDiscoveryTimeTest(TestClass + ".Skip", assemblyPath),
+            x => x.ShouldBeDiscoveryTimeTest(GenericTestClass + ".ShouldBeString", assemblyPath)
         ]);
     }
 
@@ -55,11 +55,11 @@ public class VsDiscoveryRecorderTests : MessagingTests
         ]);
 
         discoverySink.TestCases.ItemsShouldSatisfy([
-            x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Fail", invalidAssemblyPath),
-            x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".FailByAssertion", invalidAssemblyPath),
-            x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Pass", invalidAssemblyPath),
-            x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Skip", invalidAssemblyPath),
-            x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(GenericTestClass + ".ShouldBeString", invalidAssemblyPath)
+            x => x.ShouldBeDiscoveryTimeTest(TestClass + ".Fail", invalidAssemblyPath),
+            x => x.ShouldBeDiscoveryTimeTest(TestClass + ".FailByAssertion", invalidAssemblyPath),
+            x => x.ShouldBeDiscoveryTimeTest(TestClass + ".Pass", invalidAssemblyPath),
+            x => x.ShouldBeDiscoveryTimeTest(TestClass + ".Skip", invalidAssemblyPath),
+            x => x.ShouldBeDiscoveryTimeTest(GenericTestClass + ".ShouldBeString", invalidAssemblyPath)
         ]);
     }
 

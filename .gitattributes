@@ -14,4 +14,3 @@
 *.csproj text
 *.cs text diff=csharp
 *.fs text
-*.nuspec text

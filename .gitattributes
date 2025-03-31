@@ -5,7 +5,7 @@
 *.ps1 text
 *.yml text
 
-*.sln text
+*.slnx text
 *.sln.DotSettings text
 
 *.props text

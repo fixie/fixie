@@ -4,7 +4,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 
-namespace Fixie.TestAdapter;
+namespace Fixie.Internal;
 
 class SourceLocationProvider
 {

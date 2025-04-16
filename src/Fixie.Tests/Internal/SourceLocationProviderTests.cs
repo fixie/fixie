@@ -1,7 +1,7 @@
 ﻿using Fixie.Internal;
 using static Fixie.Tests.Utility;
 
-namespace Fixie.Tests.TestAdapter;
+namespace Fixie.Tests.Internal;
 
 public class SourceLocationProviderTests
 {

@@ -1,4 +1,4 @@
-﻿namespace Fixie.TestAdapter;
+﻿namespace Fixie.Internal;
 
 class SourceLocation
 {

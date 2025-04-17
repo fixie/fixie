@@ -44,7 +44,7 @@ public class EntryPoint
             pipeStream.Connect();
             pipeStream.ReadMode = PipeTransmissionMode.Byte;
                 
-            var testAdapterReport = new TestAdapterReport(pipe);
+            var testAdapterReport = new TestAdapterReport(environment, pipe);
 
             var exitCode = ExitCode.Success;
 

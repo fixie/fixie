@@ -15,10 +15,6 @@
     <copyright>$copyright$</copyright>
     <repository url="https://github.com/fixie/fixie" />
     <dependencies>
-      <group targetFramework="net8.0">
-        <dependency id="Fixie" version="[$version$]" />
-        <dependency id="Microsoft.NET.Test.Sdk" version="17.8.0" />
-      </group>
       <group targetFramework="net9.0">
         <dependency id="Fixie" version="[$version$]" />
         <dependency id="Microsoft.NET.Test.Sdk" version="17.8.0" />
@@ -31,9 +27,7 @@
     <file target="icon.png" src="..\..\img\fixie_256.png" />
 
     <!-- Run-Time Assets -->
-    <file target="lib\net8.0" src="..\artifacts\bin\Fixie.TestAdapter\release_net8.0\Fixie.TestAdapter.dll" />
-    <file target="lib\net8.0" src="..\artifacts\bin\Fixie.TestAdapter\release_net8.0\Fixie.TestAdapter.pdb" />
-    <file target="lib\net9.0" src="..\artifacts\bin\Fixie.TestAdapter\release_net9.0\Fixie.TestAdapter.dll" />
-    <file target="lib\net9.0" src="..\artifacts\bin\Fixie.TestAdapter\release_net9.0\Fixie.TestAdapter.pdb" />
+    <file target="lib\net9.0" src="..\artifacts\bin\Fixie.TestAdapter\release\Fixie.TestAdapter.dll" />
+    <file target="lib\net9.0" src="..\artifacts\bin\Fixie.TestAdapter\release\Fixie.TestAdapter.pdb" />
   </files>
 </package>

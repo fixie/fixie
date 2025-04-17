@@ -9,13 +9,7 @@ public static class Utility
     public static TestEnvironment GetTestEnvironment(TextWriter console) =>
         new(typeof(TestProject).Assembly, null, console, customArguments: []);
 
-    public const string TargetFrameworkVersion =
-        #if NET8_0
-        "8.0"
-        #elif NET9_0
-        "9.0"
-        #endif
-        ;
+    public const string TargetFrameworkVersion = "9.0";
 
     public static string FullName<T>()
     {

@@ -10,9 +10,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/artifacts/bin/Fixie.Tests/debug_net8.0/Fixie.Tests.dll",
+            "program": "${workspaceFolder}/src/artifacts/bin/Fixie.Tests/debug/Fixie.Tests.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/src/artifacts/bin/Fixie.Tests/debug_net8.0",
+            "cwd": "${workspaceFolder}/src/artifacts/bin/Fixie.Tests/debug",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
             "stopAtEntry": false

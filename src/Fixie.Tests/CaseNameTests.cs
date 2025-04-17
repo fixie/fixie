@@ -169,11 +169,7 @@ public class CaseNameTests
             "StringParametersTestClass.String(\"\\u0006 \\u000E \\u000F \\u0010 \\u0011\")",
             "StringParametersTestClass.String(\"\\u0012 \\u0013 \\u0014 \\u0015 \\u0016\")",
 
-            #if NET8_0
-            "StringParametersTestClass.String(\"\\u0017 \\u0018 \\u0019 \\u001A \\u001B\")",
-            #else
-            "StringParametersTestClass.String(\"\\u0017 \\u0018 \\u0019 \\u001A\")",
-            #endif
+            "StringParametersTestClass.String(\"\\u0017 \\u0018 \\u0019 \\u001A\")", //we omitted the one for 'escape' since it was explicit earlier.
 
             "StringParametersTestClass.String(\"\\u001C \\u001D \\u001E \\u001F \\u007F\")",
             "StringParametersTestClass.String(\"\\u0080 \\u0081 \\u0082 \\u0083 \\u0084\")",

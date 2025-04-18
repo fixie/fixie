@@ -1,6 +1,4 @@
-﻿using System.IO.Pipes;
-using Fixie.Internal;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 using static Fixie.TestAdapter.TestAssembly;
@@ -36,49 +34,5 @@ class VsTestDiscoverer : ITestDiscoverer
         }
 
         log.Info("Processing " + assemblyPath);
-
-        var pipeName = Guid.NewGuid().ToString();
-        Environment.SetEnvironmentVariable("FIXIE_NAMED_PIPE", pipeName);
-
-        using (var pipeStream = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte))
-        using (var pipe = new TestAdapterPipe(pipeStream))
-        using (var process = StartDiscovery(assemblyPath))
-        {
-            pipeStream.WaitForConnection();
-
-            pipe.Send<PipeMessage.DiscoverTests>();
-
-            var recorder = new VsDiscoveryRecorder(discoverySink, assemblyPath);
-
-            while (true)
-            {
-                var messageType = pipe.ReceiveMessageType();
-
-                if (messageType == typeof(PipeMessage.TestDiscovered).FullName)
-                {
-                    var testDiscovered = pipe.Receive<PipeMessage.TestDiscovered>();
-                    recorder.Record(testDiscovered);
-                }
-                else if (messageType == typeof(PipeMessage.Exception).FullName)
-                {
-                    var exception = pipe.Receive<PipeMessage.Exception>();
-                    throw new RunnerException(exception);
-                }
-                else if (messageType == typeof(PipeMessage.EndOfPipe).FullName)
-                {
-                    var endOfPipe = pipe.Receive<PipeMessage.EndOfPipe>();
-                    break;
-                }
-                else if (!string.IsNullOrEmpty(messageType))
-                {
-                    var body = pipe.ReceiveMessageBody();
-                    log.Error($"The test runner received an unexpected message of type {messageType}: {body}");
-                }
-                else
-                {
-                    throw new TestProcessExitException(process.TryGetExitCode());
-                }
-            }
-        }
     }
 }

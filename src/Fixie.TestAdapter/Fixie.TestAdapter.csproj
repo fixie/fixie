@@ -1,20 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Target Name="SetNuspecProperties" BeforeTargets="GenerateNuspec">
-    <PropertyGroup>
-      <NuspecProperties>$(NuspecProperties);id=$(PackageId)</NuspecProperties>
-      <NuspecProperties>$(NuspecProperties);version=$(PackageVersion)</NuspecProperties>
-      <NuspecProperties>$(NuspecProperties);authors=$(Authors)</NuspecProperties>
-      <NuspecProperties>$(NuspecProperties);description=$(Description)</NuspecProperties>
-      <NuspecProperties>$(NuspecProperties);copyright=$(Copyright)</NuspecProperties>
-    </PropertyGroup>
-  </Target>
-
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Description>Visual Studio integration for the Fixie test framework.</Description>
-    <NuspecFile>Fixie.TestAdapter.nuspec</NuspecFile>
-    <IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>

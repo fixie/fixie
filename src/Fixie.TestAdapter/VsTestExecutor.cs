@@ -1,7 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
-using static Fixie.TestAdapter.TestAssembly;
 
 namespace Fixie.TestAdapter;
 
@@ -27,21 +25,7 @@ public class VsTestExecutor : ITestExecutor
         ArgumentNullException.ThrowIfNull(sources);
         ArgumentNullException.ThrowIfNull(frameworkHandle);
 
-        try
-        {
-            IMessageLogger log = frameworkHandle;
-
-            log.Version();
-
-            HandlePoorVsTestImplementationDetails(runContext, frameworkHandle);
-
-            foreach (var assemblyPath in sources)
-                RunTests(log, frameworkHandle, assemblyPath);
-        }
-        catch (Exception exception)
-        {
-            throw new RunnerException(exception);
-        }
+        HandlePoorVsTestImplementationDetails(runContext, frameworkHandle);
     }
 
     /// <summary>
@@ -59,41 +43,10 @@ public class VsTestExecutor : ITestExecutor
         ArgumentNullException.ThrowIfNull(tests);
         ArgumentNullException.ThrowIfNull(frameworkHandle);
 
-        try
-        {
-            IMessageLogger log = frameworkHandle;
-
-            log.Version();
-
-            HandlePoorVsTestImplementationDetails(runContext, frameworkHandle);
-
-            var assemblyGroups = tests.GroupBy(tc => tc.Source);
-
-            foreach (var assemblyGroup in assemblyGroups)
-            {
-                var assemblyPath = assemblyGroup.Key;
-
-                RunTests(log, frameworkHandle, assemblyPath);
-            }
-        }
-        catch (Exception exception)
-        {
-            throw new RunnerException(exception);
-        }
+        HandlePoorVsTestImplementationDetails(runContext, frameworkHandle);
     }
 
     public void Cancel() { }
-
-    static void RunTests(IMessageLogger log, IFrameworkHandle frameworkHandle, string assemblyPath)
-    {
-        if (!IsTestAssembly(assemblyPath))
-        {
-            log.Info("Skipping " + assemblyPath + " because it is not a test assembly.");
-            return;
-        }
-
-        log.Info("Processing " + assemblyPath);
-    }
 
     static void HandlePoorVsTestImplementationDetails(IRunContext? runContext, IFrameworkHandle frameworkHandle)
     {

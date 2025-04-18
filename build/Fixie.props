@@ -1,13 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
 
-  <PropertyGroup>
-    <TestProject>true</TestProject>
-    <IsTestProject>true</IsTestProject>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectCapability Include="TestContainer" />
-  </ItemGroup>  
-
 </Project>

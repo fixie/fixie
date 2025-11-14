@@ -14,6 +14,8 @@ public static class Utility
         "8.0"
         #elif NET9_0
         "9.0"
+        #elif NET10_0
+        "10.0"
         #endif
         ;
 

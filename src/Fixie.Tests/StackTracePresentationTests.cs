@@ -82,8 +82,23 @@ public class StackTracePresentationTests
     {
         var output = await Run<FailureTestClass, ExplicitExceptionHandling>();
 
+        const string interpretedInvoker = "   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)";
         const string optimizedInvoker = "   at InvokeStub_FailureTestClass.Synchronous(Object, Object, IntPtr*)";
         const string initialInvoker = "   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)";
+
+        string expectedInvoker;
+        if (output.Contains(optimizedInvoker))
+        {
+            expectedInvoker = optimizedInvoker;
+        }
+        else if (output.Contains(initialInvoker))
+        {
+            expectedInvoker = initialInvoker;
+        }
+        else
+        {
+            expectedInvoker = interpretedInvoker;
+        }
 
         output
             .ShouldBe(
@@ -106,7 +121,7 @@ public class StackTracePresentationTests
                 
                 Fixie.Tests.FailureException
                 {At<FailureTestClass>("Synchronous()")}
-                {(output.Contains(optimizedInvoker) ? optimizedInvoker : initialInvoker)}
+                {expectedInvoker}
                    at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
                 --- End of stack trace from previous location ---
                 {At(typeof(MethodInfoExtensions), "CallResolvedMethod(MethodInfo resolvedMethod, Object instance, Object[] parameters)", ["..", "Fixie", "MethodInfoExtensions.cs"])}

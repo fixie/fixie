@@ -49,6 +49,7 @@ public static class ExceptionExtensions
 
         if (totalLines >= 2)
         {
+            const string interpretedInvoke = " System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)";
             const string subsequentInvoke = " InvokeStub_";
             const string firstInvoke = " System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)";
             const string methodInvoker = " System.Reflection.MethodBaseInvoker.Invoke";
@@ -74,7 +75,8 @@ public static class ExceptionExtensions
 
                             if (totalLines >= 5)
                             {
-                                if (lines[^5].Contains(firstInvoke) ||
+                                if (lines[^5].Contains(interpretedInvoke) ||
+                                    lines[^5].Contains(firstInvoke) ||
                                     lines[^5].Contains(subsequentInvoke))
                                 {
                                     linesToRemove++;

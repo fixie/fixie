@@ -39,9 +39,7 @@ public class CaseNameTests
             foreach (var c in new[] {'\\', '\0', '\a', '\b', '\f', '\n', '\r', '\t', '\v'})
                 await Run(test, c);
 
-            #if NET9_0_OR_GREATER
             await Run(test, '\e');
-            #endif
             
             foreach (var c in new[] {'\u0000', '\u0085', '\u2028', '\u2029', '\u263A'})
                 await Run(test, c);
@@ -56,19 +54,13 @@ public class CaseNameTests
                 await Run(test, c);
 
             foreach (var c in UnicodeEscapedCharacters()
-                        #if NET9_0_OR_GREATER
                         .Where(c => c != '\e')
-                        #endif
                     )
                 await Run(test, c);
         });
 
         var unicodeEscapeExpectations = UnicodeEscapedCharacters()
-
-            #if NET9_0_OR_GREATER
             .Where(c => c != '\e')
-            #endif
-
             .Select(c => $"""
                           CharParametersTestClass.Char('\u{(int)c:X4}')
                           """);
@@ -88,9 +80,7 @@ public class CaseNameTests
             "CharParametersTestClass.Char('\\t')",
             "CharParametersTestClass.Char('\\v')",
 
-            #if NET9_0_OR_GREATER
             "CharParametersTestClass.Char('\\e')",
-            #endif
             
             "CharParametersTestClass.Char('\\0')",
             "CharParametersTestClass.Char('\\u0085')",
@@ -133,9 +123,7 @@ public class CaseNameTests
             await Run(test, " \\ \0 \a \b ");
             await Run(test, " \f \n \r \t \v ");
 
-            #if NET9_0_OR_GREATER
             await Run(test, " \e ");
-            #endif
 
             await Run(test, " \u0000 \u0085 \u2028 \u2029 \u263A ");
             await Run(test, " \x0000 \x000 \x00 \x0 ");
@@ -143,11 +131,7 @@ public class CaseNameTests
             await Run(test, " \U00000000 \U00000085 \U00002028 \U00002029 \U0000263A ");
             
             foreach (var c in UnicodeEscapedCharacters().Chunk(5)
-
-                         #if NET9_0_OR_GREATER
                          .Select(chunk => chunk.Where(c => c != '\e'))
-                         #endif
-                         
                          .Select(chunk => string.Join(' ', chunk)))
                 await Run(test, c);
         });
@@ -157,9 +141,7 @@ public class CaseNameTests
             "StringParametersTestClass.String(\" \\\\ \\0 \\a \\b \")",
             "StringParametersTestClass.String(\" \\f \\n \\r \\t \\v \")",
 
-            #if NET9_0_OR_GREATER
             "StringParametersTestClass.String(\" \\e \")",
-            #endif
 
             "StringParametersTestClass.String(\" \\0 \\u0085 \\u2028 \\u2029 ☺ \")",
             "StringParametersTestClass.String(\" \\0 \\0 \\0 \\0 \")",

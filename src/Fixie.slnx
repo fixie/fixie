@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="../nuget.config" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Project Path="Fixie.Console/Fixie.Console.csproj" />
+  <Project Path="Fixie.TestAdapter/Fixie.TestAdapter.csproj" />
+  <Project Path="Fixie.Tests/Fixie.Tests.csproj" />
+  <Project Path="Fixie/Fixie.csproj" />
+</Solution>

@@ -10,9 +10,7 @@ public static class Utility
         new(typeof(TestProject).Assembly, null, console, customArguments: []);
 
     public const string TargetFrameworkVersion =
-        #if NET8_0
-        "8.0"
-        #elif NET9_0
+        #if NET9_0
         "9.0"
         #elif NET10_0
         "10.0"

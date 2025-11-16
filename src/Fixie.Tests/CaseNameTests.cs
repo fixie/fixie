@@ -36,13 +36,9 @@ public class CaseNameTests
             foreach (var c in new[] {'\"', '"', '\''})
                 await Run(test, c);
             
-            foreach (var c in new[] {'\\', '\0', '\a', '\b', '\f', '\n', '\r', '\t', '\v'})
+            foreach (var c in new[] {'\\', '\0', '\a', '\b', '\f', '\n', '\r', '\t', '\v', '\e'})
                 await Run(test, c);
 
-            #if NET9_0_OR_GREATER
-            await Run(test, '\e');
-            #endif
-            
             foreach (var c in new[] {'\u0000', '\u0085', '\u2028', '\u2029', '\u263A'})
                 await Run(test, c);
             
@@ -55,20 +51,11 @@ public class CaseNameTests
             foreach (var c in new[] {'\U00000000', '\U00000085', '\U00002028', '\U00002029', '\U0000263A'})
                 await Run(test, c);
 
-            foreach (var c in UnicodeEscapedCharacters()
-                        #if NET9_0_OR_GREATER
-                        .Where(c => c != '\e')
-                        #endif
-                    )
+            foreach (var c in UnicodeEscapedCharacters())
                 await Run(test, c);
         });
 
         var unicodeEscapeExpectations = UnicodeEscapedCharacters()
-
-            #if NET9_0_OR_GREATER
-            .Where(c => c != '\e')
-            #endif
-
             .Select(c => $"""
                           CharParametersTestClass.Char('\u{(int)c:X4}')
                           """);
@@ -87,10 +74,7 @@ public class CaseNameTests
             "CharParametersTestClass.Char('\\r')",
             "CharParametersTestClass.Char('\\t')",
             "CharParametersTestClass.Char('\\v')",
-
-            #if NET9_0_OR_GREATER
             "CharParametersTestClass.Char('\\e')",
-            #endif
             
             "CharParametersTestClass.Char('\\0')",
             "CharParametersTestClass.Char('\\u0085')",
@@ -131,11 +115,7 @@ public class CaseNameTests
         {
             await Run(test, " \' ' \" ");
             await Run(test, " \\ \0 \a \b ");
-            await Run(test, " \f \n \r \t \v ");
-
-            #if NET9_0_OR_GREATER
-            await Run(test, " \e ");
-            #endif
+            await Run(test, " \f \n \r \t \v \e ");
 
             await Run(test, " \u0000 \u0085 \u2028 \u2029 \u263A ");
             await Run(test, " \x0000 \x000 \x00 \x0 ");
@@ -143,11 +123,6 @@ public class CaseNameTests
             await Run(test, " \U00000000 \U00000085 \U00002028 \U00002029 \U0000263A ");
             
             foreach (var c in UnicodeEscapedCharacters().Chunk(5)
-
-                         #if NET9_0_OR_GREATER
-                         .Select(chunk => chunk.Where(c => c != '\e'))
-                         #endif
-                         
                          .Select(chunk => string.Join(' ', chunk)))
                 await Run(test, c);
         });
@@ -155,11 +130,7 @@ public class CaseNameTests
         ShouldHaveNames(output,
             "StringParametersTestClass.String(\" ' ' \\\" \")",
             "StringParametersTestClass.String(\" \\\\ \\0 \\a \\b \")",
-            "StringParametersTestClass.String(\" \\f \\n \\r \\t \\v \")",
-
-            #if NET9_0_OR_GREATER
-            "StringParametersTestClass.String(\" \\e \")",
-            #endif
+            "StringParametersTestClass.String(\" \\f \\n \\r \\t \\v \\e \")",
 
             "StringParametersTestClass.String(\" \\0 \\u0085 \\u2028 \\u2029 ☺ \")",
             "StringParametersTestClass.String(\" \\0 \\0 \\0 \\0 \")",
@@ -168,25 +139,18 @@ public class CaseNameTests
             "StringParametersTestClass.String(\"\\u0001 \\u0002 \\u0003 \\u0004 \\u0005\")",
             "StringParametersTestClass.String(\"\\u0006 \\u000E \\u000F \\u0010 \\u0011\")",
             "StringParametersTestClass.String(\"\\u0012 \\u0013 \\u0014 \\u0015 \\u0016\")",
-
-            #if NET8_0
-            "StringParametersTestClass.String(\"\\u0017 \\u0018 \\u0019 \\u001A \\u001B\")",
-            #else
-            "StringParametersTestClass.String(\"\\u0017 \\u0018 \\u0019 \\u001A\")",
-            #endif
-
-            "StringParametersTestClass.String(\"\\u001C \\u001D \\u001E \\u001F \\u007F\")",
-            "StringParametersTestClass.String(\"\\u0080 \\u0081 \\u0082 \\u0083 \\u0084\")",
-            "StringParametersTestClass.String(\"\\u0085 \\u0086 \\u0087 \\u0088 \\u0089\")",
-            "StringParametersTestClass.String(\"\\u008A \\u008B \\u008C \\u008D \\u008E\")",
-            "StringParametersTestClass.String(\"\\u008F \\u0090 \\u0091 \\u0092 \\u0093\")",
-            "StringParametersTestClass.String(\"\\u0094 \\u0095 \\u0096 \\u0097 \\u0098\")",
-            "StringParametersTestClass.String(\"\\u0099 \\u009A \\u009B \\u009C \\u009D\")",
-            "StringParametersTestClass.String(\"\\u009E \\u009F \\u0085 \\u00A0 \\u1680\")",
-            "StringParametersTestClass.String(\"\\u2000 \\u2001 \\u2002 \\u2003 \\u2004\")",
-            "StringParametersTestClass.String(\"\\u2005 \\u2006 \\u2007 \\u2008 \\u2009\")",
-            "StringParametersTestClass.String(\"\\u200A \\u2028 \\u2029 \\u202F \\u205F\")",
-            "StringParametersTestClass.String(\"\\u3000\")"
+            "StringParametersTestClass.String(\"\\u0017 \\u0018 \\u0019 \\u001A \\u001C\")",
+            "StringParametersTestClass.String(\"\\u001D \\u001E \\u001F \\u007F \\u0080\")",
+            "StringParametersTestClass.String(\"\\u0081 \\u0082 \\u0083 \\u0084 \\u0085\")",
+            "StringParametersTestClass.String(\"\\u0086 \\u0087 \\u0088 \\u0089 \\u008A\")",
+            "StringParametersTestClass.String(\"\\u008B \\u008C \\u008D \\u008E \\u008F\")",
+            "StringParametersTestClass.String(\"\\u0090 \\u0091 \\u0092 \\u0093 \\u0094\")",
+            "StringParametersTestClass.String(\"\\u0095 \\u0096 \\u0097 \\u0098 \\u0099\")",
+            "StringParametersTestClass.String(\"\\u009A \\u009B \\u009C \\u009D \\u009E\")",
+            "StringParametersTestClass.String(\"\\u009F \\u0085 \\u00A0 \\u1680 \\u2000\")",
+            "StringParametersTestClass.String(\"\\u2001 \\u2002 \\u2003 \\u2004 \\u2005\")",
+            "StringParametersTestClass.String(\"\\u2006 \\u2007 \\u2008 \\u2009 \\u200A\")",
+            "StringParametersTestClass.String(\"\\u2028 \\u2029 \\u202F \\u205F \\u3000\")"
         );
     }
 
@@ -298,7 +262,8 @@ public class CaseNameTests
         // '\uHHHH' hex escape sequences.
 
         for (char c = '\u0001'; c <= '\u0006'; c++) yield return c;
-        for (char c = '\u000E'; c <= '\u001F'; c++) yield return c;
+        for (char c = '\u000E'; c <= '\u001A'; c++) yield return c;
+        for (char c = '\u001C'; c <= '\u001F'; c++) yield return c;
         yield return '\u007F';
         for (char c = '\u0080'; c <= '\u009F'; c++) yield return c;
 

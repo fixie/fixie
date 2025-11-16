@@ -7,11 +7,11 @@ public class CommandLineTests
     public void ShouldPartitionRunnerArgumentsFromCustomArguments()
     {
         CommandLine.Partition([
-            "Example.Tests", "--configuration", "Release", "--framework", "net8.0",
+            "Example.Tests", "--configuration", "Release", "--framework", "net10.0",
             "--",
             "customA", "customB", "customC"
         ], out var runnerArguments, out var customArguments);
-        runnerArguments.ShouldMatch(["Example.Tests", "--configuration", "Release", "--framework", "net8.0"]);
+        runnerArguments.ShouldMatch(["Example.Tests", "--configuration", "Release", "--framework", "net10.0"]);
         customArguments.ShouldMatch(["customA", "customB", "customC"]);
 
         CommandLine.Partition(["Example.Tests", "--", "custom"], out runnerArguments, out customArguments);

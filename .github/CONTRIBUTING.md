@@ -57,6 +57,6 @@ Please start by opening an Issue to discuss the motivation, the proposed change,
 
 ## Target Framework Changes
 
-**Honestly, you don't want to do this.** Adding or removing a target framework (eg. `net9.0`) is especially impactful and carries with it several gotchas specific to Fixie's roadmap planning, implementation, packaging, end to end testing, and end user environment support goals.
+**Honestly, you don't want to do this.** Adding or removing a target framework is especially impactful and carries with it several gotchas specific to Fixie's roadmap planning, implementation, packaging, end to end testing, and end user environment support goals.
 
 **An unanticipated PR for adding or removing a target framework will be rejected.**

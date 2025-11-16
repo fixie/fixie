@@ -11,7 +11,7 @@
   </Target>
 
   <PropertyGroup>
-    <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
+    <TargetFramework>net10.0</TargetFramework>
     <Description>Visual Studio integration for the Fixie test framework.</Description>
     <NuspecFile>Fixie.TestAdapter.nuspec</NuspecFile>
     <IsPackable>true</IsPackable>

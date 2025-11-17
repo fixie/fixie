@@ -31,6 +31,7 @@ static class PipeMessage
     public class TestDiscovered
     {
         public required string Test { get; init; }
+        public required SourceLocation? SourceLocation { get; init; }
     }
 
     public class TestStarted

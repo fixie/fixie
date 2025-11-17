@@ -2,7 +2,6 @@
 using Fixie.TestAdapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 using Fixie.Tests.Reports;
 
 namespace Fixie.Tests.TestAdapter;
@@ -15,9 +14,9 @@ public class VsDiscoveryRecorderTests : MessagingTests
 
         var discoverySink = new StubTestCaseDiscoverySink();
 
-        var vsDiscoveryRecorder = new VsDiscoveryRecorder(discoverySink, assemblyPath);
+        var discoveryRecorder = new VsDiscoveryRecorder(discoverySink, assemblyPath);
 
-        RecordAnticipatedPipeMessages(assemblyPath, vsDiscoveryRecorder, sourceLocationsExist: true);
+        RecordAnticipatedPipeMessages(assemblyPath, discoveryRecorder, sourceLocationsExist: true);
 
         discoverySink.TestCases.ItemsShouldSatisfy([
             x => x.ShouldBeDiscoveryTimeTest(TestClass + ".Fail", assemblyPath),
@@ -97,14 +96,6 @@ public class VsDiscoveryRecorderTests : MessagingTests
             Test = test,
             SourceLocation = sourceLocation
         });
-    }
-
-    class StubMessageLogger : IMessageLogger
-    {
-        public List<string> Messages { get; } = [];
-
-        public void SendMessage(TestMessageLevel testMessageLevel, string message)
-            => Messages.Add($"{testMessageLevel}: {message}");
     }
 
     class StubTestCaseDiscoverySink : ITestCaseDiscoverySink

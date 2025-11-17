@@ -15,4 +15,8 @@
     <None Include="..\..\buildMultiTargeting\**" Pack="true" PackagePath="buildMultiTargeting" Visible="false" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Mono.Cecil" />
+  </ItemGroup>
+
 </Project>

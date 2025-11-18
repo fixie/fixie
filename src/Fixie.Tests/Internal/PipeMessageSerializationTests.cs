@@ -25,8 +25,21 @@ public class PipeMessageSerializationTests : MessagingTests
 
     public void ShouldSerializeTestDiscoveredMessage()
     {
-        Expect(new PipeMessage.TestDiscovered { Test = TestClass + ".Pass" },
-            "{\"Test\":\"Fixie.Tests.Reports.MessagingTests\\u002BSampleTestClass.Pass\"}");
+        Expect(new PipeMessage.TestDiscovered { Test = TestClass + ".Pass", SourceLocation = null },
+            """
+            {"Test":"Fixie.Tests.Reports.MessagingTests\u002BSampleTestClass.Pass","SourceLocation":null}
+            """);
+
+        var sourceLocation = new SourceLocation
+        {
+            CodeFilePath = "full-path-to-code-file",
+            LineNumber = 123
+        };
+
+        Expect(new PipeMessage.TestDiscovered { Test = TestClass + ".Pass", SourceLocation = sourceLocation },
+            """
+            {"Test":"Fixie.Tests.Reports.MessagingTests\u002BSampleTestClass.Pass","SourceLocation":{"CodeFilePath":"full-path-to-code-file","LineNumber":123}}
+            """);
     }
 
     public void ShouldSerializeTestStartedMessage()

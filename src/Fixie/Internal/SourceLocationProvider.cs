@@ -4,7 +4,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 
-namespace Fixie.TestAdapter;
+namespace Fixie.Internal;
 
 class SourceLocationProvider
 {
@@ -80,7 +80,11 @@ class SourceLocationProvider
         var sequencePoint = FirstOrDefaultSequencePoint(method);
 
         if (sequencePoint != null)
-            return new SourceLocation(sequencePoint.Document.Url, sequencePoint.StartLine);
+            return new SourceLocation
+            {
+                CodeFilePath = sequencePoint.Document.Url,
+                LineNumber = sequencePoint.StartLine
+            };
             
         return null;
     }

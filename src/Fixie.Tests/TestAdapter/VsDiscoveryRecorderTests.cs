@@ -2,9 +2,7 @@
 using Fixie.TestAdapter;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
 using Fixie.Tests.Reports;
-using static System.IO.Directory;
 
 namespace Fixie.Tests.TestAdapter;
 
@@ -14,14 +12,11 @@ public class VsDiscoveryRecorderTests : MessagingTests
     {
         var assemblyPath = typeof(MessagingTests).Assembly.Location;
 
-        var log = new StubMessageLogger();
         var discoverySink = new StubTestCaseDiscoverySink();
 
-        var vsDiscoveryRecorder = new VsDiscoveryRecorder(log, discoverySink, assemblyPath);
+        var discoveryRecorder = new VsDiscoveryRecorder(discoverySink, assemblyPath);
 
-        RecordAnticipatedPipeMessages(vsDiscoveryRecorder);
-
-        log.Messages.ShouldMatch([]);
+        RecordAnticipatedPipeMessages(assemblyPath, discoveryRecorder, sourceLocationsExist: true);
 
         discoverySink.TestCases.ItemsShouldSatisfy([
             x => x.ShouldBeDiscoveryTimeTest(TestClass + ".Fail", assemblyPath),
@@ -36,23 +31,11 @@ public class VsDiscoveryRecorderTests : MessagingTests
     {
         const string invalidAssemblyPath = "assembly.path.dll";
 
-        var log = new StubMessageLogger();
         var discoverySink = new StubTestCaseDiscoverySink();
 
-        var discoveryRecorder = new VsDiscoveryRecorder(log, discoverySink, invalidAssemblyPath);
+        var discoveryRecorder = new VsDiscoveryRecorder(discoverySink, invalidAssemblyPath);
 
-        RecordAnticipatedPipeMessages(discoveryRecorder);
-
-        var expectedError =
-            $"Error: {typeof(FileNotFoundException).FullName}: " +
-            $"Could not find file '{Path.Combine(GetCurrentDirectory(), invalidAssemblyPath)}'.";
-        log.Messages.ItemsShouldSatisfy([
-            x => x.Contains(expectedError).ShouldBe(true),
-            x => x.Contains(expectedError).ShouldBe(true),
-            x => x.Contains(expectedError).ShouldBe(true),
-            x => x.Contains(expectedError).ShouldBe(true),
-            x => x.Contains(expectedError).ShouldBe(true)
-        ]);
+        RecordAnticipatedPipeMessages(invalidAssemblyPath, discoveryRecorder, sourceLocationsExist: false);
 
         discoverySink.TestCases.ItemsShouldSatisfy([
             x => x.ShouldBeDiscoveryTimeTestMissingSourceLocation(TestClass + ".Fail", invalidAssemblyPath),
@@ -63,40 +46,56 @@ public class VsDiscoveryRecorderTests : MessagingTests
         ]);
     }
 
-    void RecordAnticipatedPipeMessages(VsDiscoveryRecorder vsDiscoveryRecorder)
+    void RecordAnticipatedPipeMessages(string assemblyPath, VsDiscoveryRecorder vsDiscoveryRecorder, bool sourceLocationsExist)
     {
+        SourceLocationProvider sourceLocationProvider = new(assemblyPath);
+        SourceLocation? sourceLocation = null;
+
+        var test = TestClass + ".Fail";
+        if (sourceLocationsExist)
+            sourceLocationProvider.TryGetSourceLocation(test, out sourceLocation).ShouldBe(true);
         vsDiscoveryRecorder.Record(new PipeMessage.TestDiscovered
         {
-            Test = TestClass + ".Fail"
+            Test = test,
+            SourceLocation = sourceLocation
         });
 
+        test = TestClass + ".FailByAssertion";
+        if (sourceLocationsExist)
+            sourceLocationProvider.TryGetSourceLocation(test, out sourceLocation).ShouldBe(true);
         vsDiscoveryRecorder.Record(new PipeMessage.TestDiscovered
         {
-            Test = TestClass + ".FailByAssertion"
+            Test = test,
+            SourceLocation = sourceLocation
         });
 
+        test = TestClass + ".Pass";
+        if (sourceLocationsExist)
+            sourceLocationProvider.TryGetSourceLocation(test, out sourceLocation).ShouldBe(false);
+        sourceLocation.ShouldBe(null);
         vsDiscoveryRecorder.Record(new PipeMessage.TestDiscovered
         {
-            Test = TestClass + ".Pass"
+            Test = test,
+            SourceLocation = sourceLocation
         });
 
+        test = TestClass + ".Skip";
+        if (sourceLocationsExist)
+            sourceLocationProvider.TryGetSourceLocation(test, out sourceLocation).ShouldBe(true);
         vsDiscoveryRecorder.Record(new PipeMessage.TestDiscovered
         {
-            Test = TestClass + ".Skip"
+            Test = test,
+            SourceLocation = sourceLocation
         });
 
+        test = GenericTestClass + ".ShouldBeString";
+        if (sourceLocationsExist)
+            sourceLocationProvider.TryGetSourceLocation(test, out sourceLocation).ShouldBe(true);
         vsDiscoveryRecorder.Record(new PipeMessage.TestDiscovered
         {
-            Test = GenericTestClass + ".ShouldBeString"
+            Test = test,
+            SourceLocation = sourceLocation
         });
-    }
-
-    class StubMessageLogger : IMessageLogger
-    {
-        public List<string> Messages { get; } = [];
-
-        public void SendMessage(TestMessageLevel testMessageLevel, string message)
-            => Messages.Add($"{testMessageLevel}: {message}");
     }
 
     class StubTestCaseDiscoverySink : ITestCaseDiscoverySink

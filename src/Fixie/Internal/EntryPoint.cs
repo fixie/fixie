@@ -17,6 +17,8 @@ public class EntryPoint
 
     public static async Task<int> Main(Assembly assembly, string[] customArguments)
     {
+        SetEnvironmentVariable("TESTINGPLATFORM_TELEMETRY_OPTOUT", "true");
+
         var console = Console.Out;
         var targetFramework = GetEnvironmentVariable("FIXIE_TARGET_FRAMEWORK");
         var environment = new TestEnvironment(assembly, targetFramework, console, customArguments);

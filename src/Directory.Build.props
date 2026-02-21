@@ -11,6 +11,7 @@
     <Copyright>Copyright (c) 2013 Patrick Lioi</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://fixie.github.io</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <RepositoryUrl>https://github.com/fixie/fixie</RepositoryUrl>
   </PropertyGroup>

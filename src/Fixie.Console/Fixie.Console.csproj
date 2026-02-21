@@ -7,7 +7,6 @@
     <ToolCommandName>fixie</ToolCommandName>
     <Description>`dotnet fixie` console test runner for the Fixie test framework.</Description>
     <RollForward>Major</RollForward>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>

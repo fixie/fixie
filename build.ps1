@@ -19,5 +19,4 @@ step { dotnet $fixie *.Tests -c Release --no-build }
 if ($pack) {
     step { dotnet pack src/Fixie -o packages -c Release --no-build --nologo }
     step { dotnet pack src/Fixie.Console -o packages -c Release --no-build --nologo }
-    step { dotnet pack src/Fixie.TestAdapter -o packages -c Release --no-build --nologo }
 }

@@ -2,7 +2,6 @@
 <Project>
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <GenerateProgramFile>false</GenerateProgramFile>
   </PropertyGroup>
 
@@ -26,9 +25,5 @@
                       Lines="@(_Fixie_Line)"
                       Overwrite="true" />
   </Target>
-
-  <ItemGroup Condition="'$(Language)'=='C#' or '$(Language)'=='F#'">
-    <Compile Include="$(MSBuildThisFileDirectory)Fixie.Main$(DefaultLanguageSourceExtension)" Visible="false" />
-  </ItemGroup>
 
 </Project>

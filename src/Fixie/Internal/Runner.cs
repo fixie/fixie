@@ -8,13 +8,15 @@ namespace Fixie.Internal;
 class Runner
 {
     readonly TestEnvironment environment;
+    readonly ITestProject? testProject;
     readonly IReport[] defaultReports;
     readonly Assembly assembly;
     readonly TextWriter console;
 
-    public Runner(TestEnvironment environment, params IReport[] defaultReports)
+    public Runner(TestEnvironment environment, ITestProject? testProject, params IReport[] defaultReports)
     {
         this.environment = environment;
+        this.testProject = testProject;
         this.defaultReports = defaultReports;
         assembly = environment.Assembly;
         console = environment.Console;
@@ -174,50 +176,13 @@ class Runner
 
     TestConfiguration BuildConfiguration()
     {
-        var customTestProjectTypes = assembly
-            .GetTypes()
-            .Where(type => IsTestProject(type) && !type.IsAbstract)
-            .ToArray();
-
-        if (customTestProjectTypes.Length > 1)
-        {
-            throw new Exception(
-                "A test assembly can have at most one ITestProject implementation, " +
-                "but the following implementations were discovered:" + Environment.NewLine +
-                string.Join(Environment.NewLine,
-                    customTestProjectTypes
-                        .Select(x => $"\t{x.FullName}")));
-        }
-
         var configuration = new TestConfiguration();
 
-        var testProjectType = customTestProjectTypes.SingleOrDefault();
-            
-        if (testProjectType != null)
-        {
-            var testProject = (ITestProject) Construct(testProjectType);
-
-            testProject.Configure(configuration, environment);
-        }
+        testProject?.Configure(configuration, environment);
 
         if (configuration.Conventions.Items.Count == 0)
             configuration.Conventions.Add<DefaultDiscovery, DefaultExecution>();
 
         return configuration;
-    }
-
-    static bool IsTestProject(Type type)
-        => type.GetInterfaces().Contains(typeof(ITestProject));
-
-    static object Construct(Type type)
-    {
-        try
-        {
-            return type.GetConstructors().Single().Invoke(null);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Could not construct an instance of type '{type.FullName}'.", ex);
-        }
     }
 }

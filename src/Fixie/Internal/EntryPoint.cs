@@ -15,7 +15,7 @@ public class EntryPoint
         FatalError = 2
     }
 
-    public static async Task<int> Main(Assembly assembly, string[] customArguments)
+    public static async Task<int> Main(Assembly assembly, ITestProject? testProject, string[] customArguments)
     {
         SetEnvironmentVariable("TESTINGPLATFORM_TELEMETRY_OPTOUT", "true");
 
@@ -36,8 +36,8 @@ public class EntryPoint
                 var pattern = GetEnvironmentVariable("FIXIE_TESTS_PATTERN");
 
                 return pattern == null
-                    ? (int) await Run(environment, reports, async runner => await runner.Run())
-                    : (int) await Run(environment, reports, async runner => await runner.Run(new TestPattern(pattern)));
+                    ? (int) await Run(environment, testProject, reports, async runner => await runner.Run())
+                    : (int) await Run(environment, testProject, reports, async runner => await runner.Run(new TestPattern(pattern)));
             }
 
             using var pipeStream = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut);
@@ -57,7 +57,7 @@ public class EntryPoint
                 if (messageType == typeof(PipeMessage.DiscoverTests).FullName)
                 {
                     var discoverTests = pipe.Receive<PipeMessage.DiscoverTests>();
-                    await DiscoverMethods(environment, testAdapterReport);
+                    await DiscoverMethods(environment, testProject, testAdapterReport);
                 }
                 else if (messageType == typeof(PipeMessage.ExecuteTests).FullName)
                 {
@@ -66,8 +66,8 @@ public class EntryPoint
                     var reports = new IReport[] { testAdapterReport };
 
                     exitCode = executeTests.Filter.Length == 0
-                        ? await Run(environment, reports, async runner => await runner.Run())
-                        : await Run(environment, reports, async runner => await runner.Run([..executeTests.Filter]));
+                        ? await Run(environment, testProject, reports, async runner => await runner.Run())
+                        : await Run(environment, testProject, reports, async runner => await runner.Run([..executeTests.Filter]));
                 }
                 else
                 {
@@ -95,15 +95,15 @@ public class EntryPoint
         }
     }
 
-    static async Task DiscoverMethods(TestEnvironment environment, TestAdapterReport testAdapterReport)
+    static async Task DiscoverMethods(TestEnvironment environment, ITestProject? testProject, TestAdapterReport testAdapterReport)
     {
-        var runner = new Runner(environment, testAdapterReport);
+        var runner = new Runner(environment, testProject, testAdapterReport);
         await runner.Discover();
     }
 
-    static async Task<ExitCode> Run(TestEnvironment environment, IReport[] reports, Func<Runner, Task<ExecutionSummary>> run)
+    static async Task<ExitCode> Run(TestEnvironment environment, ITestProject? testProject, IReport[] reports, Func<Runner, Task<ExecutionSummary>> run)
     {
-        var runner = new Runner(environment, reports);
+        var runner = new Runner(environment, testProject, reports);
             
         var summary = await run(runner);
 

@@ -21,7 +21,8 @@ public class RunnerTests
         await using var console = new StringWriter();
         
         var environment = GetTestEnvironment(console);
-        var runner = new Runner(environment, report);
+        TestProject? testProject = null;
+        var runner = new Runner(environment, testProject, report);
 
         await runner.Discover(candidateTypes, discovery);
 
@@ -52,7 +53,8 @@ public class RunnerTests
         await using var console = new StringWriter();
         
         var environment = GetTestEnvironment(console);
-        var runner = new Runner(environment, report);
+        TestProject? testProject = null;
+        var runner = new Runner(environment, testProject, report);
         var configuration = new TestConfiguration();
         configuration.Conventions.Add(discovery, execution);
 

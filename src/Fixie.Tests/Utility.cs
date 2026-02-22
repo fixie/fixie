@@ -61,7 +61,8 @@ public static class Utility
             throw new InvalidOperationException("At least one type must be specified.");
 
         var environment = GetTestEnvironment(console);
-        var runner = new Runner(environment, report);
+        TestProject? testProject = null;
+        var runner = new Runner(environment, testProject, report);
         var configuration = new TestConfiguration();
         configuration.Conventions.Add(discovery, execution);
 

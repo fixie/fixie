@@ -1,5 +1,4 @@
-﻿using System.IO.Pipes;
-using System.Reflection;
+﻿using System.Reflection;
 using Fixie.Reports;
 using static System.Environment;
 using static Fixie.Internal.Maybe;
@@ -27,64 +26,13 @@ public class EntryPoint
 
         try
         {
-            var pipeName = GetEnvironmentVariable("FIXIE_NAMED_PIPE");
+            var reports = DefaultReports(environment).ToArray();
 
-            if (pipeName == null)
-            {
-                var reports = DefaultReports(environment).ToArray();
+            var pattern = GetEnvironmentVariable("FIXIE_TESTS_PATTERN");
 
-                var pattern = GetEnvironmentVariable("FIXIE_TESTS_PATTERN");
-
-                return pattern == null
-                    ? (int) await Run(environment, testProject, reports, async runner => await runner.Run())
-                    : (int) await Run(environment, testProject, reports, async runner => await runner.Run(new TestPattern(pattern)));
-            }
-
-            using var pipeStream = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut);
-            using var pipe = new TestAdapterPipe(pipeStream);
-
-            pipeStream.Connect();
-            pipeStream.ReadMode = PipeTransmissionMode.Byte;
-                
-            var testAdapterReport = new TestAdapterReport(environment, pipe);
-
-            var exitCode = ExitCode.Success;
-
-            try
-            {
-                var messageType = pipe.ReceiveMessageType();
-
-                if (messageType == typeof(PipeMessage.DiscoverTests).FullName)
-                {
-                    var discoverTests = pipe.Receive<PipeMessage.DiscoverTests>();
-                    await DiscoverMethods(environment, testProject, testAdapterReport);
-                }
-                else if (messageType == typeof(PipeMessage.ExecuteTests).FullName)
-                {
-                    var executeTests = pipe.Receive<PipeMessage.ExecuteTests>();
-
-                    var reports = new IReport[] { testAdapterReport };
-
-                    exitCode = executeTests.Filter.Length == 0
-                        ? await Run(environment, testProject, reports, async runner => await runner.Run())
-                        : await Run(environment, testProject, reports, async runner => await runner.Run([..executeTests.Filter]));
-                }
-                else
-                {
-                    var body = pipe.ReceiveMessageBody();
-                    throw new Exception($"Test assembly received unexpected message of type {messageType}: {body}");
-                }
-            }
-            catch (Exception exception)
-            {
-                pipe.Send(exception);
-            }
-            finally
-            {
-                pipe.Send<PipeMessage.EndOfPipe>();
-            }
-
-            return (int)exitCode;
+            return pattern == null
+                ? (int) await Run(environment, testProject, reports, async runner => await runner.Run())
+                : (int) await Run(environment, testProject, reports, async runner => await runner.Run(new TestPattern(pattern)));
         }
         catch (Exception exception)
         {
@@ -95,9 +43,9 @@ public class EntryPoint
         }
     }
 
-    static async Task DiscoverMethods(TestEnvironment environment, ITestProject? testProject, TestAdapterReport testAdapterReport)
+    static async Task DiscoverMethods(TestEnvironment environment, ITestProject? testProject, IReport discoveryReport)
     {
-        var runner = new Runner(environment, testProject, testAdapterReport);
+        var runner = new Runner(environment, testProject, discoveryReport);
         await runner.Discover();
     }
 
